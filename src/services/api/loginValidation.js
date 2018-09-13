@@ -15,6 +15,19 @@ export default {
         .then(response => {
             return response.data;
         })
+    },
+
+    projectDetailsApi(description,percentage_completion,completed_date) {
+        const body = {
+            description:description,
+                percentage_completion:percentage_completion,
+                completed_date:completed_date
+          };
+        const url = "https://demo6727947.mockable.io/task-details";
+        return axios.post(url,body)
+        .then(response => {
+            return response.data;
+        })
     }
     
 }

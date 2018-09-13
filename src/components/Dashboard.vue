@@ -28,7 +28,6 @@ export default {
   methods: {
       showTableToEnterData(){
           this.skillTemplateShow = true;
-          console.log('I am clicked')
       }
   }
 };

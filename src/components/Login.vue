@@ -74,7 +74,7 @@ export default {
         }
       })
       .catch(error => {
-        // console.log("Response from Component" + error);
+        throw error;
       });
     }
   }
