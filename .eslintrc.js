@@ -1,6 +1,7 @@
 module.exports = {
-  root: true,
+  root: false,
   env: {
+    browser: true,
     node: true
   },
   'extends': [
@@ -8,7 +9,7 @@ module.exports = {
     'eslint:recommended'
   ],
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    "no-console": 0,
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   },
   parserOptions: {

@@ -1,13 +1,20 @@
 <template>
   <div class="hello">
    <div class="holder">
-<form @submit.prevent="addSkill">
+     <b-container class="bv-example-row">
+    <b-row>
+        <b-col>Project: {{}}</b-col>
+        <b-col>Manager: {{}}</b-col>
+        <b-col>Date: <datepicker></datepicker> </b-col>
+    </b-row>
+</b-container>
+<!-- <form @submit.prevent="addSkill">
 <input type="text" placeholder="enter a skill you have..." v-model="skill" v-validate="'min:5'" name="skill">
 
   <transition name="alert-in" enter-active-class="animated flipInX" leave-active-class="animated flipOutX">
     <p class="alert" v-if="errors.has('skill')">{{errors.first('skill')}}</p>
   </transition>
-</form>
+</form> -->
      <ul>
        <transition-group name="list" enter-active-class="animated bounceInUp" leave-active-class="animated bounceOutDown">
        <li v-for="(data,index) in skills" :key='index'>
@@ -22,6 +29,8 @@
 </template>
 
 <script>
+import Datepicker from 'vuejs-datepicker';
+
 export default {
   name: "Skills",
   data() {
@@ -30,6 +39,9 @@ export default {
       skills: [{ skill: "Vue.js" }, { skill: "FrontEnd Developer" }]
     };
   },
+  components: {
+    Datepicker
+  },
   methods: {
     addSkill() {
       this.$validator.validateAll().then(result => {
@@ -37,10 +49,11 @@ export default {
           this.skills.push({ skill: this.skill });
           this.skill = "";
         } else {
+          console;
         }
       });
     },
-    remove(id){
+    remove(id) {
       this.skills.splice(id, 1);
     }
   }

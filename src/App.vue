@@ -1,20 +1,17 @@
 <template>
   <div id="app">
-<nav>
-  <router-link to="/">Home</router-link>
-  <router-link to="/about">About</router-link>
-</nav>
-<router-view />
-    </div>
+      <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import Skills from './components/Skills.vue'
+// import Skills from './components/Skills.vue'
+import Login from './components/Login.vue'
 
 export default {
   name: 'app',
   components: {
-    Skills
+    Login
   }
 }
 </script>
@@ -34,7 +31,7 @@ body, html {
   height: 100%;
 }
 #app {
-    width: 50%;
+    width: 90%;
 }
 nav {
   padding: 20px 20px 20px 0;
