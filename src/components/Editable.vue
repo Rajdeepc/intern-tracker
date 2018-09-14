@@ -2,21 +2,34 @@
 <div class="editableform">
     <div class="formToAdd">
       <h4>Add Your Status For today:</h4>
-       <b-form inline @submit.prevent>
-        <div class="form-group">
-            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="description"/>
+       <b-form @submit.prevent>
+           <div class="form-row">
+
+        <div class="form-group col-md-3 mb-3">
+                <label for="validationCustom01">Status</label>
+
+            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="description" required/>
         </div>
-        <div class="form-group">
-            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="percentage_completion"/>
+        <div class="form-group col-md-3 mb-3">
+                <label for="validationCustom01">Percentage Completed</label>
+
+            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="percentage_completion" required/>
         </div>
-        <div class="form-group">
+        <div class="form-group col-md-3 mb-3">
+                <label for="validationCustom01">Date of Completion</label>
+
             <!-- <b-input class="mb-2 mr-sm-2 mb-sm-0"  type="text" v-model="completed_date"/> -->
             <datepicker></datepicker>
         </div>
          <!-- <div class="form-group">
             Owned By: {{ownedBy}}
         </div> -->
+        <div class="col-md-3 mb-3">
+                <label for="validationCustom01">&nbsp;</label>
+
        <button class="addRowBtn btn btn-primary" @click="addRow()">Add new Row</button>
+       </div>
+       </div>
        </b-form>
     <p v-if="showMessage === true">Data SuccessFully Saved</p>
     </div>
@@ -71,6 +84,9 @@ export default {
   },
   methods: {
     addRow: function() {
+      if(!this.description || !this.percentage_completion || !this.completed_date){
+        return
+      } else {
       DataPostApi.taskDetailsApi(
         this.description,
         this.percentage_completion,
@@ -85,6 +101,7 @@ export default {
           throw error;
         });
     }
+  }
   }
 };
 </script>

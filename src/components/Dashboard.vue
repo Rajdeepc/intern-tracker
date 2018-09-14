@@ -21,7 +21,7 @@ import DataPostApi from "../services/api/loginValidation";
 
 export default {
   name: "Dashboard",
-  props:["manager_name","projectList"],
+  props:["manager_name"],
   data() {
     return {
       projectSelected:this.projectSelectedItem,
@@ -34,12 +34,6 @@ export default {
   },
   components: {
     skills: Skills
-  },
-  computed: {
-    projectSelected: {
-      get(){ return this.value },
-      set(v){ console.log(v); this.$emit('input', v) }
-    }
   },
   methods: {
     showTableToEnterData(e) {
