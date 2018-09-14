@@ -17,7 +17,7 @@ export default {
         })
     },
 
-    projectDetailsApi(description,percentage_completion,completed_date,ownedBy) {
+    taskDetailsApi(description,percentage_completion,completed_date,ownedBy) {
         const body = {
             description:description,
                 percentage_completion:percentage_completion,
@@ -26,6 +26,14 @@ export default {
           };
         const url = "https://demo6727947.mockable.io/task-details";
         return axios.post(url,body)
+        .then(response => {
+            return response.data;
+        })
+    },
+
+    projectDetailsApi() {
+        const url = "https://demo6727947.mockable.io/project-details";
+        return axios.get(url)
         .then(response => {
             return response.data;
         })

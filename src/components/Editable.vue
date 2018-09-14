@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     addRow: function() {
-      DataPostApi.projectDetailsApi(
+      DataPostApi.taskDetailsApi(
         this.description,
         this.percentage_completion,
         this.completed_date,
@@ -84,15 +84,6 @@ export default {
         .catch(error => {
           throw error;
         });
-      //   this.lastId = this.labels.length;
-      //   var newRow = {
-      //     id: this.nextBarId++,
-      //     description: this.description,
-      //     percentage_completion: this.percentage_completion,
-      //     completed_date: this.completed_date
-      //   };
-      //   this.labels.push(newRow);
-      //   alert(JSON.stringify(newRow));
     }
   }
 };

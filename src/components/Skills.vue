@@ -6,8 +6,8 @@
      <b-container class="bv-example-row">
            
     <b-row>
-        <b-col>Project:{{projectSelected}} </b-col>
-        <b-col>Manager: </b-col>
+        <b-col>Project:{{projectSelected.project_name}} </b-col>
+        <b-col>Manager:{{projectSelected.manager_name}} </b-col>
         <b-col>Date: {{new Date}} </b-col>
     </b-row>
 </b-container>
@@ -27,8 +27,7 @@ export default {
   props: ["projectSelected"],
   data() {
     return {
-      skill: "",
-      skills: [{ skill: "Vue.js" }, { skill: "FrontEnd Developer" }]
+      
     };
   },
   components: {
@@ -42,19 +41,10 @@ export default {
       },
       immediate: true
     }
+
   },
   methods: {
-    addSkill() {
-      this.$validator.validateAll().then(result => {
-        if (result) {
-          this.skills.push({ skill: this.skill });
-          this.skill = "";
-        }
-      });
-    },
-    remove(id) {
-      this.skills.splice(id, 1);
-    }
+   
   }
 };
 </script>
