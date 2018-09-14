@@ -1,12 +1,15 @@
 <template>
     <div class="dashboard">
         <h1>Dashboard Page</h1>
-            <div>
-            <b-dropdown id="ddown1" text="Select Your Project" class="m-md-2">
-                <b-dropdown-item v-on:click="showTableToEnterData()" v-for="(data,index) in projectList" :key='index'>{{ data.projectName }}</b-dropdown-item>
-            </b-dropdown>
+            <div class="selectProject">
+            <select v-model="projectSelected" @change="showTableToEnterData()">
+            <option disabled value="">Please select one</option>
+            <option :value="data.projectName" v-for="(data,index) in projectList" :key='index'>
+                {{ data.projectName }}
+            </option>
+            </select>
             </div>
-        <skills v-if="skillTemplateShow === true"></skills>
+            <skills v-if="skillTemplateShow === true" :projectSelected="projectSelected"></skills>
     </div>
 </template>
 
@@ -16,19 +19,21 @@ import Skills from "./Skills.vue";
 export default {
   name: "Dashboard",
   data() {
-      return {
+    return {
+        projectSelected:'',
       skillTemplateShow: false,
       projectName: "",
       projectList: [{ projectName: "HPE" }, { projectName: "TWIA" }]
-      }
+    };
   },
   components: {
-    'skills': Skills,
-},
+    skills: Skills
+  },
   methods: {
-      showTableToEnterData(){
-          this.skillTemplateShow = true;
-      }
+    showTableToEnterData() {
+      this.skillTemplateShow = true;
+      console.log(this.projectSelected);
+    }
   }
 };
 </script>

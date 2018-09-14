@@ -1,13 +1,17 @@
 <template>
   <div class="hello">
    <div class="holder">
+       <h4>Project Details:</h4>
+     <b-card>
      <b-container class="bv-example-row">
+           
     <b-row>
-        <b-col>Project: </b-col>
+        <b-col>Project:{{projectSelected}} </b-col>
         <b-col>Manager: </b-col>
-        <b-col>Date: <datepicker></datepicker> </b-col>
+        <b-col>Date: {{new Date}} </b-col>
     </b-row>
 </b-container>
+     </b-card>
 <br>
 <Chatpanel />
 </div>
@@ -15,11 +19,12 @@
 </template>
 
 <script>
-import Datepicker from 'vuejs-datepicker';
-import Chatpanel from './Editable.vue';
+import Datepicker from "vuejs-datepicker";
+import Chatpanel from "./Editable.vue";
 
 export default {
   name: "Skills",
+  props: ["projectSelected"],
   data() {
     return {
       skill: "",
@@ -30,13 +35,21 @@ export default {
     Datepicker,
     Chatpanel
   },
+  watch: {
+    projectSelected: {
+      handler: function(projectSelected) {
+        console.log(projectSelected);
+      },
+      immediate: true
+    }
+  },
   methods: {
     addSkill() {
       this.$validator.validateAll().then(result => {
         if (result) {
           this.skills.push({ skill: this.skill });
           this.skill = "";
-        } 
+        }
       });
     },
     remove(id) {
@@ -50,5 +63,4 @@ export default {
 <style scoped>
 @import "https://cdn.jsdelivr.net/npm/animate.css@3.5.1";
 @import "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css";
-
 </style>
