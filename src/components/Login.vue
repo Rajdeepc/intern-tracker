@@ -1,6 +1,6 @@
 <template>
     <div class="loginForm">
-        <form class="form-horizontal" @submit="validateForm">
+        <form class="form-horizontal" @submit="validateForm" @reset="resetForm">
           <p v-if="errors.length">
             <b>Please fix the following errors</b>
             <ul>
@@ -17,7 +17,7 @@
             </div>
             <div class="form-group">
               <input type="submit" value="submit"  class="btn btn-primary" >
-               <input type="reset" value="Cancel" class="btn btn-danger">
+               <input type="reset" value="Reset" class="btn btn-danger">
             </div>
         </form>
     </div>
@@ -63,6 +63,12 @@ export default {
         this.errors.push('Please type a password');
       }
       e.preventDefault();
+    },
+
+    resetForm: function(e) {
+      e.preventDefault();
+      this.email = '';
+      this.password = '';
     },
     callToValidateLogin: function(username,password) {
        DataPostApi.validateLogin(username,password)
