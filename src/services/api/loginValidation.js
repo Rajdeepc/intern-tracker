@@ -17,14 +17,14 @@ export default {
         })
     },
 
-    taskDetailsApi(description,percentage_completion,completed_date,ownedBy) {
+    taskSaveApi(description,percentage_completion,completed_date,ownedBy) {
         const body = {
             description:description,
                 percentage_completion:percentage_completion,
                 completed_date:completed_date,
                 ownedBy:ownedBy
           };
-        const url = "https://demo6727947.mockable.io/task-details";
+        const url = "http://localhost:3000/addname";
         return axios.post(url,body)
         .then(response => {
             return response.data;

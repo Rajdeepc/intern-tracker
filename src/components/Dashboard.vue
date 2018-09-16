@@ -1,6 +1,7 @@
 <template>
     <div class="dashboard">
         <h1>Dashboard Page</h1>
+        <p>Hi {{getUsername}},<p>
             <div class="selectProject">
             <select v-model="projectSelected" @change="showTableToEnterData()">
             <option disabled value="">Please select one project</option>
@@ -10,13 +11,14 @@
             </select>
             </div>
               <br>
-            <skills v-if="skillTemplateShow === true" :projectSelected="projectSelected"></skills>
+            <add-status v-if="skillTemplateShow === true" :projectSelected="projectSelected"></add-status>
+            
     </div>
 </template>
 
 
 <script>
-import Skills from "./Skills.vue";
+import AddStatus from "./AddStatus.vue";
 import DataPostApi from "../services/api/loginValidation";
 
 export default {
@@ -26,14 +28,17 @@ export default {
     return {
       projectSelected:this.projectSelectedItem,
       skillTemplateShow: false,
-      projectList: []
+      projectList: [],
+      getUsername:''
     };
   },
   mounted(){
-    this.init()
+    this.init();
+    this.getUsername = this.$route.params.username;
+
   },
   components: {
-    skills: Skills
+    addStatus: AddStatus
   },
   methods: {
     showTableToEnterData(e) {

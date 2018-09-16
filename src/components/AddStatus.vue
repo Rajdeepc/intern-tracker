@@ -1,5 +1,15 @@
 <template>
 <div class="editableform">
+     <h4>Project Details:</h4>
+     <b-card>
+     <b-container class="bv-example-row">
+    <b-row>
+        <b-col>Project:{{projectSelected.project_name}} </b-col>
+        <b-col>Manager:{{projectSelected.manager_name}} </b-col>
+        <b-col>Date: {{new Date}} </b-col>
+    </b-row>
+  </b-container>
+     </b-card>
     <div class="formToAdd">
       <h4>Add Your Status For today:</h4>
        <b-form @submit.prevent>
@@ -19,11 +29,11 @@
                 <label for="validationCustom01">Date of Completion</label>
 
             <!-- <b-input class="mb-2 mr-sm-2 mb-sm-0"  type="text" v-model="completed_date"/> -->
-            <datepicker></datepicker>
+            <datepicker v-model="completed_date"></datepicker>
         </div>
-         <!-- <div class="form-group">
-            Owned By: {{ownedBy}}
-        </div> -->
+         <div class="form-group">
+            Owned By:
+        </div>
         <div class="col-md-3 mb-3">
                 <label for="validationCustom01">&nbsp;</label>
 
@@ -65,8 +75,8 @@ import Datepicker from 'vuejs-datepicker';
 import DataPostApi from "../services/api/loginValidation";
 
 export default {
-  name: "Chatpanel",
-  props: ["proplabels"],
+  name: "AddStatus",
+  props: ["proplabels","projectSelected"],
   data() {
     return {
       showAllStatus:[],
@@ -79,15 +89,24 @@ export default {
       lastId: 0
     };
   },
+    watch: {
+    projectSelected: {
+      handler: function(projectSelected) {
+        console.log(projectSelected);
+      },
+      immediate: true
+    }
+
+  },
   components:{
     Datepicker
   },
   methods: {
     addRow: function() {
-      if(!this.description || !this.percentage_completion || !this.completed_date){
-        return
+      if(!this.description || !this.percentage_completion){
+        return false;
       } else {
-      DataPostApi.taskDetailsApi(
+      DataPostApi.taskSaveApi(
         this.description,
         this.percentage_completion,
         this.completed_date,
