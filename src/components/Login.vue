@@ -1,5 +1,10 @@
 <template>
-    <div class="loginForm">
+<b-card  bg-variant="light" text-variant="black"  border-variant="primary"
+            header="Login"
+            header-bg-variant="primary"
+            header-text-variant="white"
+            style="max-width: 30rem;margin:0 auto;"
+            >
         <form class="form-horizontal" @submit="validateForm" @reset="resetForm">
           <p v-if="errors.length">
             <b>Please fix the following errors</b>
@@ -16,11 +21,11 @@
                 <input class="form-control" type="password" name="password"  v-model="password" id="" placeholder="Type your password..">
             </div>
             <div class="form-group">
-              <input type="submit" value="submit"  class="btn btn-primary" >
+              <input type="submit" value="submit"  class="btn btn-primary" >&nbsp;&nbsp;
                <input type="reset" value="Reset" class="btn btn-danger">
             </div>
         </form>
-    </div>
+</b-card>
 </template>
 
 

@@ -6,10 +6,11 @@
     <b-row>
         <b-col>Project:{{projectSelected.project_name}} </b-col>
         <b-col>Manager:{{projectSelected.manager_name}} </b-col>
-        <b-col>Date: {{new Date}} </b-col>
+        <b-col>Date: {{getTodayDate()}} </b-col>
     </b-row>
   </b-container>
      </b-card>
+     <br>
     <div class="formToAdd">
       <h4>Add Your Status For today:</h4>
        <b-form @submit.prevent>
@@ -83,8 +84,12 @@ export default {
       completed_date: "",
       ownedBy:this.getUsername,
       nextBarId: 1,
-      lastId: 0
+      lastId: 0,
     };
+  },
+  mounted(){
+    getTodayDate();
+    console.log(getTodayDate());
   },
     watch: {
     projectSelected: {
@@ -96,6 +101,14 @@ export default {
 
   },
   methods: {
+    getTodayDate: function(){
+      let newDate = new Date();
+      let mm = newDate.getMonth() + 1;
+      let dd = newDate.getDate();
+      let yyyy = newDate.getFullYear();
+      let date = mm + "/" + dd + "/" + yyyy;
+      return date;
+},
     addRow: function() {
       if(!this.description || !this.percentage_completion){
         return false;
