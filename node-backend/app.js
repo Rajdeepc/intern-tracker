@@ -46,10 +46,18 @@ var nameSchema = new mongoose.Schema({
     ownedBy: String
 });
 
+
+var projectSchema = new mongoose.Schema({
+    project_name: String,
+    manager_name: String,
+    no_of_members: Number,
+    member_names: Array
+});
 /**define model */
 
 var User = mongoose.model("DataInput", nameSchema);
 
+var ProjectData = mongoose.model("project_data", projectSchema);
 
 
 /**saving data */
@@ -67,9 +75,17 @@ app.post("/addname", (req, res) => {
 
 /**retrievinf data */
 
-app.get('/getstatus', (req,res,next)=>{
+app.get('/addname', (req,res,next)=>{
     User.find(function(err,items){
         // Sending to client in json format
-        res.json(items); 
+        res.json({created_date:created_date},items); 
+    });
+});
+
+/** get project details data */
+app.get('/getprojectdata', (req,res,next)=>{
+    ProjectData.find(function(err,getAlldataProject){
+        // Sending to client in json format
+        res.json(getAlldataProject); 
     });
 });
