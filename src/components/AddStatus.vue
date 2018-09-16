@@ -13,29 +13,30 @@
      <br>
     <div class="formToAdd">
       <h4>Add Your Status For today:</h4>
-       <b-form @submit.prevent>
+       <b-form @submit.prevent action="/insert" method="post">
            <div class="form-row">
 
         <div class="form-group col-md-3 mb-3">
                 <label for="validationCustom01">Status</label>
 
-            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="description" required/>
+            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="description" name="description" required/>
         </div>
         <div class="form-group col-md-3 mb-3">
                 <label for="validationCustom01">Percentage Completed</label>
 
-            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="percentage_completion" required/>
+            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="percentage_completion" rname="percentage_completion" equired/>
         </div>
         <div class="form-group col-md-3 mb-3">
                 <label for="validationCustom01">Date of Completion</label>
 
-            <b-input class="mb-2 mr-sm-2 mb-sm-0"  type="date" v-model="completed_date"/>
+            <b-input class="mb-2 mr-sm-2 mb-sm-0"  type="date" v-model="completed_date" name="completed_date"/>
         </div>
          <div class="form-group col-md-3 mb-3">
                 <label for="validationCustom01">Owned By</label>
-              <b-input class="mb-2 mr-sm-2 mb-sm-0"  type="text" v-model="ownedBy" value="" readonly=""/>
+              <b-input class="mb-2 mr-sm-2 mb-sm-0"  type="text" v-model="ownedBy" value="" readonly="" name="ownedBy"/>
 
         </div>
+        <input type="hidden" value="" v-model="date_created" name="date_created"/>
         <div class="col-md-3 mb-3">
        <button class="addRowBtn btn btn-primary" @click="addRow()">Add New Status</button>
        </div>
@@ -53,17 +54,19 @@
                 <td>Sl</td>
                 <td>Status For Today</td>
                 <td>Percentage Completed</td>
+                <td>Date Created</td>
                 <td>Date To Be Completed</td>
                 <td>Owned By</td>
                 </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(status,index) in showAllStatus" :key='index'>
+                    <tr v-for="(item,index) in items" :key='index'>
                        <td>{{index + 1}}</td>
-                        <td>{{status.description}}</td>
-                         <td>{{status.percentage_completion}}</td>
-                          <td>{{status.completed_date}}</td>
-                          <td>{{status.ownedBy}}</td>
+                        <td>{{item.description}}</td>
+                         <td>{{item.percentage_completion}}</td>
+                          <td>{{item.date_created}}</td>
+                          <td>{{item.completed_date}}</td>
+                          <td>{{item.ownedBy}}</td>
                         </tr>
                     </tbody>
             </table>
@@ -83,13 +86,10 @@ export default {
       percentage_completion: 0,
       completed_date: "",
       ownedBy:this.getUsername,
+      date_created:this.getTodayDate(),
       nextBarId: 1,
       lastId: 0,
     };
-  },
-  mounted(){
-    getTodayDate();
-    console.log(getTodayDate());
   },
     watch: {
     projectSelected: {
@@ -117,7 +117,8 @@ export default {
         this.description,
         this.percentage_completion,
         this.completed_date,
-        this.ownedBy
+        this.ownedBy,
+        this.date_created
       )
         .then(response => {
             this.showAllStatus = response.data;

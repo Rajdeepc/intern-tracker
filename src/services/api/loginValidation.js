@@ -17,12 +17,13 @@ export default {
         })
     },
 
-    taskSaveApi(description,percentage_completion,completed_date,ownedBy) {
+    taskSaveApi(description,percentage_completion,completed_date,ownedBy,date_created) {
         const body = {
-            description:description,
+                description:description,
                 percentage_completion:percentage_completion,
                 completed_date:completed_date,
-                ownedBy:ownedBy
+                ownedBy:ownedBy,
+                date_created:date_created
           };
         const url = "http://localhost:3000/addname";
         return axios.post(url,body)
