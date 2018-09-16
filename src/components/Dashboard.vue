@@ -11,7 +11,8 @@
             </select>
             </div>
               <br>
-            <add-status v-if="skillTemplateShow === true" :projectSelected="projectSelected"></add-status>
+              <!-- add status for today component -->
+            <AddStatus v-if="skillTemplateShow === true" :projectSelected="projectSelected" :getUsername="getUsername"></AddStatus>
             
     </div>
 </template>
@@ -23,7 +24,7 @@ import DataPostApi from "../services/api/loginValidation";
 
 export default {
   name: "Dashboard",
-  props:["manager_name"],
+  props:[],
   data() {
     return {
       projectSelected:this.projectSelectedItem,
@@ -38,7 +39,7 @@ export default {
 
   },
   components: {
-    addStatus: AddStatus
+    AddStatus: AddStatus
   },
   methods: {
     showTableToEnterData(e) {

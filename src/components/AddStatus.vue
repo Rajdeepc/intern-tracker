@@ -28,16 +28,15 @@
         <div class="form-group col-md-3 mb-3">
                 <label for="validationCustom01">Date of Completion</label>
 
-            <!-- <b-input class="mb-2 mr-sm-2 mb-sm-0"  type="text" v-model="completed_date"/> -->
-            <datepicker v-model="completed_date"></datepicker>
+            <b-input class="mb-2 mr-sm-2 mb-sm-0"  type="date" v-model="completed_date"/>
         </div>
-         <div class="form-group">
-            Owned By:
+         <div class="form-group col-md-3 mb-3">
+                <label for="validationCustom01">Owned By</label>
+              <b-input class="mb-2 mr-sm-2 mb-sm-0"  type="text" v-model="ownedBy" value="" readonly=""/>
+
         </div>
         <div class="col-md-3 mb-3">
-                <label for="validationCustom01">&nbsp;</label>
-
-       <button class="addRowBtn btn btn-primary" @click="addRow()">Add new Row</button>
+       <button class="addRowBtn btn btn-primary" @click="addRow()">Add New Status</button>
        </div>
        </div>
        </b-form>
@@ -71,12 +70,10 @@
 </div>
  </template>
 <script>
-import Datepicker from 'vuejs-datepicker';
 import DataPostApi from "../services/api/loginValidation";
-
 export default {
   name: "AddStatus",
-  props: ["proplabels","projectSelected"],
+  props: ["projectSelected","getUsername"],
   data() {
     return {
       showAllStatus:[],
@@ -84,7 +81,7 @@ export default {
       description: "",
       percentage_completion: 0,
       completed_date: "",
-      ownedBy:'',
+      ownedBy:this.getUsername,
       nextBarId: 1,
       lastId: 0
     };
@@ -97,9 +94,6 @@ export default {
       immediate: true
     }
 
-  },
-  components:{
-    Datepicker
   },
   methods: {
     addRow: function() {
