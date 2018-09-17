@@ -33,10 +33,11 @@ export default {
     },
 
     projectDetailsApi() {
-        const url = "https://demo6727947.mockable.io/project-details";
+        const url = "http://localhost:3000/getprojectdata";
         return axios.get(url)
         .then(response => {
-            return response.data;
+            console.log(response);
+            return response;
         })
     },
 

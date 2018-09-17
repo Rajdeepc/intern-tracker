@@ -47,7 +47,7 @@ export default {
     },
     init(){
       DataPostApi.projectDetailsApi()
-    .then(response => {
+      .then(response => {
         this.projectList = response.data;
         console.log(this.projectList);
     }).catch(error => {

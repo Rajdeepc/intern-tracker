@@ -54,11 +54,11 @@ var projectSchema = new mongoose.Schema({
     no_of_members: Number,
     member_names: Array
 });
-/**define model */
+
 
 var User = mongoose.model("DataInput", nameSchema);
 
-var ProjectData = mongoose.model("projectdata", projectSchema);
+var ProjectData = mongoose.model("projectdata", projectSchema,"projectdata");
 
 
 /**saving status data*/
@@ -96,7 +96,6 @@ app.get('/getallData', (req,res)=>{
 /** get project details data */
 app.get('/getprojectdata', (req,res)=>{
     ProjectData.find(function(err,items){
-        // Sending to client in json format
         console.log(err);
         res.json(items); 
     });
