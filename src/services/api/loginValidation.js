@@ -10,20 +10,21 @@ export default {
             username: username,
             password: password
           };
-        const url = "http://demo6727947.mockable.io/loginValidation";
+        const url = "http://localhost:3000/login";
         return axios.post(url,body)
         .then(response => {
             return response.data;
         })
     },
 
-    taskSaveApi(description,percentage_completion,completed_date,ownedBy,date_created) {
+    taskSaveApi(description,percentage_completion,completed_date,ownedBy,date_created,project_name) {
         const body = {
                 description:description,
                 percentage_completion:percentage_completion,
                 completed_date:completed_date,
                 ownedBy:ownedBy,
-                date_created:date_created
+                date_created:date_created,
+                project_name:project_name
           };
         const url = "http://localhost:3000/addname";
         return axios.post(url,body)
@@ -43,8 +44,8 @@ export default {
     },
 
     /** get status by date on load**/
-    getStatusbyDate() {
-        const url = "http://localhost:3000/getallData";
+    getStatusbyDate(project_name) {
+        const url = `http://localhost:3000/getallData/${project_name}`;
         return axios.get(url)
         .then(response => {
             return response;

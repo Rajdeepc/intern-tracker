@@ -78,7 +78,8 @@ export default {
     callToValidateLogin: function(username,password) {
        DataPostApi.validateLogin(username,password)
       .then(response => {
-        if(response.isLoginSuccess === true) {
+        if(response.saved === true) {
+          this.$session.set('username', username);
           this.$router.push({ name: "dashboard", params: {username: username } });
         } else {
            this.errors.push('Invalid Credentials');

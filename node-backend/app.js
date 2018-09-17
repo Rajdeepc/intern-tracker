@@ -45,7 +45,7 @@ var nameSchema = new mongoose.Schema({
     completed_date: String,
     ownedBy: String,
     date_created:String,
-    projectname:String
+    project_name:String
 });
 
 
@@ -56,10 +56,17 @@ var projectSchema = new mongoose.Schema({
     member_names: Array
 });
 
+var loginSchema = new mongoose.Schema({
+    username: String,
+    date_created:String
+});
+
 
 var User = mongoose.model("DataInput", nameSchema);
 
 var ProjectData = mongoose.model("projectdata", projectSchema,"projectdata");
+
+var LoginData = mongoose.model("logindata", loginSchema);
 
 
 /**saving status data*/
@@ -73,12 +80,22 @@ function getTodayDate(){
 }
 app.post("/addname", (req, res) => {
     var myData = new User(req.body);
+    let project_name = req.body.project_name;
     myData.save()
         .then(item => {
-            User.find({ date_created: getTodayDate()},(err,items) => {
-                console.log(err);
-                res.json(items);
-            })
+            res.json({saved:true});
+        })
+        .catch(err => {
+            res.status(400).json({ save: false })
+        });
+});
+
+/**saving to db login credentials */
+app.post("/login", (req, res) => {
+    var newData = new LoginData(req.body);
+    newData.save()
+        .then(item => {
+            res.status(200).json({ saved: true})
         })
         .catch(err => {
             res.status(400).json({ save: false })
@@ -87,9 +104,9 @@ app.post("/addname", (req, res) => {
 
 /**retrieving data */
 
-app.get('/getallData/:projectname', (req,res)=>{
-    let projectname = req.params.projectname;
-    User.find({ date_created: getTodayDate()},(err,items) => {
+app.get('/getallData/:project_name', (req,res)=>{
+    let project_name = req.params.project_name;
+    User.find({ date_created: getTodayDate(),project_name:project_name},(err,items) => {
         console.log(err);
         res.json(items);
     })
@@ -98,7 +115,7 @@ app.get('/getallData/:projectname', (req,res)=>{
 /** get project details data */
 app.get('/getprojectdata/:username', (req,res)=>{
     let username = req.params.username;
-    ProjectData.find({ "member_names.username": username}, function(err,items){
+    ProjectData.find({ "member_names.name": username}, function(err,items){
         console.log(err);
         res.json(items); 
     });

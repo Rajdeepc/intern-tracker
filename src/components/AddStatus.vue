@@ -128,19 +128,22 @@ export default {
         this.percentage_completion,
         this.completed_date,
         this.ownedBy,
-        this.date_created
+        this.date_created,
+        this.projectSelected.project_name
       )
         .then(response => {
-            this.showAllStatus = response;
-            console.log(this.showAllStatus);
+           if(response.saved === true){
+             this.getAllStatusToday();
+           }
         })
         .catch(error => {
           throw error;
         });
     }
   },
+  /**to get all status */
   getAllStatusToday: function(){
-    DataPostApi.getStatusbyDate()
+    DataPostApi.getStatusbyDate(this.projectSelected.project_name)
     .then(response => {
       this.showAllStatus = response.data;
       console.log('Show all status data' + JSON.stringify(this.showAllStatus));
