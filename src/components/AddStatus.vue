@@ -46,7 +46,7 @@
     </div>
    <br>
     <!-- show the messages added -->
-   <h4>Status for Today:</h4>
+   <h4>Status for Today:</h4><p><span>Members Submitted: </span><span>{{ countSubmitted }}</span> / <span>{{ countTotal }} </span><p>
     <div class="showstatus">
         <table class="table table-striped">
             <thead>
@@ -70,8 +70,12 @@
                         </tr>
                     </tbody>
             </table>
-            </div>
+       </div>
+       <div class="row text-right">
+         <button class="btn btn-primary" v-if="countSubmitted === countTotal" @click="sendmail()">Send Email</button>
+    </div>
 </div>
+
  </template>
 <script>
 import DataPostApi from "../services/api/loginValidation";
@@ -80,6 +84,8 @@ export default {
   props: ["projectSelected","getUsername"],
   data() {
     return {
+      countSubmitted:0,
+      countTotal:this.projectSelected.no_of_members,
       showAllStatus:[],
       showMessage: false,
       description: "",
@@ -137,9 +143,36 @@ export default {
     DataPostApi.getStatusbyDate()
     .then(response => {
       this.showAllStatus = response.data;
-      console.log(this.showAllStatus);
+      console.log('Show all status data' + JSON.stringify(this.showAllStatus));
+      this.findUniqueOwner();
     })
-  }
+  },
+  sendmail: function() {
+    DataPostApi.sendStatusMail().then(response => {
+
+    })
+  },
+    /**
+   * find unique element from owner
+   */
+    getUniqueElement: function(newArr){
+      let unique = newArr.filter(function(item, i, ar){ return ar.indexOf(item) === i; });
+      return unique;
+    },
+    findUniqueOwner:function(){
+        let showAllstatus = this.showAllStatus;
+        let tempArr = [];
+        showAllstatus.map((item) => {
+          tempArr.push(item.ownedBy);
+        });
+        let uniqueOwnerCount = this.getUniqueElement(tempArr);
+        if(uniqueOwnerCount){
+        this.countSubmitted = uniqueOwnerCount.length;
+        }
+        console.log(this.countSubmitted);
+    }
+
+
   }
 };
 </script>

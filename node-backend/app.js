@@ -44,7 +44,8 @@ var nameSchema = new mongoose.Schema({
     percentage_completion: Number,
     completed_date: String,
     ownedBy: String,
-    date_created:String
+    date_created:String,
+    projectname:String
 });
 
 
@@ -86,7 +87,8 @@ app.post("/addname", (req, res) => {
 
 /**retrieving data */
 
-app.get('/getallData', (req,res)=>{
+app.get('/getallData/:projectname', (req,res)=>{
+    let projectname = req.params.projectname;
     User.find({ date_created: getTodayDate()},(err,items) => {
         console.log(err);
         res.json(items);
@@ -94,8 +96,9 @@ app.get('/getallData', (req,res)=>{
 });
 
 /** get project details data */
-app.get('/getprojectdata', (req,res)=>{
-    ProjectData.find(function(err,items){
+app.get('/getprojectdata/:username', (req,res)=>{
+    let username = req.params.username;
+    ProjectData.find({ "member_names.username": username}, function(err,items){
         console.log(err);
         res.json(items); 
     });

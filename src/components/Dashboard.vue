@@ -1,9 +1,18 @@
 <template>
     <div class="dashboard">
-        <h1>Dashboard Page</h1>
-        <p>Hi {{getUsername}},<p>
+       <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+            <div class="container-fluid">
+                <!-- <a class="navbar-brand" href=""></a> -->
+                <!-- <button @click="logout" class="btn float-right">Log Out</button> -->
+            </div>
+        </nav>
+    </div>
+        <h1>Status Submission Page</h1>
+        <br>
+        <p>Welcome <b>{{getUsername}}</b>,<p>
             <div class="selectProject">
-            <select v-model="projectSelected" @change="showTableToEnterData()">
+            Select Your Project: <select v-model="projectSelected" @change="showTableToEnterData()">
             <option disabled value="">Please select one project</option>
             <option :value="status" v-for="(status,index) in projectList" :key='index'>
                 {{ status.project_name }}
@@ -34,8 +43,8 @@ export default {
     };
   },
   mounted(){
-    this.init();
     this.getUsername = this.$route.params.username;
+    this.init();
 
   },
   components: {
@@ -46,7 +55,8 @@ export default {
       this.skillTemplateShow = true;
     },
     init(){
-      DataPostApi.projectDetailsApi()
+      console.log(this.getUsername);
+      DataPostApi.projectDetailsApi(this.getUsername)
       .then(response => {
         this.projectList = response.data;
         console.log(this.projectList);

@@ -32,8 +32,9 @@ export default {
         })
     },
 
-    projectDetailsApi() {
-        const url = "http://localhost:3000/getprojectdata";
+    projectDetailsApi(username) {
+        console.log(username);
+        const url = `http://localhost:3000/getprojectdata/${username}`;
         return axios.get(url)
         .then(response => {
             console.log(response);
@@ -48,6 +49,10 @@ export default {
         .then(response => {
             return response;
         })
+    },
+
+    sendStatusMail() {
+        
     }
 }
 
