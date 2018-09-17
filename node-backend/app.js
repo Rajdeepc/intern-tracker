@@ -42,8 +42,9 @@ app.listen(port, () => {
 var nameSchema = new mongoose.Schema({
     description: String,
     percentage_completion: Number,
-    completed_date: Date,
-    ownedBy: String
+    completed_date: String,
+    ownedBy: String,
+    date_created:String
 });
 
 
@@ -57,35 +58,46 @@ var projectSchema = new mongoose.Schema({
 
 var User = mongoose.model("DataInput", nameSchema);
 
-var ProjectData = mongoose.model("project_data", projectSchema);
+var ProjectData = mongoose.model("projectdata", projectSchema);
 
 
-/**saving data */
-
+/**saving status data*/
+function getTodayDate(){
+    let newDate = new Date();
+    let mm = newDate.getMonth() + 1;
+    let dd = newDate.getDate();
+    let yyyy = newDate.getFullYear();
+    let date = mm + "/" + dd + "/" + yyyy;
+    return date;
+}
 app.post("/addname", (req, res) => {
     var myData = new User(req.body);
     myData.save()
         .then(item => {
-            res.json({ save: true })
+            User.find({ date_created: getTodayDate()},(err,items) => {
+                console.log(err);
+                res.json(items);
+            })
         })
         .catch(err => {
             res.status(400).json({ save: false })
         });
 });
 
-/**retrievinf data */
+/**retrieving data */
 
-app.get('/addname', (req,res,next)=>{
-    User.find(function(err,items){
-        // Sending to client in json format
-        res.json({created_date:created_date},items); 
-    });
+app.get('/getallData', (req,res)=>{
+    User.find({ date_created: getTodayDate()},(err,items) => {
+        console.log(err);
+        res.json(items);
+    })
 });
 
 /** get project details data */
-app.get('/getprojectdata', (req,res,next)=>{
-    ProjectData.find(function(err,getAlldataProject){
+app.get('/getprojectdata', (req,res)=>{
+    ProjectData.find(function(err,items){
         // Sending to client in json format
-        res.json(getAlldataProject); 
+        console.log(err);
+        res.json(items); 
     });
 });

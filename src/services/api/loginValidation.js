@@ -38,7 +38,15 @@ export default {
         .then(response => {
             return response.data;
         })
+    },
+
+    /** get status by date on load**/
+    getStatusbyDate() {
+        const url = "http://localhost:3000/getallData";
+        return axios.get(url)
+        .then(response => {
+            return response;
+        })
     }
-    
 }
 

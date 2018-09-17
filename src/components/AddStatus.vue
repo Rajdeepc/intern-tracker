@@ -6,7 +6,7 @@
     <b-row>
         <b-col>Project:{{projectSelected.project_name}} </b-col>
         <b-col>Manager:{{projectSelected.manager_name}} </b-col>
-        <b-col>Date: {{getTodayDate()}} </b-col>
+        <b-col>Date: {{getTodayDate(new Date())}} </b-col>
     </b-row>
   </b-container>
      </b-card>
@@ -60,13 +60,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item,index) in items" :key='index'>
+                    <tr v-for="(status,index) in showAllStatus" :key='index'>
                        <td>{{index + 1}}</td>
-                        <td>{{item.description}}</td>
-                         <td>{{item.percentage_completion}}</td>
-                          <td>{{item.date_created}}</td>
-                          <td>{{item.completed_date}}</td>
-                          <td>{{item.ownedBy}}</td>
+                        <td>{{status.description}}</td>
+                         <td>{{status.percentage_completion}}</td>
+                          <td>{{status.date_created}}</td>
+                          <td>{{status.completed_date}}</td>
+                          <td>{{status.ownedBy}}</td>
                         </tr>
                     </tbody>
             </table>
@@ -86,10 +86,13 @@ export default {
       percentage_completion: 0,
       completed_date: "",
       ownedBy:this.getUsername,
-      date_created:this.getTodayDate(),
+      date_created:this.getTodayDate(new Date()),
       nextBarId: 1,
       lastId: 0,
     };
+  },
+  mounted() {
+    this.getAllStatusToday();
   },
     watch: {
     projectSelected: {
@@ -101,8 +104,8 @@ export default {
 
   },
   methods: {
-    getTodayDate: function(){
-      let newDate = new Date();
+    getTodayDate: function(dateInput){
+      let newDate = dateInput;
       let mm = newDate.getMonth() + 1;
       let dd = newDate.getDate();
       let yyyy = newDate.getFullYear();
@@ -113,6 +116,7 @@ export default {
       if(!this.description || !this.percentage_completion){
         return false;
       } else {
+        this.completed_date = this.getTodayDate(new Date(this.completed_date));
       DataPostApi.taskSaveApi(
         this.description,
         this.percentage_completion,
@@ -121,13 +125,20 @@ export default {
         this.date_created
       )
         .then(response => {
-            this.showAllStatus = response.data;
+            this.showAllStatus = response;
             console.log(this.showAllStatus);
         })
         .catch(error => {
           throw error;
         });
     }
+  },
+  getAllStatusToday: function(){
+    DataPostApi.getStatusbyDate()
+    .then(response => {
+      this.showAllStatus = response.data;
+      console.log(this.showAllStatus);
+    })
   }
   }
 };
