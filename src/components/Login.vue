@@ -1,6 +1,11 @@
 <template>
-    <div class="loginForm">
-        <form class="form-horizontal" @submit="validateForm">
+<b-card  bg-variant="light" text-variant="black"  border-variant="primary"
+            header="Login"
+            header-bg-variant="primary"
+            header-text-variant="white"
+            style="max-width: 30rem;margin:0 auto;"
+            >
+        <form class="form-horizontal" @submit="validateForm" @reset="resetForm">
           <p v-if="errors.length">
             <b>Please fix the following errors</b>
             <ul>
@@ -16,11 +21,11 @@
                 <input class="form-control" type="password" name="password"  v-model="password" id="" placeholder="Type your password..">
             </div>
             <div class="form-group">
-              <input type="submit" value="submit"  class="btn btn-primary" >
-               <input type="reset" value="Cancel" class="btn btn-danger">
+              <input type="submit" value="submit"  class="btn btn-primary" >&nbsp;&nbsp;
+               <input type="reset" value="Reset" class="btn btn-danger">
             </div>
         </form>
-    </div>
+</b-card>
 </template>
 
 
@@ -64,17 +69,24 @@ export default {
       }
       e.preventDefault();
     },
+
+    resetForm: function(e) {
+      e.preventDefault();
+      this.email = '';
+      this.password = '';
+    },
     callToValidateLogin: function(username,password) {
        DataPostApi.validateLogin(username,password)
       .then(response => {
-        if(response.isLoginSuccess === true) {
-          this.$router.push("/dashboard");
+        if(response.saved === true) {
+          this.$session.set('username', username);
+          this.$router.push({ name: "dashboard", params: {username: username } });
         } else {
            this.errors.push('Invalid Credentials');
         }
       })
       .catch(error => {
-        // console.log("Response from Component" + error);
+        throw error;
       });
     }
   }

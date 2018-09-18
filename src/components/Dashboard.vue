@@ -1,35 +1,69 @@
 <template>
     <div class="dashboard">
-        <h1>Dashboard Page</h1>
-            <div>
-            <b-dropdown id="ddown1" text="Select Your Project" class="m-md-2">
-                <b-dropdown-item v-on:click="showTableToEnterData()" v-for="(data,index) in projectList" :key='index'>{{ data.projectName }}</b-dropdown-item>
-            </b-dropdown>
+       <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+            <div class="container-fluid">
+                <!-- <a class="navbar-brand" href=""></a> -->
+                <!-- <button @click="logout" class="btn float-right">Log Out</button> -->
             </div>
-        <skills v-if="skillTemplateShow === true"></skills>
+        </nav>
+    </div>
+        <h1>Status Submission Page</h1>
+        <br>
+        <p>Welcome <b>{{getUsername}}</b>,<p>
+            <div class="selectProject">
+            Select Your Project: <select v-model="projectSelected" @change="showTableToEnterData()">
+            <option disabled value="">Please select one project</option>
+            <option :value="status" v-for="(status,index) in projectList" :key='index'>
+                {{ status.project_name }}
+            </option>
+            </select>
+            </div>
+              <br>
+              <!-- add status for today component -->
+            <AddStatus v-if="skillTemplateShow === true" :projectSelected="projectSelected" :getUsername="getUsername"></AddStatus>
+            
     </div>
 </template>
 
 
 <script>
-import Skills from "./Skills.vue";
+import AddStatus from "./AddStatus.vue";
+import DataPostApi from "../services/api/loginValidation";
+
 export default {
   name: "Dashboard",
+  props:[],
   data() {
-      return {
+    return {
+      projectSelected:this.projectSelectedItem,
       skillTemplateShow: false,
-      projectName: "",
-      projectList: [{ projectName: "HPE" }, { projectName: "TWIA" }]
-      }
+      projectList: [],
+      getUsername:''
+    };
+  },
+  mounted(){
+    this.getUsername = this.$route.params.username;
+    this.init();
+
   },
   components: {
-    'skills': Skills,
-},
+    AddStatus: AddStatus
+  },
   methods: {
-      showTableToEnterData(){
-          this.skillTemplateShow = true;
-          console.log('I am clicked')
-      }
+    showTableToEnterData(e) {
+      this.skillTemplateShow = true;
+    },
+    init(){
+      console.log(this.getUsername);
+      DataPostApi.projectDetailsApi(this.getUsername)
+      .then(response => {
+        this.projectList = response.data;
+        console.log(this.projectList);
+    }).catch(error => {
+      throw error;
+    })
+    }
   }
 };
 </script>
