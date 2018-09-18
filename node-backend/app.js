@@ -4,7 +4,9 @@ var mongoose = require("mongoose");
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var app = express();
-
+var nodemailer = require('nodemailer');
+var xoauth2 = require('xoauth2');
+var smtpTransport = require('nodemailer-smtp-transport');
 
 
 /**connection string to db */
@@ -60,7 +62,6 @@ var loginSchema = new mongoose.Schema({
     username: String,
     date_created:String
 });
-
 
 var User = mongoose.model("DataInput", nameSchema);
 
@@ -119,4 +120,50 @@ app.get('/getprojectdata/:username', (req,res)=>{
         console.log(err);
         res.json(items); 
     });
+});
+
+
+/**send email */
+app.post("/sendemail", (req, res) => {
+    let to = req.body.to;
+    let htmlbody = req.body.htmlbody;
+// Generate test SMTP service account from ethereal.email
+// Only needed if you don't have a real mail account for testing
+nodemailer.createTestAccount((err, account) => {
+    var transport = nodemailer.createTransport(smtpTransport({
+        service: "Gmail",
+        auth: {
+            xoauth2: xoauth2.createXOAuth2Generator({
+            user: "hpedevelopers@gmail.com", // Your gmail address.
+            clientId: "962313790379-nrolctif9dpprl4t94l4mpa9guiss9aa.apps.googleusercontent.com",
+            clientSecret: "4n-E5Lh1SiwgXqlWFUTUIpGq",
+            refreshToken: "1/KMeEjt5C5NVhVW4nNywnSwbyXbt1HM6cVEbK-rlbDX0F318BqbD9ZxUu79ZoBweR",
+            access_token: "ya29.GlscBmHVxbiCMq1wd-D4yVHZgPl-mBuheFzXvXGelyJL4Fk2yA9yyzJEZCD5gCqcWcEDs14Fv05YthWL7NS-WNXvyVuujNCvNrpvjuYz1_cvNVtdMpk8vJhUjsHk"
+          })
+        }
+      }));
+
+    // setup email data with unicode symbols
+    let mailOptions = {
+        from: 'hpedevelopers@gmail.com', // sender address
+        to: to, // list of receivers
+        subject: 'Test email to send email', // Subject line
+        text: 'Hello world?', // plain text body
+        html: htmlbody // html body
+    };
+
+    // send mail with defined transport object
+    transport.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('Message sent: %s', info.messageId);
+        // Preview only available when sending through an Ethereal account
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        res.status(200).json({sendemail :true});
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    });
+});
+
 });
