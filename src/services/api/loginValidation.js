@@ -52,8 +52,16 @@ export default {
         })
     },
 
-    sendStatusMail() {
-        
-    }
+    sendStatusMail(to,htmlbody) {
+        const body = {
+            to:to,
+            htmlbody:htmlbody
+      };
+    const url = "http://localhost:3000/sendemail";
+    return axios.post(url,body)
+    .then(response => {
+        return response.data;
+    })
+}
 }
 

@@ -74,6 +74,8 @@
         <div class="row text-right">
           <button class="btn btn-primary" v-if="countSubmitted === countTotal" @click="sendmail()">Send Email</button>
         </div>
+        <p v-if="this.emailsenttext === true">Email successfully sent</p>
+  
   </div>
 </template>
 
@@ -84,6 +86,7 @@
     props: ["projectSelected", "getUsername"],
     data() {
       return {
+        emailsenttext: false,
         countSubmitted: 0,
         countTotal: this.projectSelected.no_of_members,
         showAllStatus: [],
@@ -179,7 +182,32 @@
         this.completed_date = this.getDateYYYYMMDD(new Date());
       },
       sendmail: function() {
-        DataPostApi.sendStatusMail().then(response => {});
+        let to = "rajrock38@gmail.com";
+        let body = `<table class="table table-striped">
+              <thead>
+                <tr class="text-center">
+                  <td>Sl</td>
+                  <td>Status For Today</td>
+                  <td>Percentage Completed</td>
+                  <td>Date To Be Completed</td>
+                  <td>Owned By</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="text-center">
+                  <td>1</td>
+                  <td>${this.showAllStatus[0].description}</td>
+                  <td>${this.showAllStatus[0].percentage_completion}</td>
+                  <td>${this.showAllStatus[0].completed_date}</td>
+                  <td>${this.showAllStatus[0].ownedBy}</td>
+                </tr>
+              </tbody>
+            </table>`;
+        DataPostApi.sendStatusMail(to, body).then(response => {
+          if (response.sendemail === true) {
+            this.emailsenttext = true;
+          }
+        });
       },
       /**
        * find unique element from owner
