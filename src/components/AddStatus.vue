@@ -19,17 +19,17 @@
         <div class="form-group col-md-3 mb-3">
                 <label for="validationCustom01">Status</label>
 
-            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="description" name="description" required/>
+            <b-textarea class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="description" name="description" cols="10" style="resize: none;" required/>
         </div>
         <div class="form-group col-md-3 mb-3">
                 <label for="validationCustom01">Percentage Completed</label>
 
-            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="percentage_completion" rname="percentage_completion" equired/>
+            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="percentage_completion" name="percentage_completion" required/>
         </div>
         <div class="form-group col-md-3 mb-3">
                 <label for="validationCustom01">Date of Completion</label>
 
-            <b-input class="mb-2 mr-sm-2 mb-sm-0"  type="date" v-model="completed_date" name="completed_date"/>
+            <b-input class="mb-2 mr-sm-2 mb-sm-0"  type="date" v-model="completed_date" name="completed_date" id="completed_date"/>
         </div>
          <div class="form-group col-md-3 mb-3">
                 <label for="validationCustom01">Owned By</label>
@@ -54,7 +54,6 @@
                 <td>Sl</td>
                 <td>Status For Today</td>
                 <td>Percentage Completed</td>
-                <td>Date Created</td>
                 <td>Date To Be Completed</td>
                 <td>Owned By</td>
                 </tr>
@@ -64,7 +63,6 @@
                        <td>{{index + 1}}</td>
                         <td>{{status.description}}</td>
                          <td>{{status.percentage_completion}}</td>
-                          <td>{{status.date_created}}</td>
                           <td>{{status.completed_date}}</td>
                           <td>{{status.ownedBy}}</td>
                         </tr>
@@ -99,6 +97,7 @@ export default {
   },
   mounted() {
     this.getAllStatusToday();
+    this.setMaxDateToday();
   },
     watch: {
     projectSelected: {
@@ -149,6 +148,21 @@ export default {
       console.log('Show all status data' + JSON.stringify(this.showAllStatus));
       this.findUniqueOwner();
     })
+  },
+  setMaxDateToday: function() {
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+    if(dd<10){
+            dd='0'+dd
+        } 
+        if(mm<10){
+            mm='0'+mm
+        } 
+
+    today = yyyy+'-'+mm+'-'+dd;
+    document.getElementById("completed_date").setAttribute("min", today);
   },
   sendmail: function() {
     DataPostApi.sendStatusMail().then(response => {
