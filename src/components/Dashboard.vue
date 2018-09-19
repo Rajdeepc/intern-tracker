@@ -1,36 +1,41 @@
 <template>
   <div class="dashboard">
     <b-navbar type="dark" variant="info" fixed="top">
-  <h4>Submit Your Status</h4>
+      <h4>Submit Your Status</h4>
+              <b-btn v-b-modal.modallg variant="primary">Admin</b-btn>
+
       <b-button @click="clearSessionLogout">Logout</b-button>
     </b-navbar>
     <div class="container">
       <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-              <div class="container-fluid">
-              </div>
-          </nav> -->
+                  <div class="container-fluid">
+                  </div>
+              </nav> -->
   
       <br>
       <p>Welcome <b>{{getUsername}}</b>,
         <p>
           <div class="selectProject">
             Select Your Project: <select v-model="projectSelected" @change="showTableToEnterData()">
-              <option disabled value="">Please select one project</option>
-              <option :value="status" v-for="(status,index) in projectList" :key='index'>
-                  {{ status.project_name }}
-              </option>
-              </select>
+                  <option disabled value="">Please select one project</option>
+                  <option :value="status" v-for="(status,index) in projectList" :key='index'>
+                      {{ status.project_name }}
+                  </option>
+                  </select>
           </div>
           <br>
           <!-- add status for today component -->
           <AddStatus v-if="skillTemplateShow === true" :projectSelected="projectSelected" :getUsername="getUsername"></AddStatus>
     </div>
+           <AdminPanel></AdminPanel>
+
   </div>
 </template>
 
 
 <script>
   import AddStatus from "./AddStatus.vue";
+  import AdminPanel from "./AdminPanel.vue";
   import DataPostApi from "../services/api/loginValidation";
   
   export default {
@@ -50,7 +55,8 @@
   
     },
     components: {
-      AddStatus: AddStatus
+      AddStatus: AddStatus,
+      AdminPanel:AdminPanel
     },
     beforeCreate: function() {
       if (!this.$session.exists('username')) {
