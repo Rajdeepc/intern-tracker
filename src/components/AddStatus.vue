@@ -52,7 +52,7 @@
         <div class="showstatus">
           <table class="table table-striped">
             <thead>
-              <tr class="text-center">
+              <tr class="">
                 <td>Sl</td>
                 <td>Status For Today</td>
                 <td>Percentage Completed</td>
@@ -61,7 +61,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(status,index) in showAllStatus" :key='index' class="text-center">
+              <tr v-for="(status,index) in showAllStatus" :key='index' class="">
                 <td>{{index + 1}}</td>
                 <td>{{status.description}}</td>
                 <td>{{status.percentage_completion}}</td>
@@ -108,6 +108,8 @@
       projectSelected: {
         handler: function(projectSelected) {
           console.log(projectSelected);
+          this.getAllStatusToday();
+          //this.setMaxDateToday();
         },
         immediate: true
       }
@@ -181,6 +183,16 @@
         this.percentage_completion = 0;
         this.completed_date = this.getDateYYYYMMDD(new Date());
       },
+      mapOverAllStatusTosendEmail: function(){
+        let trStr = '';
+        this.showAllStatus.map((item,i) => {
+          trStr += `<tr class="">
+            <td>${i + 1}</td><td style="word-wrap:break-word;word-break:break-all;max-width:100px">${item.description}</td><td>${item.percentage_completion}</td>
+            <td>${item.completed_date}</td><td>${item.ownedBy}</td>
+          </tr>`;
+        })
+        return trStr;
+      },
       sendmail: function() {
         let to = "rajrock38@gmail.com";
         let body = `<table class="table table-striped">
@@ -194,13 +206,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="text-center">
-                  <td>1</td>
-                  <td>${this.showAllStatus[0].description}</td>
-                  <td>${this.showAllStatus[0].percentage_completion}</td>
-                  <td>${this.showAllStatus[0].completed_date}</td>
-                  <td>${this.showAllStatus[0].ownedBy}</td>
-                </tr>
+                
+                ${this.mapOverAllStatusTosendEmail()}
+
               </tbody>
             </table>`;
         DataPostApi.sendStatusMail(to, body).then(response => {
