@@ -5,6 +5,7 @@
             <div class="container-fluid">
                 <!-- <a class="navbar-brand" href=""></a> -->
                 <!-- <button @click="logout" class="btn float-right">Log Out</button> -->
+                <button class="btn float-right" @click="clearSessionLogout">Logout</button>
             </div>
         </nav>
     </div>
@@ -50,6 +51,11 @@ export default {
   components: {
     AddStatus: AddStatus
   },
+   beforeCreate: function () {
+    if (!this.$session.exists('username')) {
+      this.$router.push('/')
+    }
+  },
   methods: {
     showTableToEnterData(e) {
       this.skillTemplateShow = true;
@@ -63,6 +69,10 @@ export default {
     }).catch(error => {
       throw error;
     })
+    },
+     clearSessionLogout: function () {
+      this.$session.remove('username');
+      this.$router.push('/')
     }
   }
 };

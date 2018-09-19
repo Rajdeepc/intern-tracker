@@ -103,6 +103,7 @@
     mounted() {
       this.getAllStatusToday();
       this.setMaxDateToday();
+      console.log("number of memebers" + this.projectSelected.no_of_members);
     },
     watch: {
       projectSelected: {
