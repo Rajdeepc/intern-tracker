@@ -11,16 +11,10 @@
           <label for="exampleInputEmail1">Add Your Project</label>
           <input type="text" class="form-control" id="" v-model="project_name" readonly="" name="ownedBy" aria-describedby="emailHelp">
         </div>
-        <button class="btn btn-primary float-right" @click="addFields()">Add More</button>
+                  <label for="exampleInputEmail1">Add Members</label>
+<button class="btn btn-primary float-right" @click="addFields()">Add More</button>
         <div class="form-group" v-for="(newInput,index) in newInputArray" :key='index'>
-          {{newInput}}
-        </div>
-        <!-- <div class="form-group">
-          <label for="exampleInputPassword1">Add Members</label><span> 
-            
-        </span> -->
-        <div id="content">
-          <input id="wrapper" type="email" class="form-control" placeholder="member email">
+          <input type='text' class='form-control' id='' aria-describedby='emailHelp' placeholder='Enter member email id' v-model="memberArr[index]">
         </div>
   
   </form>
@@ -34,16 +28,15 @@
     props: ["getUsername"],
     data() {
       return {
-        arrayOfinput: ["<input type='text' class='form-control' id='' aria-describedby='emailHelp' placeholder='Enter email id'>"],
-        newInputArray:[]
+        newInputArray:[""],
+        memberArr: [],
+        project_name:''
       };
     },
     mounted() {},
     methods: {
       addFields: function() {
-        this.arrayOfinput.map((item) => {
-          this.newInputArray.push(item);
-        })
+        this.newInputArray.push("");
   
       }
     }
