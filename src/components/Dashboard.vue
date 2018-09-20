@@ -2,16 +2,10 @@
   <div class="dashboard">
     <b-navbar type="dark" variant="info" fixed="top">
       <h4>Submit Your Status</h4>
-              <b-btn v-b-modal.modallg variant="primary">Admin</b-btn>
-
+        <b-btn v-b-modal.modallg variant="primary">Admin</b-btn>
       <b-button @click="clearSessionLogout">Logout</b-button>
     </b-navbar>
     <div class="container">
-      <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-                  <div class="container-fluid">
-                  </div>
-              </nav> -->
-  
       <br>
       <p>Welcome <b>{{getUsername}}</b>,
         <p>
@@ -23,11 +17,18 @@
                   </option>
                   </select>
           </div>
+          <!-- <ul>
+            <p>The previous Occurance where "Sorry..."</p>
+            <p>Count of occurances :{{ occuranceList.length}}</p>
+            <li v-for="(occurance,index) in occuranceList" :key='index'>
+              {{occurance.text}}
+            </li>
+          </ul> -->
           <br>
           <!-- add status for today component -->
           <AddStatus v-if="skillTemplateShow === true" :projectSelected="projectSelected" :getUsername="getUsername"></AddStatus>
     </div>
-           <AdminPanel></AdminPanel>
+           <AdminPanel :getUsername="getUsername"></AdminPanel>
 
   </div>
 </template>
@@ -46,13 +47,20 @@
         projectSelected: this.projectSelectedItem,
         skillTemplateShow: false,
         projectList: [],
+        occuranceList:[],
         getUsername: ''
       };
     },
     mounted() {
       this.getUsername = this.$route.params.username;
       this.init();
-  
+      DataPostApi.getUtterance()
+      .then(response => {
+        this.occuranceList = response.data;
+        console.log("converse list" + JSON.stringify(this.occuranceList));
+      }).catch(error => {
+        throw error;
+      })
     },
     components: {
       AddStatus: AddStatus,

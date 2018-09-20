@@ -63,11 +63,33 @@ var loginSchema = new mongoose.Schema({
     date_created:String
 });
 
+
+var getConverseSchema = new mongoose.Schema({
+    botId:Number,
+    userId: Number,
+    userName:String,
+    recordId:Number,
+    intent:String,
+    Platform:String,
+    sessionId:String,
+    text:String,
+    isConversationCompleted:Boolean,
+    error:String,
+    expiryDate:Date,
+    timestamp:Date
+});
+
+
 var User = mongoose.model("DataInput", nameSchema);
 
 var ProjectData = mongoose.model("projectdata", projectSchema,"projectdata");
 
+var PostProjectData = mongoose.model("projectdata", projectSchema,"projectdata");
+
 var LoginData = mongoose.model("logindata", loginSchema);
+
+var GetConverse = mongoose.model("chatconverse", getConverseSchema,"chatconverse");
+
 
 
 /**saving status data*/
@@ -103,6 +125,18 @@ app.post("/login", (req, res) => {
         });
 });
 
+
+app.post("/postprojectdata", (req, res) => {
+    var newDataPost = new PostProjectData(req.body);
+    newDataPost.save()
+        .then(item => {
+            res.status(200).json({ saved: true})
+        })
+        .catch(err => {
+            res.status(400).json({ save: false })
+        });
+});
+
 /**retrieving data */
 
 app.get('/getallData/:project_name', (req,res)=>{
@@ -123,6 +157,27 @@ app.get('/getprojectdata/:username', (req,res)=>{
 });
 
 
+/** get project details data */
+app.get('/getlogs', (req,res)=>{
+    GetConverse.find({  }, function(err,items){
+        let itemofConverse = getConverseDatabyUtt(items);
+        res.json(itemofConverse); 
+    });
+});
+
+function getConverseDatabyUtt(items){
+    let newArr = [];
+    items.map((item, index) => {
+        if(item.text && item.text.startsWith("Sorry, I didn't understand.")) {
+            newArr.push(index);
+        }
+    });
+    let utteranceArr = [];
+    newArr.map((sorryindex) => {
+        utteranceArr.push(items[sorryindex - 1]);
+    });
+    return utteranceArr;
+}
 /**send email */
 app.post("/sendemail", (req, res) => {
     let to = req.body.to;

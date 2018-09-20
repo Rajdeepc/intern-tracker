@@ -33,6 +33,21 @@ export default {
         })
     },
 
+    projectsaveApi(date_created,ownedBy,project_name,no_of_members,member_names) {
+        const body = {
+                date_created:date_created,
+                project_name:project_name,
+                ownedBy:ownedBy,
+                no_of_members:no_of_members,
+                member_names:member_names
+          };
+        const url = "http://localhost:3000/postprojectdata";
+        return axios.post(url,body)
+        .then(response => {
+            return response.data;
+        })
+    },
+
     projectDetailsApi(username) {
         console.log(username);
         const url = `http://localhost:3000/getprojectdata/${username}`;
@@ -51,6 +66,15 @@ export default {
             return response;
         })
     },
+
+    // getUtterance() {
+    //     const url = "http://localhost:3000/getlogs";
+    //     return axios.get(url)
+    //     .then(response => {
+    //         return response;
+    //     })
+    // },
+
 
     sendStatusMail(to,htmlbody) {
         const body = {
