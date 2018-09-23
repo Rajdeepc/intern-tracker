@@ -2,19 +2,19 @@
   <div>
     <b-modal id="modallg" title="Add Project Details" @ok="handleOk">
       <form @submit.stop.prevent="handleSubmit" method="post">
-        <p>This panel is only visible to TL and Above</p>
+        <p><i>This panel is only visible to TL and Above</i></p>
         <div class="form-group">
-          <label for="exampleInputEmail1">Your Name</label>
+          <label for="exampleInputEmail1">Supervisor Name:</label>
           <input type="text" class="form-control" id="" v-model="getUsername" readonly="" name="ownedBy" aria-describedby="emailHelp">
         </div>
           <div class="form-group">
-          <label for="exampleInputEmail1">Add Your Project</label>
+          <label for="exampleInputEmail1">Add Your Project Name:</label>
           <input type="text" class="form-control" id="" v-model="project_name" name="project_name" aria-describedby="project_name" required>
         </div>
-        <a class="btn btn-primary float-right" @click="addFields()">Add More</a>
+        <label>Your Project Members:</label><a class="btn btn-success float-right" @click="addFields()">Add Members<i class="fa fa-plus"></i></a>
         <div class="form-group" v-for="(newInput,index) in newInputArray" :key='index'>
-          <input type='text' class='form-control' id='' aria-describedby='addmembers' placeholder='Enter member email id' v-model="memberArr[index]">
-          <a v-on:click="removeElement(index);" style="cursor: pointer">Remove</a>
+          <span><input type='text' class='form-control' id='' aria-describedby='addmembers' placeholder='Enter member email id' v-model="memberArr[index]"></span>
+          <span><a v-on:click="removeElement(index);" style="cursor: pointer">Cancel <i class="fa fa-close"></i></a></span>
         </div>
   
   </form>
@@ -58,7 +58,7 @@
       // Prevent modal from closing
       evt.preventDefault()
       if (!this.project_name) {
-        alert('Please enter your name')
+        alert('Please enter your name and project members')
       } else {
         this.handleSubmit()
       }
