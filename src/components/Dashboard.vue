@@ -54,13 +54,13 @@
     mounted() {
       this.getUsername = this.$route.params.username;
       this.init();
-      DataPostApi.getUtterance()
-      .then(response => {
-        this.occuranceList = response.data;
-        console.log("converse list" + JSON.stringify(this.occuranceList));
-      }).catch(error => {
-        throw error;
-      })
+      // DataPostApi.getUtterance()
+      // .then(response => {
+      //   this.occuranceList = response.data;
+      //   console.log("converse list" + JSON.stringify(this.occuranceList));
+      // }).catch(error => {
+      //   throw error;
+      // })
     },
     components: {
       AddStatus: AddStatus,

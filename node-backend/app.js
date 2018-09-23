@@ -53,8 +53,9 @@ var nameSchema = new mongoose.Schema({
 
 var projectSchema = new mongoose.Schema({
     project_name: String,
-    manager_name: String,
+    ownedBy: String,
     no_of_members: Number,
+    date_created: String,
     member_names: Array
 });
 
@@ -64,21 +65,6 @@ var loginSchema = new mongoose.Schema({
 });
 
 
-var getConverseSchema = new mongoose.Schema({
-    botId:Number,
-    userId: Number,
-    userName:String,
-    recordId:Number,
-    intent:String,
-    Platform:String,
-    sessionId:String,
-    text:String,
-    isConversationCompleted:Boolean,
-    error:String,
-    expiryDate:Date,
-    timestamp:Date
-});
-
 
 var User = mongoose.model("DataInput", nameSchema);
 
@@ -87,8 +73,6 @@ var ProjectData = mongoose.model("projectdata", projectSchema,"projectdata");
 var PostProjectData = mongoose.model("projectdata", projectSchema,"projectdata");
 
 var LoginData = mongoose.model("logindata", loginSchema);
-
-var GetConverse = mongoose.model("chatconverse", getConverseSchema,"chatconverse");
 
 
 
@@ -158,26 +142,26 @@ app.get('/getprojectdata/:username', (req,res)=>{
 
 
 /** get project details data */
-app.get('/getlogs', (req,res)=>{
-    GetConverse.find({  }, function(err,items){
-        let itemofConverse = getConverseDatabyUtt(items);
-        res.json(itemofConverse); 
-    });
-});
+// app.get('/getlogs', (req,res)=>{
+//     GetConverse.find({  }, function(err,items){
+//         let itemofConverse = getConverseDatabyUtt(items);
+//         res.json(itemofConverse); 
+//     });
+// });
 
-function getConverseDatabyUtt(items){
-    let newArr = [];
-    items.map((item, index) => {
-        if(item.text && item.text.startsWith("Sorry, I didn't understand.")) {
-            newArr.push(index);
-        }
-    });
-    let utteranceArr = [];
-    newArr.map((sorryindex) => {
-        utteranceArr.push(items[sorryindex - 1]);
-    });
-    return utteranceArr;
-}
+// function getConverseDatabyUtt(items){
+//     let newArr = [];
+//     items.map((item, index) => {
+//         if(item.text && item.text.startsWith("Sorry, I didn't understand.")) {
+//             newArr.push(index);
+//         }
+//     });
+//     let utteranceArr = [];
+//     newArr.map((sorryindex) => {
+//         utteranceArr.push(items[sorryindex - 1]);
+//     });
+//     return utteranceArr;
+// }
 /**send email */
 app.post("/sendemail", (req, res) => {
     let to = req.body.to;
