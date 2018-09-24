@@ -8,7 +8,7 @@ var nodemailer = require('nodemailer');
 var xoauth2 = require('xoauth2');
 var smtpTransport = require('nodemailer-smtp-transport');
 
-
+var statusId = 0;
 /**connection string to db */
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://localhost:27017/nodedemo");
@@ -47,7 +47,8 @@ var nameSchema = new mongoose.Schema({
     completed_date: String,
     ownedBy: String,
     date_created:String,
-    project_name:String
+    project_name:String,
+    statusId:Number
 });
 
 
@@ -86,8 +87,11 @@ function getTodayDate(){
     return date;
 }
 app.post("/addname", (req, res) => {
-    var myData = new User(req.body);
     let project_name = req.body.project_name;
+    statusId++;
+    let newParam = Object.assign({'statusId':statusId} , req.body );
+    var myData = new User(newParam);
+    console.log("myData" + JSON.stringify(myData));
     myData.save()
         .then(item => {
             res.json({saved:true});
@@ -126,7 +130,7 @@ app.post("/postprojectdata", (req, res) => {
 app.get('/getallData/:project_name', (req,res)=>{
     let project_name = req.params.project_name;
     User.find({ date_created: getTodayDate(),project_name:project_name},(err,items) => {
-        console.log(err);
+        //console.log(err);
         res.json(items);
     })
 });
@@ -135,10 +139,20 @@ app.get('/getallData/:project_name', (req,res)=>{
 app.get('/getprojectdata/:username', (req,res)=>{
     let username = req.params.username;
     ProjectData.find({ "member_names": username}, function(err,items){
-        console.log(err);
+       // console.log(err);
         res.json(items); 
     });
 });
+
+/** delete node */
+
+app.get('/getprojectdata/:username', (req,res)=>{
+    ProjectData.find({ "member_names": username}, function(err,items){
+       // console.log(err);
+        res.json(items); 
+    });
+});
+
 
 
 /** get project details data */

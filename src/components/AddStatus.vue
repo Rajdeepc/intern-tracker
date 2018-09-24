@@ -63,12 +63,14 @@
             </thead>
             <tbody>
               <tr v-for="(status,index) in showAllStatus" :key='index' class="">
-                <td>{{index + 1}}</td>
+                <td>{{status.statusId}}</td>
                 <td><input type="text" :readonly="shouldDisable" v-model="status.description"></td>
                 <td>{{status.percentage_completion}}</td>
                 <td>{{status.completed_date}}</td>
                 <td>{{status.ownedBy}}</td>
-                <td><button :disabled="status.ownedBy !== ownedBy" @click="editFields">{{ isEdit ? "Edit" :"Save" }}</button></td>
+                <td><button :disabled="status.ownedBy !== ownedBy" @click="editFields">{{ isEdit ? "Edit" :"Save" }}</button>
+                <button @click="deleteRecord">Delete</button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -120,6 +122,9 @@
       }
     },
     methods: {
+      deleteRecord: function(index){
+        this.showAllStatus.splice(index, 1);
+      },
       editFields:function(){
        this.isEdit = !this.isEdit;
         if(this.isEdit) {

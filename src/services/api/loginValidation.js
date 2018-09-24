@@ -16,8 +16,10 @@ export default {
             return response.data;
         })
     },
-
+        /** Save status to db */
+    
     taskSaveApi(description,percentage_completion,completed_date,ownedBy,date_created,project_name) {
+       this.statusId ++ ;
         const body = {
                 description:description,
                 percentage_completion:percentage_completion,
@@ -32,6 +34,7 @@ export default {
             return response.data;
         })
     },
+        /** Add Project to db by admin */
 
     projectsaveApi(date_created,ownedBy,project_name,no_of_members,member_names) {
         const body = {
