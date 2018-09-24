@@ -58,15 +58,17 @@
                 <td>Percentage Completed</td>
                 <td>Date To Be Completed</td>
                 <td>Owned By</td>
+                <td>&nbsp;</td>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(status,index) in showAllStatus" :key='index' class="">
                 <td>{{index + 1}}</td>
-                <td>{{status.description}}</td>
+                <td><input type="text" :readonly="shouldDisable" v-model="status.description"></td>
                 <td>{{status.percentage_completion}}</td>
                 <td>{{status.completed_date}}</td>
                 <td>{{status.ownedBy}}</td>
+                <td><button :disabled="status.ownedBy !== ownedBy" @click="editFields">{{ isEdit ? "Edit" :"Save" }}</button></td>
               </tr>
             </tbody>
           </table>
@@ -86,6 +88,7 @@
     props: ["projectSelected", "getUsername"],
     data() {
       return {
+        shouldDisable:true,
         emailsenttext: false,
         countSubmitted: 0,
         countTotal: this.projectSelected.no_of_members,
@@ -97,7 +100,8 @@
         ownedBy: this.getUsername,
         date_created: this.getTodayDate(new Date()),
         nextBarId: 1,
-        lastId: 0
+        lastId: 0,
+        isEdit: true
       };
     },
     mounted() {
@@ -116,6 +120,14 @@
       }
     },
     methods: {
+      editFields:function(){
+       this.isEdit = !this.isEdit;
+        if(this.isEdit) {
+            this.shouldDisable = true;
+        } else {
+          this.shouldDisable = false;
+        }
+      },
       getTodayDate: function(dateInput) {
         let newDate = dateInput;
         let mm = newDate.getMonth() + 1;
