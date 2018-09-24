@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal id="modallg" title="Add Project Details" @ok="handleOk">
+    <b-modal id="modallg" title="Add Project Details" @ok="handleOk" ref="modal">
       <form @submit.stop.prevent="handleSubmit" method="post">
         <p><i>This panel is only visible to TL and Above</i></p>
         <div class="form-group">
@@ -16,7 +16,6 @@
           <span><input type='text' class='form-control' id='' aria-describedby='addmembers' placeholder='Enter member email id' v-model="memberArr[index]"></span>
           <span><a v-on:click="removeElement(index);" style="cursor: pointer">Cancel <i class="fa fa-close"></i></a></span>
         </div>
-  
   </form>
   </b-modal>
   </div>
@@ -63,6 +62,10 @@
         this.handleSubmit()
       }
     },
+    clearFields(){
+      this.project_name = "",
+      this.memberArr = []
+    },
     handleSubmit () {
       this.no_of_members = this.memberArr.length;
       this.ownedBy = this.getUsername;
@@ -73,7 +76,8 @@
       )
       .then(response => {
         if(response.saved === true){
-          console.log('Saved to DB')
+          this.clearFields();
+          this.$refs.modal.hide();
         }
       }).catch(error => {
         console.log("Error in saving" + error);

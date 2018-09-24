@@ -134,7 +134,7 @@ app.get('/getallData/:project_name', (req,res)=>{
 /** get project details data */
 app.get('/getprojectdata/:username', (req,res)=>{
     let username = req.params.username;
-    ProjectData.find({ "member_names.name": username}, function(err,items){
+    ProjectData.find({ "member_names": username}, function(err,items){
         console.log(err);
         res.json(items); 
     });
