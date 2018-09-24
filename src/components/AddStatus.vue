@@ -21,23 +21,24 @@
   
             <b-textarea class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="description" name="description" rows="1" cols="10" style="resize: none;" required/>
           </div>
-          <div class="form-group col-md-3 mb-3">
+          <div class="form-group col-md-2 mb-2">
             <label for="validationCustom01">Percentage Completed</label>
   
             <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="percentage_completion" name="percentage_completion" required/>
           </div>
-          <div class="form-group col-md-3 mb-3">
+          <div class="form-group col-md-2 mb-2">
             <label for="validationCustom01">Date To Be Completed</label>
   
             <b-input class="mb-2 mr-sm-2 mb-sm-0" type="date" v-model="completed_date" name="completed_date" id="completed_date" />
           </div>
-          <div class="form-group col-md-3 mb-3">
+          <div class="form-group col-md-2 mb-2">
             <label for="validationCustom01">Owned By</label>
             <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="ownedBy" value="" readonly="" name="ownedBy" />
   
           </div>
           <input type="hidden" value="" v-model="date_created" name="date_created" />
           <div class="col-md-3 mb-3">
+            <label for="validationCustom01">&nbsp;</label>
             <button class="addRowBtn btn btn-primary" @click="addRow()">Add New Status</button>
           </div>
         </div>
@@ -65,10 +66,10 @@
               <tr v-for="(status,index) in showAllStatus" :key='index' class="">
                 <td>{{status.statusId}}</td>
                 <td><input type="text" :readonly="shouldDisable" v-model="status.description"></td>
-                <td>{{status.percentage_completion}}</td>
-                <td>{{status.completed_date}}</td>
+                <td><input type="text" :readonly="shouldDisable" v-model="status.percentage_completion"></td>
+                <td><input type="date" :readonly="shouldDisable" v-model="status.completed_date"></td>
                 <td>{{status.ownedBy}}</td>
-                <td><button :disabled="status.ownedBy !== ownedBy" @click="editFields">{{ isEdit ? "Edit" :"Save" }}</button>
+                <td><button :disabled="status.ownedBy !== ownedBy" @click="editFields(statusId)">{{ isEdit ? "Edit" :"Save" }}</button>
                 <button @click="deleteRecord">Delete</button>
                 </td>
               </tr>
@@ -125,10 +126,17 @@
       deleteRecord: function(index){
         this.showAllStatus.splice(index, 1);
       },
-      editFields:function(){
+      editFields:function(statusId){
        this.isEdit = !this.isEdit;
         if(this.isEdit) {
             this.shouldDisable = true;
+            /** for update api call */
+            DataPostApi.updateStatusById()
+            .then(response => {
+              console.log("Update Successful");
+            }).catch(err => {
+              console.log("Error in update" + err);
+            })
         } else {
           this.shouldDisable = false;
         }

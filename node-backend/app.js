@@ -153,6 +153,26 @@ app.get('/getprojectdata/:username', (req,res)=>{
     });
 });
 
+/** update node with statusId */
+
+app.put('/addname/:statusId', (req,res) => {
+    let statusId = req.params.statusId;
+    User.findByIdAndUpdate(req.params.statusId, {
+        description: req.body.description,
+        percentage_completion: req.body.percentage_completion,
+        completed_date: req.body.completed_date
+    }, {new :true})
+    .then(item => {
+        if(!item){
+            return res.status(404).send({
+                message: "Note not found with id " + req.params.statusId
+            });
+        }
+        res.send(item);
+    }).catch(err => {
+        console.log("Erro" + err);
+    })
+})
 
 
 /** get project details data */

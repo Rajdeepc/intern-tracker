@@ -16,7 +16,8 @@ export default {
             return response.data;
         })
     },
-        /** Save status to db */
+    
+    /** Save status to db */
     
     taskSaveApi(description,percentage_completion,completed_date,ownedBy,date_created,project_name) {
        this.statusId ++ ;
@@ -77,7 +78,15 @@ export default {
     //         return response;
     //     })
     // },
+    /** update fields */
 
+    updateStatusById(statusId) {
+        const url = `http://localhost:3000/addname/${statusId}`;
+        return axios.post(url,body)
+        .then(response => {
+            return response.data;
+        })
+    },
 
     sendStatusMail(to,htmlbody) {
         const body = {
