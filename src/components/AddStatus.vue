@@ -64,14 +64,14 @@
             </thead>
             <tbody>
               <tr v-for="(status,index) in showAllStatus" :key='index' class="">
-                <td>{{status.statusId}}</td>
+                <td>{{index + 1}}</td>
                 <td><input type="text" :readonly="shouldDisable" v-model="status.description"></td>
                 <td><input type="text" :readonly="shouldDisable" v-model="status.percentage_completion"></td>
                 <td><input type="date" :readonly="shouldDisable" v-model="status.completed_date"></td>
                 <td>{{status.ownedBy}}</td>
                 <td>
                 <button :disabled="status.ownedBy !== ownedBy" @click="editFields(statusId)">{{ isEdit ? "Edit" :"Save" }}</button>
-                <button @click="deleteRecord(index,status.statusId)">Delete</button>
+                <button @click="deleteRecord(index,status._id)">Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -106,7 +106,7 @@
         nextBarId: 1,
         lastId: 0,
         isEdit: true,
-        statusId: status.statusId
+        id: status._id
       };
     },
     mounted() {
@@ -125,8 +125,8 @@
       }
     },
     methods: {
-      deleteRecord: function(index,statusId){
-        DataPostApi.deleteStatusById(statusId)
+      deleteRecord: function(index,id){
+        DataPostApi.deleteStatusById(id)
         .then(response => {
             console.log("delete node successfully");
             this.showAllStatus.splice(index, 1);

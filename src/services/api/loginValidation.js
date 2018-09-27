@@ -92,12 +92,12 @@ export default {
      * delete status
      */
 
-    deleteStatusById(statusId) {
-        console.log("StatusId" + statusId);
-        const url = `http://localhost:3000/deleterecord/${statusId}`;
+    deleteStatusById(_id) {
+        console.log("StatusId" + _id);
+        const url = `http://localhost:3000/deleterecord/${_id}`;
         return axios.delete(url)
         .then(response => {
-            return response.data;
+            return response;
         })
     },
     sendStatusMail(to,htmlbody) {

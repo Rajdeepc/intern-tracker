@@ -25,6 +25,13 @@ const port = 3000;
 //Adding middleware -cors
 app.use(cors());
 
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+    });
+
 /**body parser */
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -146,11 +153,14 @@ app.get('/getprojectdata/:username', (req,res)=>{
 
 /** delete node */
 
-app.delete('/deleterecord/:statusId', (req,res) =>{
-console.log("Reqyest param" + req.params.statusId)
-  User.findByIdAndRemove(req.params.statusId , req.body , (err,data) => {
+app.delete('/deleterecord/:_id', (req,res) =>{
+console.log("Reqyest param" + req.params._id)
+  User.findByIdAndRemove(req.params._id , (err,data) => {
+      console.log("i am inside delete");
     if(!err){
         console.log("Deleted");
+    } else{
+        console.log("Error deleting" + err)
     }
   })
 });
