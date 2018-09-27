@@ -80,14 +80,26 @@ export default {
     // },
     /** update fields */
 
-    updateStatusById(statusId) {
-        const url = `http://localhost:3000/addname/${statusId}`;
-        return axios.post(url,body)
+    // updateStatusById(statusId) {
+    //     const url = `http://localhost:3000/addname/${statusId}`;
+    //     return axios.put(url,body)
+    //     .then(response => {
+    //         return response.data;
+    //     })
+    // },
+
+    /**
+     * delete status
+     */
+
+    deleteStatusById(statusId) {
+        console.log("StatusId" + statusId);
+        const url = `http://localhost:3000/deleterecord/${statusId}`;
+        return axios.delete(url)
         .then(response => {
             return response.data;
         })
     },
-
     sendStatusMail(to,htmlbody) {
         const body = {
             to:to,

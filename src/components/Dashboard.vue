@@ -2,7 +2,7 @@
   <div class="dashboard">
     <b-navbar type="dark" variant="info" fixed="top">
       <h4>Submit Your Status</h4>
-        <b-btn v-b-modal.modallg variant="primary">Admin</b-btn>
+        <b-btn v-b-modal.modallg variant="primary">Open Admin</b-btn>
       <b-button @click="clearSessionLogout">Logout</b-button>
     </b-navbar>
     <div class="container">
@@ -17,13 +17,6 @@
                   </option>
                   </select>
           </div>
-          <!-- <ul>
-            <p>The previous Occurance where "Sorry..."</p>
-            <p>Count of occurances :{{ occuranceList.length}}</p>
-            <li v-for="(occurance,index) in occuranceList" :key='index'>
-              {{occurance.text}}
-            </li>
-          </ul> -->
           <br>
           <!-- add status for today component -->
           <AddStatus v-if="skillTemplateShow === true" :projectSelected="projectSelected" :getUsername="getUsername"></AddStatus>

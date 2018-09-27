@@ -21,24 +21,24 @@
   
             <b-textarea class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="description" name="description" rows="1" cols="10" style="resize: none;" required/>
           </div>
-          <div class="form-group col-md-2 mb-2">
+          <div class="form-group col-xs-2 mb-2">
             <label for="validationCustom01">Percentage Completed</label>
   
             <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="percentage_completion" name="percentage_completion" required/>
           </div>
-          <div class="form-group col-md-2 mb-2">
+          <div class="form-group col-xs-2 mb-2">
             <label for="validationCustom01">Date To Be Completed</label>
   
             <b-input class="mb-2 mr-sm-2 mb-sm-0" type="date" v-model="completed_date" name="completed_date" id="completed_date" />
           </div>
-          <div class="form-group col-md-2 mb-2">
+          <div class="form-group col-xs-2 mb-2">
             <label for="validationCustom01">Owned By</label>
             <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="ownedBy" value="" readonly="" name="ownedBy" />
   
           </div>
           <input type="hidden" value="" v-model="date_created" name="date_created" />
-          <div class="col-md-3 mb-3">
-            <label for="validationCustom01">&nbsp;</label>
+          <div class="col-xs-3 mb-3">
+            <div for="validationCustom01">&nbsp;</div>
             <button class="addRowBtn btn btn-primary" @click="addRow()">Add New Status</button>
           </div>
         </div>
@@ -69,8 +69,9 @@
                 <td><input type="text" :readonly="shouldDisable" v-model="status.percentage_completion"></td>
                 <td><input type="date" :readonly="shouldDisable" v-model="status.completed_date"></td>
                 <td>{{status.ownedBy}}</td>
-                <td><button :disabled="status.ownedBy !== ownedBy" @click="editFields(statusId)">{{ isEdit ? "Edit" :"Save" }}</button>
-                <button @click="deleteRecord">Delete</button>
+                <td>
+                <button :disabled="status.ownedBy !== ownedBy" @click="editFields(statusId)">{{ isEdit ? "Edit" :"Save" }}</button>
+                <button @click="deleteRecord(index,status.statusId)">Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -104,7 +105,8 @@
         date_created: this.getTodayDate(new Date()),
         nextBarId: 1,
         lastId: 0,
-        isEdit: true
+        isEdit: true,
+        statusId: status.statusId
       };
     },
     mounted() {
@@ -123,15 +125,22 @@
       }
     },
     methods: {
-      deleteRecord: function(index){
-        this.showAllStatus.splice(index, 1);
+      deleteRecord: function(index,statusId){
+        DataPostApi.deleteStatusById(statusId)
+        .then(response => {
+            console.log("delete node successfully");
+            this.showAllStatus.splice(index, 1);
+        }).catch(err => {
+           console.log("Error in update" + err);
+        });
+        
       },
-      editFields:function(statusId){
+      editFields:function(id){
        this.isEdit = !this.isEdit;
         if(this.isEdit) {
             this.shouldDisable = true;
             /** for update api call */
-            DataPostApi.updateStatusById()
+            DataPostApi.updateStatusById(id)
             .then(response => {
               console.log("Update Successful");
             }).catch(err => {

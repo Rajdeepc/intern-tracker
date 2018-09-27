@@ -113,7 +113,7 @@ app.post("/login", (req, res) => {
         });
 });
 
-
+/** add project data */
 app.post("/postprojectdata", (req, res) => {
     var newDataPost = new PostProjectData(req.body);
     newDataPost.save()
@@ -125,7 +125,7 @@ app.post("/postprojectdata", (req, res) => {
         });
 });
 
-/**retrieving data */
+/**retrieving all status data */
 
 app.get('/getallData/:project_name', (req,res)=>{
     let project_name = req.params.project_name;
@@ -146,11 +146,13 @@ app.get('/getprojectdata/:username', (req,res)=>{
 
 /** delete node */
 
-app.get('/getprojectdata/:username', (req,res)=>{
-    ProjectData.find({ "member_names": username}, function(err,items){
-       // console.log(err);
-        res.json(items); 
-    });
+app.delete('/deleterecord/:statusId', (req,res) =>{
+console.log("Reqyest param" + req.params.statusId)
+  User.findByIdAndRemove(req.params.statusId , req.body , (err,data) => {
+    if(!err){
+        console.log("Deleted");
+    }
+  })
 });
 
 /** update node with statusId */
