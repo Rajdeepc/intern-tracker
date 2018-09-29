@@ -128,9 +128,10 @@
       deleteRecord: function(index,id){
         DataPostApi.deleteStatusById(id)
         .then(response => {
-            console.log("delete node successfully");
-            this.showAllStatus.splice(index, 1);
-        }).catch(err => {
+          if(response.data){
+            this.getAllStatusToday();
+          }
+          }).catch(err => {
            console.log("Error in update" + err);
         });
         

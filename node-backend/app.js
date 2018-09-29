@@ -156,7 +156,7 @@ app.get('/getprojectdata/:username', (req,res)=>{
 app.delete('/deleterecord/:_id', (req,res) =>{
 console.log("Reqyest param" + req.params._id)
   User.findByIdAndRemove(req.params._id , (err,data) => {
-      console.log("i am inside delete");
+      res.status(200).send(data);
     if(!err){
         console.log("Deleted");
     } else{
