@@ -80,13 +80,13 @@ export default {
     // },
     /** update fields */
 
-    // updateStatusById(statusId) {
-    //     const url = `http://localhost:3000/addname/${statusId}`;
-    //     return axios.put(url,body)
-    //     .then(response => {
-    //         return response.data;
-    //     })
-    // },
+    updateStatusById(_id) {
+        const url = `http://localhost:3000/addname/${_id}`;
+        return axios.put(url_id)
+        .then(response => {
+            return response.data;
+        })
+    },
 
     /**
      * delete status

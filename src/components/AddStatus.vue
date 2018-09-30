@@ -74,13 +74,13 @@
             <td>  <div class="view">{{status.completed_date}}</div><div class="edit"><input type="date" class="form-control"  v-model="status.completed_date"></div></td>
             <td>{{status.manager_name}}</td>
             <td>
-              <div class="view">
-              <button class="btn btn-primary" :disabled="status.manager_name !== manager_name" @click="editFields(status)"><i class="fa fa-edit"></i>Edit</button>
+              <div class="view float-left">
+              <b-button variant="warning" :disabled="status.manager_name !== manager_name" @click="editFields(status)"><i class="fa fa-edit"></i></b-button>
               </div>
-              <div class="edit">
-              <button class="btn btn-primary" :disabled="status.manager_name !== manager_name" @click="saveFields(status)"><i class="fa fa-save"></i>Save</button>
+              <div class="edit float-left">
+              <b-button variant="success" :disabled="status.manager_name !== manager_name" @click="saveFields(id,status)"><i class="fa fa-save"></i></b-button>
               </div>
-              <button class="btn btn-danger" @click="deleteRecord(index,status._id)"><i class="fa fa-trash"></i>Delete</button>
+              <b-button variant="danger" class="float-left" :disabled="status.manager_name !== manager_name" @click="deleteRecord(index,status._id)"><i class="fa fa-trash"></i></b-button>
             </td>
           </tr>
         </tbody>
@@ -117,7 +117,7 @@
         isEdit: true,
         id: status._id,
         editMode: false,
-         editedStatus: null
+        editedStatus: null
       };
     },
     mounted() {
@@ -148,11 +148,12 @@
   
       },
       editFields: function(status){
-      this.beforEditCache = status
-      this.editedStatus = status
+        this.beforEditCache = status;
+        this.editedStatus = status;
       },
-      saveFields: function(id) {
+      saveFields: function(id,status) {
           /** for update api call */
+          this.editedStatus = null;
           DataPostApi.updateStatusById(id)
             .then(response => {
               console.log("Update Successful");

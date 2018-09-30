@@ -167,9 +167,9 @@ console.log("Reqyest param" + req.params._id)
 
 /** update node with statusId */
 
-app.put('/addname/:statusId', (req,res) => {
-    let statusId = req.params.statusId;
-    User.findByIdAndUpdate(req.params.statusId, {
+app.put('/updaterecord/:_id', (req,res) => {
+    let _id = req.params._id;
+    User.findByIdAndUpdate(_id, {
         description: req.body.description,
         percentage_completion: req.body.percentage_completion,
         completed_date: req.body.completed_date
@@ -177,7 +177,7 @@ app.put('/addname/:statusId', (req,res) => {
     .then(item => {
         if(!item){
             return res.status(404).send({
-                message: "Note not found with id " + req.params.statusId
+                message: "Note not found with id " + req.params._id
             });
         }
         res.send(item);
