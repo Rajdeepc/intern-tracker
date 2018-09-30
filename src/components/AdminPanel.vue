@@ -5,7 +5,7 @@
         <p><i>This panel is only visible to TL and Above</i></p>
         <div class="form-group">
           <label for="exampleInputEmail1">Supervisor Name:</label>
-          <input type="text" class="form-control" id="" v-model="getUsername" readonly="" name="ownedBy" aria-describedby="emailHelp">
+          <input type="text" class="form-control" id="" v-model="getUsername" readonly="" name="manager_name" aria-describedby="emailHelp">
         </div>
           <div class="form-group">
           <label for="exampleInputEmail1">Add Your Project Name:</label>
@@ -32,7 +32,7 @@
         newInputArray:[""],
         memberArr: [],
         project_name:'',
-        ownedBy: this.getUsername,
+        manager_name: this.getUsername,
         date_created: this.getTodayDate()
       };
     },
@@ -68,11 +68,11 @@
     },
     handleSubmit () {
       this.no_of_members = this.memberArr.length;
-      this.ownedBy = this.getUsername;
+      this.manager_name = this.getUsername;
       this.member_names = this.memberArr;
       this.date_created = this.getTodayDate();
       DataPostApi.projectsaveApi(
-        this.date_created,this.ownedBy,this.project_name,this.no_of_members,this.member_names
+        this.date_created,this.manager_name,this.project_name,this.no_of_members,this.member_names
       )
       .then(response => {
         if(response.saved === true){

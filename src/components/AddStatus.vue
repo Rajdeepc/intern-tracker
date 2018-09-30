@@ -33,7 +33,7 @@
           </div>
           <div class="form-group col-xs-2 mb-2">
             <label for="validationCustom01">Owned By</label>
-            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="ownedBy" value="" readonly="" name="ownedBy" />
+            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="manager_name" value="" readonly="" name="manager_name" />
   
           </div>
           <input type="hidden" value="" v-model="date_created" name="date_created" />
@@ -65,13 +65,13 @@
             <tbody>
               <tr v-for="(status,index) in showAllStatus" :key='index' class="">
                 <td>{{index + 1}}</td>
-                <td><input type="text" :readonly="shouldDisable" v-model="status.description"></td>
-                <td><input type="text" :readonly="shouldDisable" v-model="status.percentage_completion"></td>
-                <td><input type="date" :readonly="shouldDisable" v-model="status.completed_date"></td>
-                <td>{{status.ownedBy}}</td>
+                <td><input type="text" class="form-control" :readonly="shouldDisable" v-model="status.description"></td>
+                <td><input type="text" class="form-control" :readonly="shouldDisable" v-model="status.percentage_completion"></td>
+                <td><input type="date" class="form-control" :readonly="shouldDisable" v-model="status.completed_date"></td>
+                <td>{{status.manager_name}}</td>
                 <td>
-                <button :disabled="status.ownedBy !== ownedBy" @click="editFields(statusId)">{{ isEdit ? "Edit" :"Save" }}</button>
-                <button @click="deleteRecord(index,status._id)">Delete</button>
+                <button class="btn btn-primary" :disabled="status.manager_name !== manager_name" @click="editFields(statusId)"><i class="fa fa-edit"></i>{{ isEdit ? "Edit" :"Save" }}</button>
+                <button class="btn btn-danger" @click="deleteRecord(index,status._id)"><i class="fa fa-trash"></i>Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -101,7 +101,7 @@
         description: "",
         percentage_completion: null,
         completed_date: this.getDateYYYYMMDD(new Date()),
-        ownedBy: this.getUsername,
+        manager_name: this.getUsername,
         date_created: this.getTodayDate(new Date()),
         nextBarId: 1,
         lastId: 0,
@@ -168,7 +168,7 @@
               this.description,
               this.percentage_completion,
               this.completed_date,
-              this.ownedBy,
+              this.manager_name,
               this.date_created,
               this.projectSelected.project_name
             )
@@ -224,7 +224,7 @@
         this.showAllStatus.map((item,i) => {
           trStr += `<tr class="">
             <td>${i + 1}</td><td style="word-wrap:break-word;word-break:break-all;max-width:100px">${item.description}</td><td>${item.percentage_completion}</td>
-            <td>${item.completed_date}</td><td>${item.ownedBy}</td>
+            <td>${item.completed_date}</td><td>${item.manager_name}</td>
           </tr>`;
         })
         return trStr;
@@ -266,7 +266,7 @@
         let showAllstatus = this.showAllStatus;
         let tempArr = [];
         showAllstatus.map(item => {
-          tempArr.push(item.ownedBy);
+          tempArr.push(item.manager_name);
         });
         let uniqueOwnerCount = this.getUniqueElement(tempArr);
         if (uniqueOwnerCount) {

@@ -19,13 +19,13 @@ export default {
     
     /** Save status to db */
     
-    taskSaveApi(description,percentage_completion,completed_date,ownedBy,date_created,project_name) {
+    taskSaveApi(description,percentage_completion,completed_date,manager_name,date_created,project_name) {
        this.statusId ++ ;
         const body = {
                 description:description,
                 percentage_completion:percentage_completion,
                 completed_date:completed_date,
-                ownedBy:ownedBy,
+                manager_name:manager_name,
                 date_created:date_created,
                 project_name:project_name
           };
@@ -37,11 +37,11 @@ export default {
     },
         /** Add Project to db by admin */
 
-    projectsaveApi(date_created,ownedBy,project_name,no_of_members,member_names) {
+    projectsaveApi(date_created,manager_name,project_name,no_of_members,member_names) {
         const body = {
                 date_created:date_created,
                 project_name:project_name,
-                ownedBy:ownedBy,
+                manager_name:manager_name,
                 no_of_members:no_of_members,
                 member_names:member_names
           };

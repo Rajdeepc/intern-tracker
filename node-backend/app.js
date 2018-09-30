@@ -52,7 +52,7 @@ var nameSchema = new mongoose.Schema({
     description: String,
     percentage_completion: Number,
     completed_date: String,
-    ownedBy: String,
+    manager_name: String,
     date_created:String,
     project_name:String,
     statusId:Number
@@ -61,7 +61,7 @@ var nameSchema = new mongoose.Schema({
 
 var projectSchema = new mongoose.Schema({
     project_name: String,
-    ownedBy: String,
+    manager_name: String,
     no_of_members: Number,
     date_created: String,
     member_names: Array
