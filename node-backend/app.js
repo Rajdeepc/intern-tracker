@@ -167,47 +167,20 @@ console.log("Reqyest param" + req.params._id)
 
 /** update node with statusId */
 
-app.put('/updaterecord/:_id', (req,res) => {
-    let _id = req.params._id;
-    User.findByIdAndUpdate(_id, {
+app.put('/:_id/updatestatus', (req,res) => {
+    let id = req.params._id;
+    User.findByIdAndUpdate(id, { $set : {
         description: req.body.description,
         percentage_completion: req.body.percentage_completion,
         completed_date: req.body.completed_date
-    }, {new :true})
-    .then(item => {
-        if(!item){
-            return res.status(404).send({
-                message: "Note not found with id " + req.params._id
-            });
+    }}, (err,data) => {
+        if(err) {
+            console.log("Error in update" + id);
         }
-        res.send(item);
-    }).catch(err => {
-        console.log("Erro" + err);
+        res.send('Status udpated.');
     })
-})
+});
 
-
-/** get project details data */
-// app.get('/getlogs', (req,res)=>{
-//     GetConverse.find({  }, function(err,items){
-//         let itemofConverse = getConverseDatabyUtt(items);
-//         res.json(itemofConverse); 
-//     });
-// });
-
-// function getConverseDatabyUtt(items){
-//     let newArr = [];
-//     items.map((item, index) => {
-//         if(item.text && item.text.startsWith("Sorry, I didn't understand.")) {
-//             newArr.push(index);
-//         }
-//     });
-//     let utteranceArr = [];
-//     newArr.map((sorryindex) => {
-//         utteranceArr.push(items[sorryindex - 1]);
-//     });
-//     return utteranceArr;
-// }
 /**send email */
 app.post("/sendemail", (req, res) => {
     let to = req.body.to;

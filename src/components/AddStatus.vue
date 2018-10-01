@@ -38,15 +38,15 @@
           </div>
           <input type="hidden" value="" v-model="date_created" name="date_created" />
           <div class="col-xs-3 mb-3">
-            <div for="validationCustom01">&nbsp;</div>
+            <label for="validationCustom01" class="empty-label">&nbsp;</label>
             <button class="addRowBtn btn btn-success" @click="addRow()">Add New Status</button>
           </div>
         </div>
       </b-form>
       <p v-if="showMessage === true">Data SuccessFully Saved</p>
     </div>
-    </br>
-    </br>
+    <br/>
+    <br/>
     <!-- show the messages added -->
     <h5>
    <p class="float-left"><b>Status for Today:</b></p>  
@@ -78,7 +78,7 @@
               <b-button variant="warning" :disabled="status.manager_name !== manager_name" @click="editFields(status)"><i class="fa fa-edit"></i></b-button>
               </div>
               <div class="edit float-left">
-              <b-button variant="success" :disabled="status.manager_name !== manager_name" @click="saveFields(id,status)"><i class="fa fa-save"></i></b-button>
+              <b-button variant="success" :disabled="status.manager_name !== manager_name" @click="saveFields(status)"><i class="fa fa-save"></i></b-button>
               </div>
               <b-button variant="danger" class="float-left" :disabled="status.manager_name !== manager_name" @click="deleteRecord(index,status._id)"><i class="fa fa-trash"></i></b-button>
             </td>
@@ -151,10 +151,10 @@
         this.beforEditCache = status;
         this.editedStatus = status;
       },
-      saveFields: function(id,status) {
+      saveFields: function(status) {
           /** for update api call */
           this.editedStatus = null;
-          DataPostApi.updateStatusById(id)
+          DataPostApi.updateStatusById(status._id,status.description,status.percentage_completion,status.completed_date)
             .then(response => {
               console.log("Update Successful");
             }).catch(err => {
@@ -300,6 +300,9 @@
     }
     .editing .view {
       display: none;
+    }
+    .empty-label {
+      width: 100%;
     }
 </style>
 

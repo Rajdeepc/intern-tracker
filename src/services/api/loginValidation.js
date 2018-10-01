@@ -80,9 +80,15 @@ export default {
     // },
     /** update fields */
 
-    updateStatusById(_id) {
-        const url = `http://localhost:3000/addname/${_id}`;
-        return axios.put(url_id)
+    updateStatusById(_id,description,percentage_completion,completed_date) {
+        const url = `http://localhost:3000/${_id}/updatestatus`;
+        const body ={
+            _id:_id,
+            description:description,
+            percentage_completion:percentage_completion,
+            completed_date:completed_date
+        }
+        return axios.put(url,body)
         .then(response => {
             return response.data;
         })
@@ -94,7 +100,7 @@ export default {
 
     deleteStatusById(_id) {
         console.log("StatusId" + _id);
-        const url = `http://localhost:3000/deleterecord/${_id}`;
+        const url = `http://localhost:3000/${_id}/deleterecord`;
         return axios.delete(url)
         .then(response => {
             return response;
