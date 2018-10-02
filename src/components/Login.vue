@@ -1,8 +1,10 @@
 <template>
-<b-card  bg-variant="light" text-variant="black"  border-variant="primary"
-            header="Login"
-            header-bg-variant="primary"
-            header-text-variant="white"
+<div>
+  <div class="heroimg text-center">
+    <b-img center fluid :src="bgImg" alt="" class="bgImg"/>
+  </div>
+<b-card  bg-variant="light" text-variant="black"
+            
             style="max-width: 30rem;margin:0 auto;"
             >
         <form class="form-horizontal" @submit="validateForm" @reset="resetForm">
@@ -13,7 +15,7 @@
             </ul>
           </p>
             <div class="form-group">
-               <label for="name">Email</label>
+               <label for="name">Email/Username</label>
                 <input class="form-control" type="text"  name="email" v-model="email" placeholder="Type your email id..">
             </div>
             <div class="form-group">
@@ -21,17 +23,18 @@
                 <input class="form-control" type="password" name="password"  v-model="password" id="" placeholder="Type your password..">
             </div>
             <div class="form-group">
-              <input type="submit" value="submit"  class="btn btn-primary" >&nbsp;&nbsp;
+              <input type="submit" value="Submit"  class="btn btn-primary" >&nbsp;&nbsp;
                <input type="reset" value="Reset" class="btn btn-danger">
             </div>
         </form>
 </b-card>
+</div>
 </template>
 
 
 <script>
 import DataPostApi from "../services/api/loginValidation";
-
+import bgImg from '../assets/New_Applied_Now.png';
 export default {
   name: "Login",
   /**
@@ -39,6 +42,7 @@ export default {
    */
   data() {
     return {
+      bgImg:bgImg,
     errors:[],
     email:null,
     password:null
@@ -79,8 +83,9 @@ export default {
        DataPostApi.validateLogin(username,password)
       .then(response => {
         if(response.saved === true) {
-          this.$session.set('username', username);
           this.$router.push({ name: "dashboard", params: {username: username } });
+           this.$session.set('username', username);
+
         } else {
            this.errors.push('Invalid Credentials');
         }
@@ -95,4 +100,9 @@ export default {
 
 
 <style scoped>
+.bgImg{
+  height: 200px;
+  max-width: 100%;
+  margin-bottom: 30px;
+}
 </style>

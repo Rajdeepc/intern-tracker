@@ -20,7 +20,6 @@ npm run build
 npm run lint
 ```
 
-Features:
 
 The manager can upload his project with project members.
 Once Member logs in he can see his assigned project from the project select dropdown
@@ -29,4 +28,6 @@ After he enters his daily status user can see his record getting updated in the 
 Once all the members updates their status Send Email button will be enabled and the supervisor can send the whole cummulative status to the manager at click of a button
 
 
-![Image](../assets/image.png)
+
+![Image](image.png)
+
