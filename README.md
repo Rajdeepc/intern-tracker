@@ -29,4 +29,4 @@ After he enters his daily status user can see his record getting updated in the 
 Once all the members updates their status Send Email button will be enabled and the supervisor can send the whole cummulative status to the manager at click of a button
 
 
-![Image](src/assets/image.png)
+![Image](../assets/image.png)
