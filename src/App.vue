@@ -25,7 +25,6 @@ body {
   display: grid;
   grid-template-rows: auto;
   justify-items: center;
-  padding-top: 50px;
 }
 body, html {
   margin: 0;

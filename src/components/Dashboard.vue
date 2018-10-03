@@ -1,9 +1,34 @@
 <template>
   <div class="dashboard">
-    <b-navbar type="dark" variant="info" fixed="top">
-      <h4>Submit Your Status</h4>
-        <b-btn v-b-modal.modallg variant="primary">Open Admin</b-btn>
-      <b-button @click="clearSessionLogout">Logout</b-button>
+    <!-- <b-navbar type="light" variant="light" fixed="top">
+        <h4>Submit Your Status</h4>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item>
+            <b-btn v-b-modal.modallg variant="primary">Add Project</b-btn>
+          </b-nav-item>
+          <b-nav-item>
+            <b-button @click="clearSessionLogout">Logout</b-button>
+          </b-nav-item>
+        </b-navbar-nav>
+      </b-navbar> -->
+    <b-navbar toggleable="md" type="dark" variant="info">
+  
+      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+  
+      <b-nav-text>Submit Your Status</b-nav-text>
+  
+      <b-collapse is-nav id="nav_collapse">
+        <!-- Right aligned nav items -->
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item>
+            <b-btn v-b-modal.modallg variant="primary">Add Project</b-btn>
+          </b-nav-item>
+          <b-nav-item>
+            <b-button @click="clearSessionLogout">Logout</b-button>
+          </b-nav-item>
+        </b-navbar-nav>
+  
+      </b-collapse>
     </b-navbar>
     <div class="container">
       <br>
@@ -11,18 +36,18 @@
         <p>
           <div class="selectProject">
             Select Your Project: <select v-model="projectSelected" @change="showTableToEnterData()">
-                  <option disabled value="">Please select one project</option>
-                  <option :value="status" v-for="(status,index) in projectList" :key='index'>
-                      {{ status.project_name }}
-                  </option>
-                  </select>
+                      <option disabled value="">Please select one project</option>
+                      <option :value="status" v-for="(status,index) in projectList" :key='index'>
+                          {{ status.project_name }}
+                      </option>
+                      </select>
           </div>
           <br>
           <!-- add status for today component -->
           <AddStatus v-if="skillTemplateShow === true" :projectSelected="projectSelected" :getUsername="getUsername"></AddStatus>
     </div>
-           <AdminPanel :getUsername="getUsername"></AdminPanel>
-
+    <AdminPanel :getUsername="getUsername"></AdminPanel>
+  
   </div>
 </template>
 
@@ -40,7 +65,7 @@
         projectSelected: this.projectSelectedItem,
         skillTemplateShow: false,
         projectList: [],
-        occuranceList:[],
+        occuranceList: [],
         getUsername: ''
       };
     },
@@ -57,7 +82,7 @@
     },
     components: {
       AddStatus: AddStatus,
-      AdminPanel:AdminPanel
+      AdminPanel: AdminPanel
     },
     beforeCreate: function() {
       if (!this.$session.exists('username')) {
