@@ -1,16 +1,5 @@
 <template>
   <div class="dashboard">
-    <!-- <b-navbar type="light" variant="light" fixed="top">
-        <h4>Submit Your Status</h4>
-        <b-navbar-nav class="ml-auto">
-          <b-nav-item>
-            <b-btn v-b-modal.modallg variant="primary">Add Project</b-btn>
-          </b-nav-item>
-          <b-nav-item>
-            <b-button @click="clearSessionLogout">Logout</b-button>
-          </b-nav-item>
-        </b-navbar-nav>
-      </b-navbar> -->
     <b-navbar toggleable="md" type="dark" variant="info">
   
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
@@ -30,17 +19,18 @@
   
       </b-collapse>
     </b-navbar>
+    <a v-on:click="navitageToAllStatus(getUsername)">Navigate to All Status</a>
     <div class="container">
       <br>
       <p>Welcome <b>{{getUsername}}</b>,
         <p>
           <div class="selectProject">
             Select Your Project: <select v-model="projectSelected" @change="showTableToEnterData()">
-                      <option disabled value="">Please select one project</option>
-                      <option :value="status" v-for="(status,index) in projectList" :key='index'>
-                          {{ status.project_name }}
-                      </option>
-                      </select>
+                                <option disabled value="">Please select one project</option>
+                                <option :value="status" v-for="(status,index) in projectList" :key='index'>
+                                    {{ status.project_name }}
+                                </option>
+                                </select>
           </div>
           <br>
           <!-- add status for today component -->
@@ -56,7 +46,7 @@
   import AddStatus from "./AddStatus.vue";
   import AdminPanel from "./AdminPanel.vue";
   import DataPostApi from "../services/api/loginValidation";
-  
+  import router from '../router.js'
   export default {
     name: "Dashboard",
     props: [],
@@ -69,8 +59,15 @@
         getUsername: ''
       };
     },
+    // beforeRouteEnter(to, from, next) {
+    //   init(to.params.id, (err, post) => {
+    //     next(vm => vm.setData(err, post))
+    //   })
+    // },
     mounted() {
+      
       this.getUsername = this.$route.params.username;
+      
       this.init();
       // DataPostApi.getUtterance()
       // .then(response => {
@@ -90,6 +87,15 @@
       }
     },
     methods: {
+      navitageToAllStatus(username) {
+        console.log("username ----------> ", username);
+        this.$router.push({
+          name: "findall",
+          params: {
+            username: username
+          }
+        });
+      },
       showTableToEnterData(e) {
         this.skillTemplateShow = true;
       },
