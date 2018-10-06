@@ -132,7 +132,7 @@ app.post("/postprojectdata", (req, res) => {
         });
 });
 
-/**retrieving all status data */
+/**retrieving all status data by projectname*/
 
 app.get('/getallData/:project_name', (req,res)=>{
     let project_name = req.params.project_name;
@@ -141,6 +141,16 @@ app.get('/getallData/:project_name', (req,res)=>{
         res.json(items);
     })
 });
+
+/*** get all project datat */
+app.get('/getallData', (req,res)=>{
+    User.find({ },(err,items) => {
+        //console.log(err);
+        res.json(items);
+    })
+});
+
+
 
 /** get project details data */
 app.get('/getprojectdata/:username', (req,res)=>{
