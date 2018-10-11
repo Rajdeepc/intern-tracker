@@ -111,11 +111,14 @@ export default {
             })
     },
 
-    getAllProjectData() {
-        const url = "http://localhost:3000/getallData";
-        return axios.get(url)
+    getAllStatusByDateCreated(date_created) {
+        const body = {
+            date_created:date_created
+        };
+        const url = "http://localhost:3000/getallStatusbyDate";
+        return axios.post(url,body)
         .then(response => {
-            return response;
+            return response.data;
         })
     }
 }

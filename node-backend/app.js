@@ -142,9 +142,10 @@ app.get('/getallData/:project_name', (req,res)=>{
     })
 });
 
-/*** get all project datat */
-app.get('/getallData', (req,res)=>{
-    User.find({ },(err,items) => {
+/*** get all project data by date */
+app.post('/getallStatusbyDate', (req,res)=>{
+    let date_created = req.body.date_created;
+    User.find({ date_created: date_created},(err,items) => {
         //console.log(err);
         res.json(items);
     })
