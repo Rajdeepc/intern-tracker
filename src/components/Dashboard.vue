@@ -4,7 +4,7 @@
   
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
   
-      <b-nav-text>Submit Your Status</b-nav-text>
+      <b-nav-text><h4>Status Tracker</h4></b-nav-text>
   
       <b-collapse is-nav id="nav_collapse">
         <!-- Right aligned nav items -->

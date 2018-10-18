@@ -2,7 +2,10 @@
     <div class="findAll">
         <b-navbar toggleable="md" type="dark" variant="info">
             <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-            <b-nav-text>Submit Your Status</b-nav-text>
+            <b-nav-text>
+                <h4>Status Tracker</h4>
+            </b-nav-text>
+    
             <b-collapse is-nav id="nav_collapse">
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
@@ -32,45 +35,50 @@
                 <button class="addRowBtn btn btn-success" @click="find()">Find Status</button>
             </div>
         </div>
-    
+        <br>
         <!-- find all status form -->
+        <div v-if="getAllStatus">
         <div class="showstatus" v-if="this.showAllStatus.length > 0">
-            <div>Showing Status for : <b>{{date}}</b></div>
-            <table class="table table-striped">
+            <h4>Showing Status for : <b>{{date}}</b></h4>
+            <table class="table">
                 <thead>
                     <tr class="">
-                        <td>Sl</td>
+                        <td>SL.</td>
                         <td>Status of the Work Done</td>
                         <td>Percentage Completed</td>
                         <td>Date Created</td>
                         <td>Date To Be Completed</td>
                         <td>Owned By</td>
+                        <td>Follow Up</td>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(status,index) in showAllStatus" :key='index' v-bind:class="{'isDanger': status['isOverdue'],  'onTrack': !status['isOverdue']}"
->
+                    <tr v-for="(status,index) in showAllStatus" :key='index' v-bind:class="{'isDanger': status['isOverdue'],  'onTrack': !status['isOverdue']}">
                         <td>{{index + 1}}</td>
                         <td> {{status.description}}</td>
                         <td> {{status.percentage_completion}}</td>
                         <td>{{status.date_created}}</td>
                         <td> {{status.completed_date}}
-                            <b-btn v-if="status.isOverdue" v-b-tooltip.hover title="'You have exceeded the completion time'">
+                            <b-btn v-if="status.isOverdue" v-b-tooltip.hover title="'You have exceeded the completion time'" class="btn btn-warning">
                                 <i class="fa fa-exclamation-triangle"></i>
                             </b-btn>
                         </td>
-                        <td>{{status.manager_name}} <b-btn v-if="status.isOverdue" v-b-tooltip.hover title="'Please Ask for ETA'">
-                                    <i class="fa fa-envelope"></i>
-                                </b-btn></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        
-            <div v-if="this.showAllStatus.length === 0">
-                <p>No data Found</p>
-            </div>
+                        <td>{{status.manager_name}}</td>
+                        <td>
+                            <b-btn v-if="status.isOverdue" v-b-tooltip.hover title="'Send Email for ETA'" class="btn btn-success">
+                                Send Email <i class="fa fa-envelope"></i>
+                            </b-btn>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+        <!-- show only if no data returned from api -->
+        <div v-if="this.showAllStatus.length === 0">
+            <p>No data Found</p>
+        </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -84,7 +92,8 @@
                 selected_manager_name: null,
                 showAllStatus: [],
                 date: "",
-                isOverdue: false
+                isOverdue: false,
+                getAllStatus:false
             };
         },
         mounted() {
@@ -106,6 +115,7 @@
                 return date;
             },
             find: function() {
+                this.getAllStatus = true;
                 this.date = this.getTodayDate(new Date(this.date));
                 DataPostApi.getAllStatusByDateCreated(this.date).then(
                     response => {
@@ -153,7 +163,8 @@
     .isDanger {
         border-left: 3px solid red;
     }
-    .onTrack{
+    
+    .onTrack {
         border-left: 3px solid green;
     }
 </style>
