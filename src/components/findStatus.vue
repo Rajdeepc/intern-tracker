@@ -19,7 +19,7 @@
         <br>
         <h4 class="float-left">Find Status By Date:</h4>
         <a style="cursor: pointer; text-decoration: underline" class="float-right" v-on:click="navigate(username)">Back to Dashboard</a>
-    <div class="clearfix"></div>
+        <div class="clearfix"></div>
         <br>
         <!-- find all status form -->
         <div class="form-row">
@@ -48,7 +48,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(status,index) in showAllStatus" :key='index'>
+                    <tr v-for="(status,index) in showAllStatus" :key='index' v-bind:class="{isDanger : status.isOverdue}">
                         <td>{{index + 1}}</td>
                         <td> {{status.description}}</td>
                         <td> {{status.percentage_completion}}</td>
@@ -61,7 +61,7 @@
         </div>
     
         <div v-if="this.showAllStatus.length < 0">
-        <p>No data Found</p>
+            <p>No data Found</p>
         </div>
     </div>
 </template>
@@ -76,7 +76,8 @@
                 selected_project_name: null,
                 selected_manager_name: null,
                 showAllStatus: [],
-                date: ""
+                date: "",
+                isOverdue: false
             };
         },
         mounted() {
@@ -88,7 +89,6 @@
                 this.$router.push("/");
             }
         },
-    
         methods: {
             getTodayDate: function(dateInput) {
                 let newDate = dateInput;
@@ -104,8 +104,21 @@
                     response => {
                         this.showAllStatus = response;
                         console.log("Status by date", JSON.stringify(this.showAllStatus));
+                        this.styleRows();
+                        
                     }
                 );
+            },
+            styleRows: function() {
+                this.showAllStatus.map(item => {
+                            let completedDate = Date.parse(item.completed_date);
+                            let todayDate = Date.parse(new Date());
+                            if (item.percentage_completion < 100 && completedDate < todayDate) {
+                                item.isOverdue = true;
+                            } else {
+                                item.isOverdue = false;
+                            }
+                        })
             },
             navigate(username) {
                 this.$router.push({
@@ -128,6 +141,10 @@
         display: inline-block;
         margin-bottom: 0.5rem;
         width: 100%;
+    }
+    
+    tr.isDanger {
+        border-left: 2px solid red;
     }
 </style>
 
