@@ -40,7 +40,7 @@
                 <thead>
                     <tr class="">
                         <td>Sl</td>
-                        <td>Status</td>
+                        <td>Status of the Work Done</td>
                         <td>Percentage Completed</td>
                         <td>Date Created</td>
                         <td>Date To Be Completed</td>
@@ -48,22 +48,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(status,index) in showAllStatus" :key='index' v-bind:class="{isDanger : status.isOverdue}">
+                    <tr v-for="(status,index) in showAllStatus" :key='index' v-bind:class="{'isDanger': status['isOverdue'],  'onTrack': !status['isOverdue']}"
+>
                         <td>{{index + 1}}</td>
                         <td> {{status.description}}</td>
                         <td> {{status.percentage_completion}}</td>
                         <td>{{status.date_created}}</td>
-                        <td> {{status.completed_date}}</td>
-                        <td>{{status.manager_name}}</td>
-                    </tr>
-                </tbody>
-            </table>
+                        <td> {{status.completed_date}}
+                            <b-btn v-if="status.isOverdue" v-b-tooltip.hover title="'You have exceeded the completion time'">
+                                <i class="fa fa-exclamation-triangle"></i>
+                            </b-btn>
+                        </td>
+                        <td>{{status.manager_name}} <b-btn v-if="status.isOverdue" v-b-tooltip.hover title="'Please Ask for ETA'">
+                                    <i class="fa fa-envelope"></i>
+                                </b-btn></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        
+            <div v-if="this.showAllStatus.length === 0">
+                <p>No data Found</p>
+            </div>
         </div>
-    
-        <div v-if="this.showAllStatus.length < 0">
-            <p>No data Found</p>
-        </div>
-    </div>
 </template>
 
 <script>
@@ -105,20 +112,20 @@
                         this.showAllStatus = response;
                         console.log("Status by date", JSON.stringify(this.showAllStatus));
                         this.styleRows();
-                        
+    
                     }
                 );
             },
             styleRows: function() {
                 this.showAllStatus.map(item => {
-                            let completedDate = Date.parse(item.completed_date);
-                            let todayDate = Date.parse(new Date());
-                            if (item.percentage_completion < 100 && completedDate < todayDate) {
-                                item.isOverdue = true;
-                            } else {
-                                item.isOverdue = false;
-                            }
-                        })
+                    let completedDate = Date.parse(item.completed_date);
+                    let todayDate = Date.parse(new Date());
+                    if (item.percentage_completion < 100 && completedDate < todayDate) {
+                        item.isOverdue = true;
+                    } else {
+                        item.isOverdue = false;
+                    }
+                })
             },
             navigate(username) {
                 this.$router.push({
@@ -143,8 +150,11 @@
         width: 100%;
     }
     
-    tr.isDanger {
-        border-left: 2px solid red;
+    .isDanger {
+        border-left: 3px solid red;
+    }
+    .onTrack{
+        border-left: 3px solid green;
     }
 </style>
 
