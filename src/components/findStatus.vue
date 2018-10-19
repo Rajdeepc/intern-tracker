@@ -21,13 +21,14 @@
         </b-navbar>
         <br>
         <h4 class="float-left">Find Status By Date:</h4>
+    
         <a style="cursor: pointer; text-decoration: underline" class="float-right" v-on:click="navigate(username)">Back to Dashboard</a>
         <div class="clearfix"></div>
         <br>
         <!-- find all status form -->
         <div class="form-row">
             <div class="form-group col-xs-2 mb-2">
-                <label for="validationCustom01">Select Date</label>
+                <label for="validationCustom01">Select Date:</label>
                 <b-input class="mb-2 mr-sm-2 mb-sm-0" type="date" v-model="date" name="date" id="date" />
             </div>
             <div class="col-xs-3 mb-3">
@@ -38,45 +39,53 @@
         <br>
         <!-- find all status form -->
         <div v-if="getAllStatus">
-        <div class="showstatus" v-if="this.showAllStatus.length > 0">
-            <h4>Showing Status for : <b>{{date}}</b></h4>
-            <table class="table">
-                <thead>
-                    <tr class="">
-                        <td>SL.</td>
-                        <td>Status of the Work Done</td>
-                        <td>Percentage Completed</td>
-                        <td>Date Created</td>
-                        <td>Date To Be Completed</td>
-                        <td>Owned By</td>
-                        <td>Follow Up</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(status,index) in showAllStatus" :key='index' v-bind:class="{'isDanger': status['isOverdue'],  'onTrack': !status['isOverdue']}">
-                        <td>{{index + 1}}</td>
-                        <td> {{status.description}}</td>
-                        <td> {{status.percentage_completion}}</td>
-                        <td>{{status.date_created}}</td>
-                        <td> {{status.completed_date}}
-                            <b-btn v-if="status.isOverdue" v-b-tooltip.hover title="'You have exceeded the completion time'" class="btn btn-warning">
-                                <i class="fa fa-exclamation-triangle"></i>
-                            </b-btn>
-                        </td>
-                        <td>{{status.manager_name}}</td>
-                        <td>
-                            <b-btn v-if="status.isOverdue" v-b-tooltip.hover title="'Send Email for ETA'" class="btn btn-success">
-                                Send Email <i class="fa fa-envelope"></i>
-                            </b-btn>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <!-- show only if no data returned from api -->
-        <div v-if="this.showAllStatus.length === 0">
-            <p>No data Found</p>
-        </div>
+            <div class="showstatus" v-if="this.showAllStatus.length > 0">
+                <h4 class="float-left">Showing Status for : <b>{{date}}</b></h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td><b>SL.</b></td>
+                            <td><b>Status of the Work Done</b></td>
+                            <td><b>Percentage Completed</b></td>
+                            <td><b>Date Created</b></td>
+                            <td><b>Date To Be Completed</b></td>
+                            <td><b>Filter by:</b> <br><select class="" v-model="selectedType" @change="showDataByDev()">
+                                    <option disabled value="none">All</option>
+                                    <option :value="status" v-for="(status,index) in distinctName" :key='index' >
+                                        {{status}}
+                                    </option>
+                            </select>
+                            <i v-if="selectedType != 'none'" class="fa fa-close" @click="clearSelection()"> Clear</i>
+                            </td>
+                            <td><b>Follow Up</b></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(status,index) in showAllStatus" :key='index' v-bind:class="{'isDanger': status['isOverdue'],  'onTrack': !status['isOverdue']}">
+                            <td>{{index + 1}}</td>
+                            <td> {{status.description}}</td>
+                            <td> {{status.percentage_completion}}</td>
+                            <td>{{status.date_created}}</td>
+                            <td> {{status.completed_date}}
+                                <b-btn class="btn_icon" v-if="status.isOverdue" v-b-tooltip.hover title="'You have exceeded the completion time'">
+                                    <i class="fa fa-exclamation-triangle"></i>
+                                </b-btn>
+                            </td>
+                            <td>{{status.manager_name}}</td>
+                            <td>
+                                <b-btn v-if="status.isOverdue" v-b-tooltip.hover title="'Send Email for ETA'" class="btn btn-success">
+                                    Follow Up <i class="fa fa-envelope"></i>
+                                </b-btn>
+                                <p v-if="!status.isOverdue" > Not Required</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- show only if no data returned from api -->
+            <div v-if="this.showAllStatus.length === 0">
+                <p>No data Found</p>
+            </div>
         </div>
     </div>
 </template>
@@ -88,13 +97,19 @@
         name: "FindStatus",
         data() {
             return {
+                selectedType: 'none',
                 selected_project_name: null,
                 selected_manager_name: null,
-                showAllStatus: [],
+                showAllStatus:[],
+                distinctName:[],
+                cloneAllStatus: [],
                 date: "",
                 isOverdue: false,
-                getAllStatus:false
+                getAllStatus: false
             };
+        },
+        computed: {
+          
         },
         mounted() {
             this.username = this.$route.params.username;
@@ -105,7 +120,22 @@
                 this.$router.push("/");
             }
         },
+        
         methods: {
+            clearSelection:function() {
+                this.showAllStatus = this.cloneAllStatus;
+                this.selectedType  = "none";
+            },
+              showDataByDev: function() {
+                let filterType = this.selectedType;
+                let filteredArr = this.showAllStatus;
+
+                if(filterType && filterType.length) {
+                    this.showAllStatus = this.cloneAllStatus.filter((item) => {
+                        return item.manager_name == filterType
+                    })
+                }
+            },
             getTodayDate: function(dateInput) {
                 let newDate = dateInput;
                 let mm = newDate.getMonth() + 1;
@@ -120,14 +150,23 @@
                 DataPostApi.getAllStatusByDateCreated(this.date).then(
                     response => {
                         this.showAllStatus = response;
+                        this.cloneAllStatus = response;
                         console.log("Status by date", JSON.stringify(this.showAllStatus));
                         this.styleRows();
+                        this.selectedType = "none";
     
                     }
                 );
             },
             styleRows: function() {
+                this.distinctName = [];
+                let unique = {};
                 this.showAllStatus.map(item => {
+                    if( typeof(unique[item.manager_name]) == "undefined"){
+                        this.distinctName.push(item.manager_name);
+                        console.log("Distinct Name" + this.distinctName);
+                    }
+                     unique[item.manager_name] = 0;
                     let completedDate = Date.parse(item.completed_date);
                     let todayDate = Date.parse(new Date());
                     if (item.percentage_completion < 100 && completedDate < todayDate) {
@@ -161,11 +200,23 @@
     }
     
     .isDanger {
-        border-left: 3px solid red;
+        border-left: 5px solid red;
     }
     
     .onTrack {
-        border-left: 3px solid green;
+        border-left: 5px solid green;
+    }
+    
+    .btn_icon {
+        background: transparent;
+        border: 0px;
+        color: red;
+    }
+    
+    .btn_icon:hover {
+        background: transparent;
+        border: 0px;
+        color: red;
     }
 </style>
 
