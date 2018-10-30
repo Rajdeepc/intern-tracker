@@ -59,6 +59,10 @@
               <input type="submit" value="SignUp" class="btn btn-primary">&nbsp;&nbsp;
               <input type="reset" value="Reset" class="btn btn-danger">
             </div>
+            <div v-if="submitClicked">
+            <p v-if="signUpText">Sign In Successful</p>
+            <p v-if="!signUpText">Sign In UnSuccessful,Duplicate Record found</p>
+            </div>
           </form>
         </b-card>
       </b-tab>
@@ -90,7 +94,9 @@
           username:null,
           password: null,
           confpassword:null
-        }
+        },
+        signUpText:false,
+        submitClicked:false
       }
     },
     /**
@@ -146,22 +152,21 @@
       submitSignupToDb: function(email,username, password,confpassword) {
         DataPostApi.addtosignupDb(email,username, password,confpassword)
           .then(response => {
+             this.submitClicked = true;
             if (response.saved === true) {
-              // this.$router.push({
-              //   name: "dashboard",
-              //   params: {
-              //     username: username
-              //   }
-              // });
-              // this.$session.set('username', username);
-              console.log("Response Saved to DB")
+               console.log("Response Saved to DB");
+               this.signUpText = true;
             } else {
-              this.errors.push('Invalid Credentials');
+              this.signUpText = false;
             }
           })
           .catch(error => {
             throw error;
           });
+          setTimeout(() => {
+            this.submitClicked = false;
+          },3000)
+          
       },
   
       resetForm: function(e) {

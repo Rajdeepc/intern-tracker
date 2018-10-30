@@ -169,8 +169,8 @@ app.post("/addname", (req, res) => {
 });
 
 /**saving to db user signup credentials */
-app.post("/login", (req, res) => {
-    if(req.body.email &&  req.body.username && req.body.password && req.body.confpassword){
+app.post("/signup", (req, res) => {
+    if(req.body.email && req.body.username && req.body.password && req.body.confpassword){
         var userData = {
             email: req.body.email,
             username: req.body.username,
@@ -179,7 +179,7 @@ app.post("/login", (req, res) => {
         }
         LoginData.create(userData, (err,user) => {
             if (err) {
-                return next(err)
+                res.status(200).json({ saved: false})
               } else {
                 res.status(200).json({ saved: true})
               }

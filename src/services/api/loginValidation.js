@@ -12,7 +12,7 @@ export default {
             password: password,
             confpassword: confpassword
         };
-        const url = "http://localhost:3000/login";
+        const url = "http://localhost:3000/signup";
         return axios.post(url, body)
             .then(response => {
                 return response.data;
