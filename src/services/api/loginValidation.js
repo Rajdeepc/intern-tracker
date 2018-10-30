@@ -3,7 +3,7 @@ import axios from 'axios';
 export default {
 
     /**
-     * axios call to validate login credentials
+     * axios call to post signup data
      */
     addtosignupDb(email,username, password,confpassword) {
         const body = {
@@ -18,7 +18,20 @@ export default {
                 return response.data;
             })
     },
-
+    /**
+     * axios call to validate sign in creds
+     */
+    validateSignIn(email, password) {
+        const body = {
+            email:email,
+            password: password
+        };
+        const url = "http://localhost:3000/signin";
+        return axios.post(url, body)
+            .then(response => {
+                return response.data;
+            })
+    },
     /** Save status to db */
 
     taskSaveApi(description, percentage_completion, completed_date, manager_name, date_created, project_name) {

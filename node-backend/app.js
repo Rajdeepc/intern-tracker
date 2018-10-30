@@ -103,35 +103,20 @@ var loginSchema = new mongoose.Schema({
 //hashing a password before saving it to the database
 loginSchema.pre('save', function (next) {
     var user = this;
-    bcrypt.hash(user.password, 10, function (err, hash){
-      if (err) {
-        return next(err);
-      }
-      user.password = hash;
-      next();
-    })
+    bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash("B4c0/\/", salt, function(err, hash) {
+            // Store hash in your password DB.
+            if (err) {
+                return next(err);
+              }
+              user.password = hash;
+              next();
+        });
+    });
   });
 
   //authenticate input against database
-  loginSchema.statics.authenticate = function (email, password, callback) {
-    User.findOne({ email: email })
-      .exec(function (err, user) {
-        if (err) {
-          return callback(err)
-        } else if (!user) {
-          var err = new Error('User not found.');
-          err.status = 401;
-          return callback(err);
-        }
-        bcrypt.compare(password, user.password, function (err, result) {
-          if (result === true) {
-            return callback(null, user);
-          } else {
-            return callback();
-          }
-        })
-      });
-  }
+ 
 
 
 var User = mongoose.model("DataInput", nameSchema);
@@ -185,6 +170,32 @@ app.post("/signup", (req, res) => {
               }
         });
     }
+});
+/**
+ *      * axios call to validate sign in creds
+
+ */
+app.post("/signin", (req, res) => {
+        loginSchema.statics.authenticate = function (email, password, callback) {
+            console.log("I am inside login Schema");
+            LoginData.findOne({ email: email })
+              .exec(function (err, user) {
+                if (err) {
+                  return callback(err)
+                } else if (!user) {
+                  var err = new Error('User not found.');
+                  err.status = 401;
+                  return callback(err);
+                }
+                bcrypt.compare("B4c0/\/", hash, function(err, res) {
+                    return callback(null, user);
+                });
+                bcrypt.compare("not_bacon", hash, function(err, res) {
+                    return callback();
+                });
+              });
+          }
+    
 });
 
 /** add project data */

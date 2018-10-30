@@ -47,11 +47,11 @@
               <label for="name">Username</label>
               <input class="form-control" type="text" name="username" v-model="signup.username" placeholder="Type your username..">
             </div>
-             <div class="form-group">
+            <div class="form-group">
               <label for="name">Password</label>
               <input class="form-control" type="password" name="password" v-model="signup.password" placeholder="Type your password..">
             </div>
-             <div class="form-group">
+            <div class="form-group">
               <label for="name">Confirm Password</label>
               <input class="form-control" type="password" name="confpassword" v-model="signup.confpassword" placeholder="Confirm your password..">
             </div>
@@ -75,7 +75,7 @@
 
 <script>
   import DataPostApi from "../services/api/loginValidation";
-  import bgImg from '../assets/New_Applied_Now.png';
+  import bgImg from "../assets/New_Applied_Now.png";
   export default {
     name: "Login",
     /**
@@ -84,78 +84,109 @@
     data() {
       return {
         bgImg: bgImg,
-        // errors: [],
+        errors: [],
         signin: {
-          email: '',
-          password: ''
+          email: null,
+          password: null
         },
         signup: {
           email: null,
-          username:null,
+          username: null,
           password: null,
-          confpassword:null
+          confpassword: null
         },
-        signUpText:false,
-        submitClicked:false
-      }
+        signUpText: false,
+        submitClicked: false
+      };
     },
     /**
      * lifecycle hook for data rendering
      */
-    created() {
-  
-    },
-  
+    created() {},
   
     /**
      * form validtion
      */
     methods: {
+      /**
+       * Validate login form submit
+       */
       validateFormSignIn: function(e) {
-        // if (this.signin.email && this.signin.password) {
-        //   this.calltoValidateLogin(this.signin.email, this.signin.password);
-        // }
-        // this.errors = [];
-        // if (!this.signin.email) {
-        //   this.errors.push('Please type an email');
-        // }
-        // if (!this.signin.password) {
-        //   this.errors.push('Please type a password');
-        // }
-        // e.preventDefault();
+        if (this.signin.email && this.signin.password) {
+          this.calltoValidateLogin(this.signin.email, this.signin.password);
+        }
+        this.errors = [];
+        if (!this.signin.email) {
+          this.errors.push("Please type an email");
+        }
+        if (!this.signin.password) {
+          this.errors.push("Please type a password");
+        }
+        e.preventDefault();
       },
-      calltoValidateLogin:function(){
-
+      /**
+       * Validate login and redirect to dashbaord
+       */
+      calltoValidateLogin: function(email,password) {
+        DataPostApi.validateSignIn(email, password)
+          .then(response => {
+            if (response) {
+              this.$router.push({
+                name: "dashboard",
+                params: {
+                  username: username
+                }
+              });
+              this.$session.set('username', username);
+            } else {
+              this.errors.push('Invalid Credentials');
+            }
+          })
+          .catch(error => {
+            throw error;
+          });
       },
+  
+  
       validateSignup: function(e) {
-        if (this.signup.email && this.signup.username && this.signup.password && this.signup.confpassword) {
-          this.submitSignupToDb(this.signup.email, this.signup.username,this.signup.password,this.signup.confpassword);
+        if (
+          this.signup.email &&
+          this.signup.username &&
+          this.signup.password &&
+          this.signup.confpassword
+        ) {
+          this.submitSignupToDb(
+            this.signup.email,
+            this.signup.username,
+            this.signup.password,
+            this.signup.confpassword
+          );
         }
         this.errors = [];
         if (!this.signup.email) {
-          this.errors.push('Please type an email');
+          this.errors.push("Please type an email");
         }
         if (!this.signup.username) {
-          this.errors.push('Please type an username');
+          this.errors.push("Please type an username");
         }
         if (!this.signup.password) {
-          this.errors.push('Please type a password');
+          this.errors.push("Please type a password");
         }
         if (!this.signup.confpassword) {
-          this.errors.push('Please confirm the password');
+          this.errors.push("Please confirm the password");
         }
         e.preventDefault();
       },
       /**
        * method to post signup data
        */
-      submitSignupToDb: function(email,username, password,confpassword) {
-        DataPostApi.addtosignupDb(email,username, password,confpassword)
+      submitSignupToDb: function(email, username, password, confpassword) {
+        DataPostApi.addtosignupDb(email, username, password, confpassword)
           .then(response => {
-             this.submitClicked = true;
+            this.submitClicked = true;
             if (response.saved === true) {
-               console.log("Response Saved to DB");
-               this.signUpText = true;
+              console.log("Response Saved to DB");
+              this.signUpText = true;
             } else {
               this.signUpText = false;
             }
@@ -163,21 +194,18 @@
           .catch(error => {
             throw error;
           });
-          setTimeout(() => {
-            this.submitClicked = false;
-          },3000)
-          
+        setTimeout(() => {
+          this.submitClicked = false;
+        }, 3000);
       },
   
       resetForm: function(e) {
         e.preventDefault();
-        this.signup.email = '';
-        this.signup.username = '';
-        this.signup.password = '';
-        this.signup.confpassword = '';
-
-      },
-      
+        this.signup.email = "";
+        this.signup.username = "";
+        this.signup.password = "";
+        this.signup.confpassword = "";
+      }
     }
   };
 </script>
