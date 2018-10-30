@@ -60,8 +60,8 @@
               <input type="reset" value="Reset" class="btn btn-danger">
             </div>
             <div v-if="submitClicked">
-            <p v-if="signUpText">Sign In Successful</p>
-            <p v-if="!signUpText">Sign In UnSuccessful,Duplicate Record found</p>
+              <p v-if="signUpText">Sign Up Successful</p>
+              <p v-if="!signUpText">Sign Up Not Successful,Duplicate Record found</p>
             </div>
           </form>
         </b-card>

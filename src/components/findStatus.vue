@@ -44,12 +44,12 @@
                             <td><b>Date Created</b></td>
                             <td><b>Date To Be Completed</b></td>
                             <td><b>Filter by:</b> <br><select class="" v-model="selectedType" @change="showDataByDev()">
-                                    <option disabled value="none">All</option>
-                                    <option :value="status" v-for="(status,index) in distinctName" :key='index' >
-                                        {{status}}
-                                    </option>
-                            </select>
-                            <i v-if="selectedType != 'none'" class="fa fa-close" @click="clearSelection()"> Clear</i>
+                                        <option disabled value="none">All</option>
+                                        <option :value="status" v-for="(status,index) in distinctName" :key='index' >
+                                            {{status}}
+                                        </option>
+                                </select>
+                                <i v-if="selectedType != 'none'" class="fa fa-close" @click="clearSelection()"> Clear</i>
                             </td>
                             <td><b>Follow Up</b></td>
                         </tr>
@@ -70,7 +70,7 @@
                                 <b-btn v-if="status.isOverdue" v-b-tooltip.hover title="'Send Email for ETA'" class="btn btn-success">
                                     Follow Up <i class="fa fa-envelope"></i>
                                 </b-btn>
-                                <p v-if="!status.isOverdue" > Not Required</p>
+                                <p v-if="!status.isOverdue"> Not Required</p>
                             </td>
                         </tr>
                     </tbody>
@@ -94,8 +94,8 @@
                 selectedType: 'none',
                 selected_project_name: null,
                 selected_manager_name: null,
-                showAllStatus:[],
-                distinctName:[],
+                showAllStatus: [],
+                distinctName: [],
                 cloneAllStatus: [],
                 date: "",
                 isOverdue: false,
@@ -104,7 +104,7 @@
             };
         },
         computed: {
-          
+    
         },
         mounted() {
             this.username = this.$route.params.username;
@@ -115,17 +115,17 @@
                 this.$router.push("/");
             }
         },
-        
+    
         methods: {
-            clearSelection:function() {
+            clearSelection: function() {
                 this.showAllStatus = this.cloneAllStatus;
-                this.selectedType  = "none";
+                this.selectedType = "none";
             },
-              showDataByDev: function() {
+            showDataByDev: function() {
                 let filterType = this.selectedType;
                 let filteredArr = this.showAllStatus;
-
-                if(filterType && filterType.length) {
+    
+                if (filterType && filterType.length) {
                     this.showAllStatus = this.cloneAllStatus.filter((item) => {
                         return item.manager_name == filterType
                     })
@@ -157,11 +157,11 @@
                 this.distinctName = [];
                 let unique = {};
                 this.showAllStatus.map(item => {
-                    if( typeof(unique[item.manager_name]) == "undefined"){
+                    if (typeof(unique[item.manager_name]) == "undefined") {
                         this.distinctName.push(item.manager_name);
                         console.log("Distinct Name" + this.distinctName);
                     }
-                     unique[item.manager_name] = 0;
+                    unique[item.manager_name] = 0;
                     let completedDate = Date.parse(item.completed_date);
                     let todayDate = Date.parse(new Date());
                     if (item.percentage_completion < 100 && completedDate < todayDate) {
@@ -169,8 +169,7 @@
                         item.notOverdue = false;
                     } else if (item.percentage_completion = 100 && completedDate < todayDate) {
                         item.notOverdue = true;
-                    } 
-                    else {
+                    } else {
                         item.isOverdue = false;
                         item.notOverdue = false;
                     }
@@ -206,9 +205,11 @@
     .onTrack {
         border-left: 5px solid orange;
     }
+    
     .allGood {
-        border-left:  5px solid green;
+        border-left: 5px solid green;
     }
+    
     .btn_icon {
         background: transparent;
         border: 0px;
