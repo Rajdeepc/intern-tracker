@@ -7,6 +7,8 @@ var app = express();
 var nodemailer = require('nodemailer');
 var xoauth2 = require('xoauth2');
 var smtpTransport = require('nodemailer-smtp-transport');
+var session = require('express-session');
+var bcrypt = require('bcryptjs');
 
 var statusId = 0;
 /**connection string to db */
@@ -35,6 +37,13 @@ app.use(function (req, res, next) {
 /**body parser */
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+//use sessions for tracking logins
+app.use(session({
+    secret: 'work hard',
+    resave: true,
+    saveUninitialized: false
+  }));
+
 
 /**starting route */
 app.get('/', (req, res) => {
@@ -68,10 +77,61 @@ var projectSchema = new mongoose.Schema({
 });
 
 var loginSchema = new mongoose.Schema({
-    username: String,
+    email: {
+        type: String,
+        unique: true,
+        required: true,
+        trim: true
+      },
+      username: {
+        type: String,
+        unique: true,
+        required: true,
+        trim: true
+      },
+      password: {
+        type: String,
+        required: true,
+      },
+      confpassword: {
+        type: String,
+        required: true,
+      },
     date_created:String
 });
 
+//hashing a password before saving it to the database
+loginSchema.pre('save', function (next) {
+    var user = this;
+    bcrypt.hash(user.password, 10, function (err, hash){
+      if (err) {
+        return next(err);
+      }
+      user.password = hash;
+      next();
+    })
+  });
+
+  //authenticate input against database
+  loginSchema.statics.authenticate = function (email, password, callback) {
+    User.findOne({ email: email })
+      .exec(function (err, user) {
+        if (err) {
+          return callback(err)
+        } else if (!user) {
+          var err = new Error('User not found.');
+          err.status = 401;
+          return callback(err);
+        }
+        bcrypt.compare(password, user.password, function (err, result) {
+          if (result === true) {
+            return callback(null, user);
+          } else {
+            return callback();
+          }
+        })
+      });
+  }
 
 
 var User = mongoose.model("DataInput", nameSchema);
@@ -80,7 +140,7 @@ var ProjectData = mongoose.model("projectdata", projectSchema,"projectdata");
 
 var PostProjectData = mongoose.model("projectdata", projectSchema,"projectdata");
 
-var LoginData = mongoose.model("logindata", loginSchema);
+var LoginData = mongoose.model("userdatas", loginSchema);
 
 
 
@@ -108,16 +168,23 @@ app.post("/addname", (req, res) => {
         });
 });
 
-/**saving to db login credentials */
+/**saving to db user signup credentials */
 app.post("/login", (req, res) => {
-    var newData = new LoginData(req.body);
-    newData.save()
-        .then(item => {
-            res.status(200).json({ saved: true})
-        })
-        .catch(err => {
-            res.status(400).json({ save: false })
+    if(req.body.email &&  req.body.username && req.body.password && req.body.confpassword){
+        var userData = {
+            email: req.body.email,
+            username: req.body.username,
+            password: req.body.password,
+            confpassword: req.body.confpassword
+        }
+        LoginData.create(userData, (err,user) => {
+            if (err) {
+                return next(err)
+              } else {
+                res.status(200).json({ saved: true})
+              }
         });
+    }
 });
 
 /** add project data */

@@ -5,10 +5,12 @@ export default {
     /**
      * axios call to validate login credentials
      */
-    validateLogin(username, password) {
+    addtosignupDb(email,username, password,confpassword) {
         const body = {
+            email:email,
             username: username,
-            password: password
+            password: password,
+            confpassword: confpassword
         };
         const url = "http://localhost:3000/login";
         return axios.post(url, body)
