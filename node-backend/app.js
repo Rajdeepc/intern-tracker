@@ -104,19 +104,38 @@ var loginSchema = new mongoose.Schema({
 loginSchema.pre('save', function (next) {
     var user = this;
     bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash("B4c0/\/", salt, function(err, hash) {
+        bcrypt.hash(user.password, salt, function(err, hash) {
             // Store hash in your password DB.
             if (err) {
                 return next(err);
               }
               user.password = hash;
+              user.confpassword = hash;
               next();
         });
     });
   });
 
   //authenticate input against database
- 
+  loginSchema.statics.authenticate = function (email, password, callback) {
+    console.log("I am inside login Schema");
+    LoginData.findOne({ email: email })
+      .exec(function (err, user) {
+        if (err) {
+          return callback(err)
+        } else if (!user) {
+          var err = new Error('User not found.');
+          err.status = 401;
+          return callback(err);
+        }
+        bcrypt.compare("B4c0/\/", hash, function(err, res) {
+            return callback(null, user);
+        });
+        bcrypt.compare("not_bacon", hash, function(err, res) {
+            return callback();
+        });
+      });
+  }
 
 
 var User = mongoose.model("DataInput", nameSchema);
@@ -176,25 +195,7 @@ app.post("/signup", (req, res) => {
 
  */
 app.post("/signin", (req, res) => {
-        loginSchema.statics.authenticate = function (email, password, callback) {
-            console.log("I am inside login Schema");
-            LoginData.findOne({ email: email })
-              .exec(function (err, user) {
-                if (err) {
-                  return callback(err)
-                } else if (!user) {
-                  var err = new Error('User not found.');
-                  err.status = 401;
-                  return callback(err);
-                }
-                bcrypt.compare("B4c0/\/", hash, function(err, res) {
-                    return callback(null, user);
-                });
-                bcrypt.compare("not_bacon", hash, function(err, res) {
-                    return callback();
-                });
-              });
-          }
+       
     
 });
 

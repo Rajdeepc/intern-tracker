@@ -7,7 +7,7 @@
       <b-tab title="Login">
         <br>
         <b-card bg-variant="light" text-variant="black" style="max-width: 30rem;margin:0 auto;">
-          <form class="form-horizontal" @submit="validateFormSignIn" @reset="resetForm">
+          <form class="form-horizontal" @submit="validateFormSignIn" @reset="resetForm('signIn')">
             <p v-if="errors.length">
               <b>Please fix the following errors</b>
               <ul>
@@ -32,7 +32,7 @@
       <b-tab title="Sign Up" active>
         <br>
         <b-card bg-variant="light" text-variant="black" style="max-width: 30rem;margin:0 auto;">
-          <form class="form-horizontal" @submit="validateSignup" @reset="resetForm">
+          <form class="form-horizontal" @submit="validateSignup" @reset="resetForm('signUp')">
             <p v-if="errors.length">
               <b>Please fix the following errors</b>
               <ul>
@@ -127,7 +127,7 @@
       /**
        * Validate login and redirect to dashbaord
        */
-      calltoValidateLogin: function(email,password) {
+      calltoValidateLogin: function(email, password) {
         DataPostApi.validateSignIn(email, password)
           .then(response => {
             if (response) {
@@ -149,20 +149,20 @@
   
   
       validateSignup: function(e) {
-        if (
-          this.signup.email &&
-          this.signup.username &&
-          this.signup.password &&
-          this.signup.confpassword
-        ) {
-          this.submitSignupToDb(
-            this.signup.email,
-            this.signup.username,
-            this.signup.password,
-            this.signup.confpassword
-          );
+         this.errors = [];
+        if (this.signup.email && this.signup.username && this.signup.password && this.signup.confpassword) {
+          if (this.signup.password === this.signup.confpassword) {
+            this.submitSignupToDb(
+              this.signup.email,
+              this.signup.username,
+              this.signup.password,
+              this.signup.confpassword
+            );
+          } else {
+             this.errors.push("Password doesnt match");
+          }
         }
-        this.errors = [];
+       
         if (!this.signup.email) {
           this.errors.push("Please type an email");
         }
@@ -199,12 +199,19 @@
         }, 3000);
       },
   
-      resetForm: function(e) {
+      resetForm: function(e, isSigninForm) {
         e.preventDefault();
-        this.signup.email = "";
-        this.signup.username = "";
-        this.signup.password = "";
-        this.signup.confpassword = "";
+        this.isSigninForm = isSigninForm;
+        if (isSigninForm == 'signIn') {
+          this.signin.email = "";
+          this.signin.password = "";
+        }
+        if (isSigninForm == 'signUp') {
+          this.signup.email = "";
+          this.signup.username = "";
+          this.signup.email = "";
+          this.signup.confpassword = "";
+        }
       }
     }
   };
