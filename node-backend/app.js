@@ -8,7 +8,7 @@ var nodemailer = require('nodemailer');
 var xoauth2 = require('xoauth2');
 var smtpTransport = require('nodemailer-smtp-transport');
 var session = require('express-session');
-var bcrypt = require('bcryptjs');
+var bcrypt = require('bcrypt');
 
 var statusId = 0;
 /**connection string to db */
@@ -37,12 +37,16 @@ app.use(function (req, res, next) {
 /**body parser */
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-//use sessions for tracking logins
-app.use(session({
-    secret: 'work hard',
-    resave: true,
-    saveUninitialized: false
-  }));
+// parse the raw data
+app.use(bodyParser.raw());
+// parse text
+app.use(bodyParser.text());
+// //use sessions for tracking logins
+// app.use(session({
+//     secret: 'work hard',
+//     resave: true,
+//     saveUninitialized: false
+//   }));
 
 
 /**starting route */
@@ -96,8 +100,7 @@ var loginSchema = new mongoose.Schema({
       confpassword: {
         type: String,
         required: true,
-      },
-    date_created:String
+      }
 });
 
 //hashing a password before saving it to the database
@@ -109,17 +112,16 @@ loginSchema.pre('save', function (next) {
             if (err) {
                 return next(err);
               }
-              user.password = hash;
-              user.confpassword = hash;
+            //   user.password = hash;
+            //   user.confpassword = hash;
               next();
         });
     });
   });
 
-  //authenticate input against database
-  loginSchema.statics.authenticate = function (email, password, callback) {
-    console.log("I am inside login Schema");
-    LoginData.findOne({ email: email })
+ //authenticate input against database
+loginSchema.statics.authenticate = function (email, password, callback) {
+    User.findOne({ email: email })
       .exec(function (err, user) {
         if (err) {
           return callback(err)
@@ -128,12 +130,13 @@ loginSchema.pre('save', function (next) {
           err.status = 401;
           return callback(err);
         }
-        bcrypt.compare("B4c0/\/", hash, function(err, res) {
+        bcrypt.compare(password, user.password, function (err, result) {
+          if (result === true) {
             return callback(null, user);
-        });
-        bcrypt.compare("not_bacon", hash, function(err, res) {
+          } else {
             return callback();
-        });
+          }
+        })
       });
   }
 
@@ -188,17 +191,35 @@ app.post("/signup", (req, res) => {
                 res.status(200).json({ saved: true})
               }
         });
-    }
+    } 
 });
 /**
  *      * axios call to validate sign in creds
 
  */
-app.post("/signin", (req, res) => {
-       
+app.post("/signin", (req, res,next) => {
+     if (req.body.logemail && req.body.logpassword) {
+        LoginData.authenticate(req.body.logemail, req.body.logpassword, function (error, user) {
+          if (error || !user) {
+            var err = new Error('Wrong email or password.');
+            err.status = 401;
+            return next(err);
+          } else {
+            req.session.userId = user._id;
+            return res.redirect('/dashboard');
+          }
+        });
+      } else {
+        var err = new Error('All fields required.');
+        err.status = 400;
+        return next(err);
+      }
     
 });
-
+// GET /login
+app.get('/signin', function(req, res, next) {
+    return res.render('signin', {title: 'Log In'});
+});
 /** add project data */
 app.post("/postprojectdata", (req, res) => {
     var newDataPost = new PostProjectData(req.body);

@@ -21,10 +21,10 @@ export default {
     /**
      * axios call to validate sign in creds
      */
-    validateSignIn(email, password) {
+    validateSignIn(logemail, logpassword) {
         const body = {
-            email:email,
-            password: password
+            logemail:logemail,
+            logpassword: logpassword
         };
         const url = "http://localhost:3000/signin";
         return axios.post(url, body)

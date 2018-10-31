@@ -15,12 +15,12 @@
               </ul>
             </p>
             <div class="form-group">
-              <label for="name">Email/Username</label>
-              <input class="form-control" type="text" name="email" v-model="signin.email" placeholder="Type your email id..">
+              <label for="name">Email</label>
+              <input class="form-control" type="text" name="logemail" v-model="logemail" placeholder="Type your email id..">
             </div>
             <div class="form-group">
               <label for="name">Password</label>
-              <input class="form-control" type="password" name="password" v-model="signin.password" placeholder="Type your password..">
+              <input class="form-control" type="password" name="logpassword" v-model="logpassword" placeholder="Type your password..">
             </div>
             <div class="form-group">
               <input type="submit" value="LogIn" class="btn btn-primary">&nbsp;&nbsp;
@@ -85,10 +85,8 @@
       return {
         bgImg: bgImg,
         errors: [],
-        signin: {
-          email: null,
-          password: null
-        },
+        logemail: null,
+        logpassword: null,
         signup: {
           email: null,
           username: null,
@@ -112,14 +110,14 @@
        * Validate login form submit
        */
       validateFormSignIn: function(e) {
-        if (this.signin.email && this.signin.password) {
-          this.calltoValidateLogin(this.signin.email, this.signin.password);
+        if (this.logemail && this.logpassword) {
+          this.calltoValidateLogin(this.logemail, this.logpassword);
         }
         this.errors = [];
-        if (!this.signin.email) {
+        if (!this.logemail) {
           this.errors.push("Please type an email");
         }
-        if (!this.signin.password) {
+        if (!this.logpassword) {
           this.errors.push("Please type a password");
         }
         e.preventDefault();
@@ -127,8 +125,8 @@
       /**
        * Validate login and redirect to dashbaord
        */
-      calltoValidateLogin: function(email, password) {
-        DataPostApi.validateSignIn(email, password)
+      calltoValidateLogin: function(logemail, logpassword) {
+        DataPostApi.validateSignIn(logemail, logpassword)
           .then(response => {
             if (response) {
               this.$router.push({
@@ -149,7 +147,7 @@
   
   
       validateSignup: function(e) {
-         this.errors = [];
+        this.errors = [];
         if (this.signup.email && this.signup.username && this.signup.password && this.signup.confpassword) {
           if (this.signup.password === this.signup.confpassword) {
             this.submitSignupToDb(
@@ -159,10 +157,10 @@
               this.signup.confpassword
             );
           } else {
-             this.errors.push("Password doesnt match");
+            this.errors.push("Password doesnt match");
           }
         }
-       
+  
         if (!this.signup.email) {
           this.errors.push("Please type an email");
         }
