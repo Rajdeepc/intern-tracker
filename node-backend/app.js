@@ -37,10 +37,7 @@ app.use(function (req, res, next) {
 /**body parser */
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// parse the raw data
-app.use(bodyParser.raw());
-// parse text
-app.use(bodyParser.text());
+
 // //use sessions for tracking logins
 // app.use(session({
 //     secret: 'work hard',
@@ -121,8 +118,11 @@ loginSchema.pre('save', function (next) {
 
  //authenticate input against database
 loginSchema.statics.authenticate = function (email, password, callback) {
+    console.log("i am in loginschema method");
     User.findOne({ email: email })
       .exec(function (err, user) {
+        console.log("user in loginschema",user);
+
         if (err) {
           return callback(err)
         } else if (!user) {
@@ -131,6 +131,7 @@ loginSchema.statics.authenticate = function (email, password, callback) {
           return callback(err);
         }
         bcrypt.compare(password, user.password, function (err, result) {
+            console.log("user in bycrypt", user)
           if (result === true) {
             return callback(null, user);
           } else {
@@ -198,8 +199,11 @@ app.post("/signup", (req, res) => {
 
  */
 app.post("/signin", (req, res,next) => {
-     if (req.body.logemail && req.body.logpassword) {
-        LoginData.authenticate(req.body.logemail, req.body.logpassword, function (error, user) {
+     if (req.body.email && req.body.password) {
+        console.log("username",req.body.email);
+        console.log("password",req.body.password)
+        LoginData.authenticate(req.body.email, req.body.password, function (error, user) {
+            console.log("user", user);
           if (error || !user) {
             var err = new Error('Wrong email or password.');
             err.status = 401;
