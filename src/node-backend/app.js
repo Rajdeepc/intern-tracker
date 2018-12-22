@@ -266,7 +266,7 @@ app.get('/getprojectdata/:username', (req,res)=>{
 
 /** delete node */
 
-app.delete('/deleterecord/:_id', (req,res) =>{
+app.delete('/:_id/deleterecord', (req,res) =>{
 console.log("Reqyest param" + req.params._id)
   User.findByIdAndRemove(req.params._id , (err,data) => {
       res.status(200).send(data);

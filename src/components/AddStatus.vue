@@ -139,11 +139,11 @@
       deleteRecord: function(index, id) {
         DataPostApi.deleteStatusById(id)
           .then(response => {
-            if (response.data) {
+            if (response) {
               this.getAllStatusToday();
             }
           }).catch(err => {
-            console.log("Error in update" + err);
+            console.log("Error in delete record" + err);
           });
   
       },
