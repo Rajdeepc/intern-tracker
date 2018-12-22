@@ -38,12 +38,12 @@ app.use(function (req, res, next) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// //use sessions for tracking logins
-// app.use(session({
-//     secret: 'work hard',
-//     resave: true,
-//     saveUninitialized: false
-//   }));
+//use sessions for tracking logins
+app.use(session({
+    secret: 'work hard',
+    resave: true,
+    saveUninitialized: false
+  }));
 
 
 /**starting route */
@@ -109,20 +109,18 @@ loginSchema.pre('save', function (next) {
             if (err) {
                 return next(err);
               }
-            //   user.password = hash;
-            //   user.confpassword = hash;
+              user.password = hash;
+              user.confpassword = hash;
               next();
         });
     });
   });
 
  //authenticate input against database
+//authenticate input against database
 loginSchema.statics.authenticate = function (email, password, callback) {
-    console.log("i am in loginschema method");
-    User.findOne({ email: email })
+    LoginData.findOne({ email: email })
       .exec(function (err, user) {
-        console.log("user in loginschema",user);
-
         if (err) {
           return callback(err)
         } else if (!user) {
@@ -131,7 +129,6 @@ loginSchema.statics.authenticate = function (email, password, callback) {
           return callback(err);
         }
         bcrypt.compare(password, user.password, function (err, result) {
-            console.log("user in bycrypt", user)
           if (result === true) {
             return callback(null, user);
           } else {
@@ -140,6 +137,7 @@ loginSchema.statics.authenticate = function (email, password, callback) {
         })
       });
   }
+  
 
 
 var User = mongoose.model("DataInput", nameSchema);
@@ -210,7 +208,7 @@ app.post("/signin", (req, res,next) => {
             return next(err);
           } else {
             req.session.userId = user._id;
-            return res.redirect('/dashboard');
+            return res.send(200)
           }
         });
       } else {

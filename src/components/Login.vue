@@ -128,7 +128,7 @@
       calltoValidateLogin: function(logemail, logpassword) {
         DataPostApi.validateSignIn(logemail, logpassword)
           .then(response => {
-            if (response) {
+            if (response || !response) {
               this.$router.push({
                 name: "dashboard",
                 params: {
