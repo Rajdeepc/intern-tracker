@@ -16,11 +16,11 @@
             </p>
             <div class="form-group">
               <label for="name">Email</label>
-              <input class="form-control" type="text" name="logemail" v-model="logemail" placeholder="Type your email id..">
+              <input class="form-control" type="text" name="username" v-model="username" placeholder="Type your email id..">
             </div>
             <div class="form-group">
               <label for="name">Password</label>
-              <input class="form-control" type="password" name="logpassword" v-model="logpassword" placeholder="Type your password..">
+              <input class="form-control" type="password" name="password" v-model="password" placeholder="Type your password..">
             </div>
             <div class="form-group">
               <input type="submit" value="LogIn" class="btn btn-primary">&nbsp;&nbsp;
@@ -85,8 +85,8 @@
       return {
         bgImg: bgImg,
         errors: [],
-        logemail: null,
-        logpassword: null,
+        username: null,
+        password: null,
         signup: {
           email: null,
           username: null,
@@ -110,14 +110,14 @@
        * Validate login form submit
        */
       validateFormSignIn: function(e) {
-        if (this.logemail && this.logpassword) {
-          this.calltoValidateLogin(this.logemail, this.logpassword);
+        if (this.username && this.password) {
+          this.calltoValidateLogin(this.username, this.password);
         }
         this.errors = [];
-        if (!this.logemail) {
-          this.errors.push("Please type an email");
+        if (!this.username) {
+          this.errors.push("Please type an username");
         }
-        if (!this.logpassword) {
+        if (!this.password) {
           this.errors.push("Please type a password");
         }
         e.preventDefault();
@@ -125,8 +125,8 @@
       /**
        * Validate login and redirect to dashbaord
        */
-      calltoValidateLogin: function(logemail, logpassword) {
-        DataPostApi.validateSignIn(logemail, logpassword)
+      calltoValidateLogin: function(username, password) {
+        DataPostApi.validateSignIn(username, password)
           .then(response => {
             if (response || !response) {
               this.$router.push({
