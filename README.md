@@ -32,3 +32,7 @@ npm run lint
 
 ![Image](image.png)
 
+###UPDATES
+
+Updated login encryption
+Updated Delete option
