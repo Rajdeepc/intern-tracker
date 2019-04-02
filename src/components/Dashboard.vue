@@ -20,7 +20,7 @@
       </b-collapse>
     </b-navbar>
     <br>
-    <a class="float-right" v-on:click="navitageToAllStatus(getUsername)">Navigate to All Status</a>
+    <a class="float-right" v-on:click="navitageToAllStatus(getUsername)"><span>GoTo All Status Page </span><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
     <div class="container">
       <br>
       <p>Welcome <b>{{getUsername}}</b>,

@@ -90,3 +90,9 @@
   };
 </script>
 
+<style scoped>
+a.btn.btn-success.float-right {
+    margin-bottom: 10px;
+    color: #fff;
+}
+</style>

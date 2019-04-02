@@ -68,8 +68,15 @@
       </b-tab>
   
     </b-tabs>
-  
+    <br>
+    <br>
+    <div class="text-center" style="font-size: 12px;color: #888;">
+Made with <i class="fa fa-heart"></i> in Accenture
+
+    </div>
   </div>
+
+
 </template>
 
 
@@ -222,4 +229,11 @@
     max-width: 100%;
     margin-bottom: 30px;
   }
+  .tabs {
+    width: 400px;
+    margin: 0 auto;
+}
+i.fa.fa-heart {
+    color: #f442ad;
+}
 </style>

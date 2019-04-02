@@ -58,9 +58,9 @@
       <table class="table table-striped">
         <thead>
           <tr class="">
-            <td>Sl</td>
+            <td>SL</td>
             <td>Status For Today</td>
-            <td>Percentage Completed</td>
+            <td>Percentage Completed(%)</td>
             <td>Date To Be Completed</td>
             <td>Owned By</td>
             <td>&nbsp;</td>
@@ -70,7 +70,7 @@
           <tr v-for="(status,index) in showAllStatus" :key='index' :class="{editing: status == editedStatus}" v-cloak>
             <td>{{index + 1}}</td>
             <td>  <div class="view">{{status.description}}</div><div class="edit"><input type="text" class="form-control"  v-model="status.description"></div></td>
-            <td>  <div class="view">{{status.percentage_completion}}</div><div class="edit"><input type="text" class="form-control"  v-model="status.percentage_completion"></div></td>
+            <td>  <div class="view">{{status.percentage_completion}}%</div><div class="edit"><input type="text" class="form-control"  v-model="status.percentage_completion"></div></td>
             <td>  <div class="view">{{status.completed_date}}</div><div class="edit"><input type="date" class="form-control"  v-model="status.completed_date"></div></td>
             <td>{{status.manager_name}}</td>
             <td>
@@ -87,7 +87,7 @@
       </table>
     </div>
     <div class="row text-right">
-      <button class="btn btn-primary" v-if="countSubmitted === countTotal" @click="sendmail()">Send Email</button>
+      <button class="btn btn-success" disabled="countSubmitted !== countTotal" @click="sendmail()">Send Email</button>
     </div>
     <p v-if="this.emailsenttext === true">Email successfully sent</p>
   
@@ -304,5 +304,8 @@
     .empty-label {
       width: 100%;
     }
+    .view.float-left {
+    margin-right: 10px;
+}
 </style>
 

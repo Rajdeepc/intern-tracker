@@ -40,7 +40,7 @@
                         <tr>
                             <td><b>SL.</b></td>
                             <td><b>Status of the Work Done</b></td>
-                            <td><b>Percentage Completed</b></td>
+                            <td><b>Percentage Completed %</b></td>
                             <td><b>Date Created</b></td>
                             <td><b>Date To Be Completed</b></td>
                             <td><b>Filter by:</b> <br><select class="" v-model="selectedType" @change="showDataByDev()">
@@ -58,7 +58,7 @@
                         <tr v-for="(status,index) in showAllStatus" :key='index' v-bind:class="{'isDanger': status['isOverdue'],  'onTrack': !status['isOverdue'],'allGood' : status['notOverdue']}">
                             <td>{{index + 1}}</td>
                             <td> {{status.description}}</td>
-                            <td> {{status.percentage_completion}}</td>
+                            <td> {{status.percentage_completion}} %</td>
                             <td>{{status.date_created}}</td>
                             <td> {{status.completed_date}}
                                 <b-btn class="btn_icon" v-if="status.isOverdue" v-b-tooltip.hover title="'You have exceeded the completion time'">
@@ -167,7 +167,7 @@
                     if (item.percentage_completion < 100 && completedDate < todayDate) {
                         item.isOverdue = true;
                         item.notOverdue = false;
-                    } else if (item.percentage_completion = 100 && completedDate < todayDate) {
+                    } else if (item.percentage_completion === 100 && completedDate < todayDate) {
                         item.notOverdue = true;
                     } else {
                         item.isOverdue = false;
