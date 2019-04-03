@@ -23,7 +23,7 @@
               <input class="form-control" type="password" name="password" v-model="password" placeholder="Type your password..">
             </div>
             <div class="form-group">
-              <input type="submit" value="LogIn" class="btn btn-primary">&nbsp;&nbsp;
+              <input type="submit" value="Login" class="btn btn-primary">&nbsp;&nbsp;
               <input type="reset" value="Reset" class="btn btn-danger">
             </div>
           </form>
