@@ -1,15 +1,12 @@
 <template>
   <div class="editableform">
     <h4>Project Details:</h4>
-    <b-card>
-      <b-container class="bv-example-row">
-        <b-row>
-          <b-col><b>Project:</b> {{projectSelected.project_name}} </b-col>
-          <b-col><b>Manager:</b> {{projectSelected.manager_name}} </b-col>
-          <b-col><b>Date:</b> {{getTodayDate(new Date())}} </b-col>
-        </b-row>
-      </b-container>
-    </b-card>
+    <b-list-group horizontal>
+      <b-list-group-item><b>Project:</b> {{projectSelected.project_name}} </b-list-group-item>
+      <b-list-group-item><b>Manager:</b> {{projectSelected.manager_name}} </b-list-group-item>
+      <b-list-group-item><b>Date:</b> {{getTodayDate(new Date())}}</b-list-group-item>
+    </b-list-group>
+    <br>
     <br>
     <div class="formToAdd">
       <h4>Add Your Status For today:</h4>
@@ -31,11 +28,11 @@
   
             <b-input class="mb-2 mr-sm-2 mb-sm-0" type="date" v-model="completed_date" name="completed_date" id="completed_date" />
           </div>
-          <div class="form-group col-xs-2 mb-2">
-            <label for="validationCustom01">Owned By</label>
+          <!-- <div class="form-group col-xs-2 mb-2">
+            <label for="validationCustom01">Owner </label>
             <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="manager_name" value="" readonly="" name="manager_name" />
   
-          </div>
+          </div> -->
           <input type="hidden" value="" v-model="date_created" name="date_created" />
           <div class="col-xs-3 mb-3">
             <label for="validationCustom01" class="empty-label">&nbsp;</label>
@@ -44,54 +41,72 @@
         </div>
       </b-form>
       <p v-if="showMessage === true">Data SuccessFully Saved</p>
+      <b-toast v-if="showMessage === true" id="sentDataSuccessToast" variant="success" solid>
+        This is the content of the toast. It is short and to the point.
+      </b-toast>
+  
+  
     </div>
     <br/>
     <br/>
     <!-- show the messages added -->
-    <h5>
-   <p class="float-left"><b>Status for Today:</b></p>  
-    <p class="float-right">
-      <b>Members Submitted: </b><span>{{ countSubmitted }}</span> / <span>{{ countTotal }} </span>
-    </p>
-    </h5>
-    <div class="showstatus">
-      <table class="table table-striped">
-        <thead>
-          <tr class="">
-            <td>SL</td>
-            <td>Status For Today</td>
-            <td>Percentage Completed(%)</td>
-            <td>Date To Be Completed</td>
-            <td>Owned By</td>
-            <td>&nbsp;</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(status,index) in showAllStatus" :key='index' :class="{editing: status == editedStatus}" v-cloak>
-            <td>{{index + 1}}</td>
-            <td>  <div class="view">{{status.description}}</div><div class="edit"><input type="text" class="form-control"  v-model="status.description"></div></td>
-            <td>  <div class="view">{{status.percentage_completion}}%</div><div class="edit"><input type="text" class="form-control"  v-model="status.percentage_completion"></div></td>
-            <td>  <div class="view">{{status.completed_date}}</div><div class="edit"><input type="date" class="form-control"  v-model="status.completed_date"></div></td>
-            <td>{{status.manager_name}}</td>
-            <td>
-              <div class="view float-left">
-              <b-button variant="warning" :disabled="status.manager_name !== manager_name" @click="editFields(status)"><i class="fa fa-edit"></i></b-button>
-              </div>
-              <div class="edit float-left">
-              <b-button variant="success" :disabled="status.manager_name !== manager_name" @click="saveFields(status)"><i class="fa fa-save"></i></b-button>
-              </div>
-              <b-button variant="danger" class="float-left" :disabled="status.manager_name !== manager_name" @click="deleteRecord(index,status._id)"><i class="fa fa-trash"></i></b-button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="row text-right">
-      <button class="btn btn-success" disabled="countSubmitted !== countTotal" @click="sendmail()">Send Email</button>
-    </div>
-    <p v-if="this.emailsenttext === true">Email successfully sent</p>
+    <div v-if="showStatusGrid">
+      <h5>
+        <p class="float-left"><b>Status for Today:</b></p>
+        <p class="float-right">
+          <b>Members Submitted: </b><span>{{ countSubmitted }}</span> / <span>{{ countTotal }} </span>
+        </p>
+      </h5>
+      <div class="showstatus">
+        <table class="table table-striped">
+          <thead>
+            <tr class="">
+              <td>SL</td>
+              <td>Status For Today</td>
+              <td>Percentage Completed(%)</td>
+              <td>ETA</td>
+              <td>Owner</td>
+              <td>&nbsp;</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(status,index) in showAllStatus" :key='index' :class="{editing: status == editedStatus}" v-cloak>
+              <td class="width3">{{index + 1}}</td>
+              <td class="width40">
+                <div class="view">{{status.description}}</div>
+                <div class="edit"><input type="text" class="form-control" v-model="status.description"></div>
+              </td>
+              <td class="width10">
+                <div class="view">{{status.percentage_completion}}%</div>
+                <div class="edit"><input type="text" class="form-control" v-model="status.percentage_completion"></div>
+              </td>
+              <td class="width10">
+                <div class="view">{{status.completed_date}}</div>
+                <div class="edit"><input type="date" class="form-control" v-model="status.completed_date"></div>
+              </td>
+              <td class="width15">{{status.manager_name}}</td>
+              <td class="width25">
+                <div class="view float-left">
+                  <b-button variant="warning" :disabled="status.manager_name !== manager_name" @click="editFields(status)"><i class="fa fa-edit"></i></b-button>
+                </div>
+                <div class="edit float-left">
+                  <b-button variant="success" :disabled="status.manager_name !== manager_name" @click="saveFields(status)"><i class="fa fa-save"></i></b-button>
+                </div>
+                <b-button variant="danger" class="float-left" :disabled="status.manager_name !== manager_name" @click="deleteRecord(index,status._id)"><i class="fa fa-trash"></i></b-button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-right">
+          <button class="btn btn-success" disabled="countSubmitted !== countTotal" @click="sendmail()">Send Email</button>
+        </div>
+      </div>
   
-  </div>
+      <p v-if="this.emailsenttext === true">Email successfully sent</p>
+  
+  
+    </div>
+    </div>
 </template>
 
 <script>
@@ -117,7 +132,8 @@
         isEdit: true,
         id: status._id,
         editMode: false,
-        editedStatus: null
+        editedStatus: null,
+        showStatusGrid: false
       };
     },
     mounted() {
@@ -147,19 +163,19 @@
           });
   
       },
-      editFields: function(status){
+      editFields: function(status) {
         this.beforEditCache = status;
         this.editedStatus = status;
       },
       saveFields: function(status) {
-          /** for update api call */
-          this.editedStatus = null;
-          DataPostApi.updateStatusById(status._id,status.description,status.percentage_completion,status.completed_date)
-            .then(response => {
-              console.log("Update Successful");
-            }).catch(err => {
-              console.log("Error in update" + err);
-            })
+        /** for update api call */
+        this.editedStatus = null;
+        DataPostApi.updateStatusById(status._id, status.description, status.percentage_completion, status.completed_date)
+          .then(response => {
+            console.log("Update Successful");
+          }).catch(err => {
+            console.log("Error in update" + err);
+          })
       },
       getTodayDate: function(dateInput) {
         let newDate = dateInput;
@@ -198,6 +214,10 @@
         DataPostApi.getStatusbyDate(this.projectSelected.project_name).then(
           response => {
             this.showAllStatus = response.data;
+            if(response.data.length){
+               this.showStatusGrid = true;
+            }
+           
             console.log(
               "Show all status data" + JSON.stringify(this.showAllStatus)
             );
@@ -233,30 +253,30 @@
         let trStr = '';
         this.showAllStatus.map((item, i) => {
           trStr += `<tr class="">
-              <td>${i + 1}</td><td style="word-wrap:break-word;word-break:break-all;max-width:100px">${item.description}</td><td>${item.percentage_completion}</td>
-              <td>${item.completed_date}</td><td>${item.manager_name}</td>
-            </tr>`;
+                <td>${i + 1}</td><td style="word-wrap:break-word;word-break:break-all;max-width:100px">${item.description}</td><td>${item.percentage_completion}</td>
+                <td>${item.completed_date}</td><td>${item.manager_name}</td>
+              </tr>`;
         })
         return trStr;
       },
       sendmail: function() {
         let to = "rajrock38@gmail.com";
         let body = `<table class="table table-striped">
-                <thead>
-                  <tr class="text-center">
-                    <td>Sl</td>
-                    <td>Status For Today</td>
-                    <td>Percentage Completed</td>
-                    <td>Date To Be Completed</td>
-                    <td>Owned By</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  
-                  ${this.mapOverAllStatusTosendEmail()}
-  
-                </tbody>
-              </table>`;
+                  <thead>
+                    <tr class="text-center">
+                      <td>Sl</td>
+                      <td>Status For Today</td>
+                      <td>Percentage Completed</td>
+                      <td>Date To Be Completed</td>
+                      <td>Owned By</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                    ${this.mapOverAllStatusTosendEmail()}
+    
+                  </tbody>
+                </table>`;
         DataPostApi.sendStatusMail(to, body).then(response => {
           if (response.sendemail === true) {
             this.emailsenttext = true;
@@ -289,23 +309,28 @@
 </script>
 
 <style scoped>
-[v-cloak] {
-      display: none;
-    }
-    .edit {
-      display: none;
-    }
-    .editing .edit {
-      display: block
-    }
-    .editing .view {
-      display: none;
-    }
-    .empty-label {
-      width: 100%;
-    }
-    .view.float-left {
+  [v-cloak] {
+    display: none;
+  }
+  
+  .edit {
+    display: none;
+  }
+  
+  .editing .edit {
+    display: block
+  }
+  
+  .editing .view {
+    display: none;
+  }
+  
+  .empty-label {
+    width: 100%;
+  }
+  
+  .view.float-left {
     margin-right: 10px;
-}
+  }
 </style>
 

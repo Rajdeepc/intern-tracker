@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="loginWrapper">
     <div class="heroimg text-center">
-      <b-img center fluid :src="bgImg" alt="" class="bgImg" />
+      <h3>Accenture Digital - Mobile Application Studio</h3>
+      <h5>Status Tracking Application</h5>
     </div>
     <b-tabs>
       <b-tab title="Login">
-        <br>
-        <b-card bg-variant="light" text-variant="black" style="max-width: 30rem;margin:0 auto;">
+        <b-card text-variant="black" style="max-width: 30rem;margin:0 auto;">
           <form class="form-horizontal" @submit="validateFormSignIn" @reset="resetForm('signIn')">
             <p v-if="errors.length">
               <b>Please fix the following errors</b>
@@ -23,14 +23,13 @@
               <input class="form-control" type="password" name="password" v-model="password" placeholder="Type your password..">
             </div>
             <div class="form-group">
-              <input type="submit" value="Login" class="btn btn-primary">&nbsp;&nbsp;
+              <input type="submit" value="LogIn" class="btn btn-primary">&nbsp;&nbsp;
               <input type="reset" value="Reset" class="btn btn-danger">
             </div>
           </form>
         </b-card>
       </b-tab>
       <b-tab title="Sign Up" active>
-        <br>
         <b-card bg-variant="light" text-variant="black" style="max-width: 30rem;margin:0 auto;">
           <form class="form-horizontal" @submit="validateSignup" @reset="resetForm('signUp')">
             <p v-if="errors.length">
@@ -60,23 +59,25 @@
               <input type="reset" value="Reset" class="btn btn-danger">
             </div>
             <div v-if="submitClicked">
-              <p v-if="signUpText">Sign Up Successful</p>
-              <p v-if="!signUpText">Sign Up Not Successful,Duplicate Record found</p>
+              <b-toast v-if="signUpText" id="sentDataSuccessToast" variant="success" solid>
+                Sign Up Successful
+              </b-toast>
+              <b-toast v-if="!signUpText" id="sentDataSuccessToast" variant="warning" solid>
+                Sign Up Not Successful,Duplicate Record found
+              </b-toast>
+              <!-- <p v-if="signUpText">Sign Up Successful</p>
+                <p v-if="!signUpText">Sign Up Not Successful,Duplicate Record found</p> -->
             </div>
           </form>
         </b-card>
       </b-tab>
   
     </b-tabs>
-    <br>
-    <br>
-    <div class="text-center" style="font-size: 12px;color: #888;">
-Made with <i class="fa fa-heart"></i> in Accenture
-
+    <div class="text-center infotitle">
+      Made with <i class="fa fa-heart"></i> in Accenture
+  
     </div>
   </div>
-
-
 </template>
 
 
@@ -142,9 +143,9 @@ Made with <i class="fa fa-heart"></i> in Accenture
                   username: username
                 }
               });
-              this.$session.set('username', username);
+              this.$session.set("username", username);
             } else {
-              this.errors.push('Invalid Credentials');
+              this.errors.push("Invalid Credentials");
             }
           })
           .catch(error => {
@@ -152,10 +153,14 @@ Made with <i class="fa fa-heart"></i> in Accenture
           });
       },
   
-  
       validateSignup: function(e) {
         this.errors = [];
-        if (this.signup.email && this.signup.username && this.signup.password && this.signup.confpassword) {
+        if (
+          this.signup.email &&
+          this.signup.username &&
+          this.signup.password &&
+          this.signup.confpassword
+        ) {
           if (this.signup.password === this.signup.confpassword) {
             this.submitSignupToDb(
               this.signup.email,
@@ -207,11 +212,11 @@ Made with <i class="fa fa-heart"></i> in Accenture
       resetForm: function(e, isSigninForm) {
         e.preventDefault();
         this.isSigninForm = isSigninForm;
-        if (isSigninForm == 'signIn') {
+        if (isSigninForm == "signIn") {
           this.signin.email = "";
           this.signin.password = "";
         }
-        if (isSigninForm == 'signUp') {
+        if (isSigninForm == "signUp") {
           this.signup.email = "";
           this.signup.username = "";
           this.signup.email = "";
@@ -223,17 +228,65 @@ Made with <i class="fa fa-heart"></i> in Accenture
 </script>
 
 
-<style scoped>
+<style>
+  .loginWrapper {
+    background: url("../assets/wall.jpg");
+    background-size: cover;
+    height: 100%;
+  }
+  
+  .heroimg {
+    color: #fff;
+    padding: 3em 0em 0em;
+  }
+  
   .bgImg {
     height: 200px;
     max-width: 100%;
     margin-bottom: 30px;
   }
+  
+  #app .nav-tabs .nav-link.active,
+  .nav-tabs .nav-item.show .nav-link {
+    color: #fff;
+    background-color:#ffa000;
+    border-color: #FFA000;
+  }
+  
+  #app .nav-link {
+    display: block;
+    padding: .5rem .5rem;
+    background: transparent;
+  }
+  
+  #app .nav-tabs .nav-link {
+    border: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  
   .tabs {
     width: 400px;
-    margin: 0 auto;
-}
-i.fa.fa-heart {
+    margin: 3em auto;
+    background: #fff;
+  }
+  
+  i.fa.fa-heart {
     color: #f442ad;
-}
+  }
+  
+  .nav-tabs .nav-item {
+    margin-bottom: -1px;
+    width: 50%;
+    text-align: center;
+  }
+  
+  .infotitle {
+    font-size: 12px;
+    color: rgb(136, 136, 136);
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 5px;
+  }
 </style>

@@ -11,7 +11,7 @@
           <label for="exampleInputEmail1">Add Your Project Name:</label>
           <input type="text" class="form-control" id="" v-model="project_name" name="project_name" aria-describedby="project_name" required>
         </div>
-        <label>Your Project Members:</label><a class="btn btn-success float-right" @click="addFields()">Add Members<i class="fa fa-plus"></i></a>
+        <label>Your Project Members:</label><a class="btn btn-success float-right" @click="addFields()">Add Members <i class="fa fa-plus"></i></a>
         <div class="form-group" v-for="(newInput,index) in newInputArray" :key='index'>
           <span><input type='text' class='form-control' id='' aria-describedby='addmembers' placeholder='Enter member email id' v-model="memberArr[index]"></span>
           <span><a v-on:click="removeElement(index);" style="cursor: pointer">Cancel <i class="fa fa-close"></i></a></span>
