@@ -36,7 +36,7 @@
           </div>
           <br>
           <!-- add status for today component -->
-          <AddStatus v-if="skillTemplateShow === true" :projectSelected="projectSelected" :getUsername="getUsername"></AddStatus>
+          <AddStatus v-if="skillTemplateShow === true" :projectSelected="projectSelected" :getUsername="getUsername" :tasksArray="tasksArray"></AddStatus>
     </div>
     <AdminPanel :getUsername="getUsername"></AdminPanel>
   
@@ -61,7 +61,8 @@
         projectList: [],
         occuranceList: [],
         getUsername: '',
-        showAdminbtn: false
+        showAdminbtn: false,
+        tasksArray:[]
       };
     },
     mounted() {
@@ -107,6 +108,7 @@
         DataPostApi.projectDetailsApi(this.getUsername)
           .then(response => {
             this.projectList = response.data;
+            this.tasksArray = response.data.length ? response.data[0].task_names : [];
             console.log(this.projectList);
           }).catch(error => {
             throw error;

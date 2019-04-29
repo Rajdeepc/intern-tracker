@@ -52,13 +52,14 @@ export default {
     },
     /** Add Project to db by admin */
 
-    projectsaveApi(date_created, manager_name, project_name, no_of_members, member_names) {
+    projectsaveApi(date_created, manager_name, project_name, no_of_members, member_names,task_names) {
         const body = {
             date_created: date_created,
             project_name: project_name,
             manager_name: manager_name,
             no_of_members: no_of_members,
-            member_names: member_names
+            member_names: member_names,
+            task_names:task_names
         };
         const url = "http://localhost:3000/postprojectdata";
         return axios.post(url, body)
