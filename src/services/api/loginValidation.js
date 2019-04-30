@@ -136,6 +136,25 @@ export default {
         .then(response => {
             return response.data;
         })
+    },
+
+
+
+
+    updateTaskById(project_name,taskId,taskName,member_name,date_updated,task_status) {
+        const body = {
+            project_name:project_name,
+            taskId:taskId,
+            taskName:taskName,
+            member_name:member_name,
+            date_updated:date_updated,
+            task_status:task_status
+        };
+        const url = `http://localhost:3000/${taskId}/taskStatus`;
+        return axios.put(url,body)
+        .then(response => {
+            return response.data;
+        })
     }
 }
 

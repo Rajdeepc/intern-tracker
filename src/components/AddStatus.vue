@@ -3,42 +3,33 @@
     <h4>Project Details:</h4>
     <b-list-group horizontal>
       <b-card>
-      <b-row>
-        <b-col>
-          <b>Project:</b>
-          {{projectSelected.project_name}}
-        </b-col>
-        <b-col>
-          <b>Manager:</b>
-          {{projectSelected.manager_name}}
-        </b-col>
-        <b-col>
-          <b>Date:</b>
-          {{getTodayDate(new Date())}}
-        </b-col>
-      </b-row>
+        <b-row>
+          <b-col>
+            <b>Project:</b>
+            {{projectSelected.project_name}}
+          </b-col>
+          <b-col>
+            <b>Supervisor:</b>
+            <!-- {{projectSelected.manager_name}} -->
+            Bala Narasimhalu
+            <a href="mailto:n.balanarasimhalu@accenture.com?Subject=Need%20Clarification">Email</a>
+          </b-col>
+          <b-col>
+            <b>Date:</b>
+            {{getTodayDate(new Date())}}
+          </b-col>
+        </b-row>
       </b-card>
     </b-list-group>
     <br>
     <br>
     <!-- pending tasks -->
-     <h4>Your Tasks</h4>
+    <h4>Your Tasks</h4>
     <b-row>
-      <b-col col md="3" v-for="(taskItem,index) in this.tasksArray" :key="index">
-    <b-list-group horizontal>
-      <b-list-group-item >
-        <b-row>
-          <b-col class="text-left">{{taskItem.task}}</b-col>
-          <b-col class="text-right">
-            <b-button :disabled="tasksArray.indexOf(taskItem.id) !== -1" variant="outline-primary" @click="startTask(index)">Start</b-button>
-            <span v-if="(percentage_completion > 0 && percentage_completion < 100)">{{percentage_completion}}</span>
-            &nbsp;<b-button variant="outline-danger" @click="endTask(index)" disabled>End</b-button>
-          </b-col>
-        </b-row>
-      </b-list-group-item>
-    </b-list-group>
+      <b-col col md="3" v-for="(taskItem) in this.tasksArray" :key="taskItem.id">
+        <TaskItem :taskItemDetails="taskItem" :project="projectSelected.project_name" :nameOfUser = "manager_name" @passStartTaskValue="onClickChildTogetStartTask" @passEndTaskValue="onClickChildTogetEndTask"></TaskItem>
       </b-col>
-    <!-- completed tasks -->
+      <!-- completed tasks -->
     </b-row>
     <br>
     <br>
@@ -46,9 +37,19 @@
       <h4>Add Your Status For today:</h4>
       <b-form @submit.prevent action="/insert" method="post">
         <div class="form-row">
+            <div class="form-group col-xs-2 mb-2">
+              <label for="validationCustom01">Topic Assigned</label>
+              <b-input
+              class="mb-2 mr-sm-2 mb-sm-0"
+              type="text"
+              v-model="assigned_topic"
+              name="assigned_topic"
+              required
+              disabled
+            />
+          </div>
           <div class="form-group col-md-3 mb-3">
             <label for="validationCustom01">Status</label>
-
             <b-textarea
               class="mb-2 mr-sm-2 mb-sm-0"
               type="text"
@@ -62,7 +63,6 @@
           </div>
           <div class="form-group col-xs-2 mb-2">
             <label for="validationCustom01">Percentage Completed</label>
-
             <b-input
               class="mb-2 mr-sm-2 mb-sm-0"
               type="text"
@@ -194,7 +194,6 @@
           >Send Email</button>
         </div>
       </div>
-
       <p v-if="this.emailsenttext === true">Email successfully sent</p>
     </div>
   </div>
@@ -202,14 +201,12 @@
 
 <script>
 import DataPostApi from "../services/api/loginValidation";
+import TaskItem from './TaskItemComponent.vue';
 export default {
   name: "AddStatus",
   props: ["projectSelected", "getUsername", "tasksArray"],
   data() {
     return {
-      hasVoted:false,
-      istaskStarted:false,
-      isTaskPercentage100:null,
       shouldDisable: true,
       emailsenttext: false,
       countSubmitted: 0,
@@ -227,13 +224,17 @@ export default {
       id: status._id,
       editMode: false,
       editedStatus: null,
-      showStatusGrid: false
+      showStatusGrid: false,
+      assigned_topic:'Click on Start to Assign'
     };
   },
   mounted() {
     this.getAllStatusToday();
     this.setMaxDateToday();
     console.log("number of memebers" + this.projectSelected.no_of_members);
+  },
+  components:{
+    TaskItem:TaskItem
   },
   watch: {
     projectSelected: {
@@ -246,11 +247,12 @@ export default {
     }
   },
   methods: {
-    startTask: function(index){
-      this.hasVoted = true;
+    onClickChildTogetStartTask:function(startValue){
+        console.log("value from child" + JSON.stringify(startValue))
+        this.assigned_topic = startValue.taskName
     },
-    endTask: function(index, id){
-       this.istaskStarted = false;
+    onClickChildTogetEndTask: function(endValue){
+        console.log("value from child" + JSON.stringify(endValue))
     },
     deleteRecord: function(index, id) {
       DataPostApi.deleteStatusById(id)
@@ -437,9 +439,7 @@ export default {
 .empty-label {
   width: 100%;
 }
-.editableform .list-group-item {
-    margin-bottom: 10px;
-}
+
 .view.float-left {
   margin-right: 10px;
 }
