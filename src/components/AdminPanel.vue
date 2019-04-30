@@ -136,7 +136,8 @@ export default {
       for (let i = 0; i < this.taskArray.length; i++) {
         this.taskArrayFormatted.push({
           id: `Task${count}`,
-          task: this.taskArray[i]
+          task: this.taskArray[i],
+          task_status:'Not Started'
         });
         count ++;
       }

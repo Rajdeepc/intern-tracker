@@ -35,13 +35,13 @@ export default {
 
     methods:{
 
-      startTask: function(taskId,taskName,taskStatus) {
+      startTask: function(taskId,taskName) {
         this.hasStarted = true;
         this.taskStatus = 'Started';
-        this.$emit('passStartTaskValue', { taskId:taskId, taskName : taskName, isStarted: true } );
+        this.$emit('passStartTaskValue', { id:taskId, task : taskName, task_status: this.taskStatus } );
         DataPostApi.updateTaskById(this.project,taskId,taskName,this.nameOfUser,this.date_updated,this.taskStatus)
         .then((response) => {
-            console.log("response from statusUpdateAPi" + response)
+            console.log("response from statusUpdateAPi" + JSON.stringify(response));
         })
         .catch(err => {
           console.log("Error from statusUpdateAPi" + err);
@@ -51,7 +51,8 @@ export default {
       endTask: function(taskId, taskName) {
         this.hasStarted = false;
         this.isTaskCompleted = true;
-        this.$emit('passEndTaskValue', { taskId:taskId, taskName : taskName, isStarted: false } )
+        this.taskStatus = 'Completed';
+        this.$emit('passEndTaskValue', { id:taskId, task : taskName, task_status:this.taskStatus } )
       },
       getTodayDate: function(dateInput) {
       let newDate = dateInput;
