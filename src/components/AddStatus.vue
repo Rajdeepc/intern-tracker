@@ -9,7 +9,7 @@
               <b-input
               class="mb-2 mr-sm-2 mb-sm-0"
               type="text"
-              v-model="topic_name"
+              v-model="addItemDetails.taskName"
               name="topic_name"
               required
               disabled
@@ -38,7 +38,7 @@
               required
             />
           </div>
-          <div class="form-group col-xs-2 mb-2">
+          <!-- <div class="form-group col-xs-2 mb-2">
             <label for="validationCustom01">Date To Be Completed</label>
 
             <b-input
@@ -48,7 +48,7 @@
               name="completed_date"
               id="completed_date"
             />
-          </div>
+          </div> -->
           <!-- <div class="form-group col-xs-2 mb-2">
             <label for="validationCustom01">Owner </label>
             <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="manager_name" value="" readonly="" name="manager_name" />
@@ -170,7 +170,7 @@
 import DataPostApi from "../services/api/loginValidation";
 export default {
   name: "AddStatus",
-  props: ["projectSelected", "getUsername", "tasksArray"],
+  props: ["addItemDetails","projectSelected", "getUsername", "tasksArray"],
   data() {
     return {
       shouldDisable: true,
@@ -198,11 +198,11 @@ export default {
     // this.getAllStatusToday();
     // this.setMaxDateToday();
    // console.log("number of memebers" + this.projectSelected.no_of_members);
+   console.log("this.addItemDetails" + JSON.stringify(this.addItemDetails));
   },
   watch: {
     projectSelected: {
       handler: function(projectSelected) {
-        console.log(projectSelected);
         this.getAllStatusToday();
         //this.setMaxDateToday();
       },

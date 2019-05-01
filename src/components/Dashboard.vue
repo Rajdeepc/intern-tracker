@@ -82,6 +82,8 @@
         </b-row>
       </div>
       <br>
+      <br>
+       <br>
       <!-- add status for today component -->
       <div v-if="(taskDetailsShow === true) && (addStatusTemplateShow === true)">
        <h4>Add Your Status For today:</h4>
@@ -89,7 +91,6 @@
         <b-col col md="12" v-for="(addItem,index) in this.showNoOfAddForm" :key="addItem.id">
           <AddStatus
             :addItemDetails="addItem"
-            
             :index="index"
           ></AddStatus>
         </b-col>
