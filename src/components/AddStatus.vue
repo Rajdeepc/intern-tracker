@@ -5,7 +5,7 @@
       <b-form @submit.prevent action="/insert" method="post">
         <div class="form-row">
             <div class="form-group col-xs-2 mb-2">
-              <label for="validationCustom01">Topic Assigned</label>
+              <label for="validationCustom01">Your Task</label>
               <b-input
               class="mb-2 mr-sm-2 mb-sm-0"
               type="text"

@@ -147,6 +147,7 @@ export default {
       }
       this.objFromParent = valueObj;
       console.log("from child" + JSON.stringify(this.objFromParent)); // someValue
+      this.getTaskDetailsFromAPI();
     },
     checkisAdmin(username) {
       let adminArray = constants.ADMIN_ARRAY;
