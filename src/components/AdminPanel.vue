@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal id="modallg" title="Add Project Details" @ok="handleOk" ref="modal">
+    <b-modal id="modallg" size="lg" title="Add Project Details" @ok="handleOk" ref="modal">
       <form @submit.stop.prevent="handleSubmit" method="post">
         <p>
           <i>This panel is only visible to TL and Above</i>
@@ -9,53 +9,83 @@
           <label for="exampleInputEmail1">Supervisor Name:</label>
           <input type="text" class="form-control" id="" v-model="getUsername" readonly="" name="manager_name" aria-describedby="emailHelp">
         </div>-->
-        <div class="form-group">
-          <label for="exampleInputEmail1">Add Your Project Name:</label>
-          <input
-            type="text"
-            class="form-control"
-            id
-            v-model="project_name"
-            name="project_name"
-            aria-describedby="project_name"
-            required
-          >
-        </div>
+        <b-row>
+          <b-col>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Project Name:</label>
+              <input
+                type="text"
+                class="form-control"
+                id
+                v-model="project_name"
+                name="project_name"
+                aria-describedby="project_name"
+                required
+              >
+            </div>
+          </b-col>
+          <b-col>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Member Email ID:</label>
+              <input
+                type="text"
+                class="form-control"
+                id
+                v-model="member_email"
+                name="member_email"
+                aria-describedby="member_email"
+                required
+              >
+            </div>
+          </b-col>
+        </b-row>
 
         <!-- add tasks -->
-        <label>Add Tasks</label>
-        <a class="btn btn-success float-right" @click="addTasks()">
-          Add More Tasks
-          <i class="fa fa-plus"></i>
-        </a>
-
-        <div class="form-group" v-for="(newTask,index) in newTaskArray" :key="'Task' + index">
-          <span>
-            <input
-              type="text"
-              class="form-control"
-              id
-              aria-describedby="addtasks"
-              placeholder="Enter Task Description"
-              v-model="taskArray[index]"
-            >
-          </span>
-          <span>
-            <a v-on:click="removeTask(index);" style="cursor: pointer">
-              Cancel
-              <i class="fa fa-close"></i>
+        <b-row>
+          <b-col>
+            <label>Add Tasks</label>
+            <a class="btn btn-success float-right" @click="addTasks()">
+              Add More Tasks
+              <i class="fa fa-plus"></i>
             </a>
-          </span>
-        </div>
-        <br>
-        <br>
-        <label>Your Project Members:</label>
+          </b-col>
+        </b-row>
+
+        <b-row v-for="(newTask,index) in newTaskArray" :key="'TaskRow' + index">
+          <b-col cols="11">
+            <div class="form-group">
+              <label for="taskName">Task Name:</label>
+              <input
+                type="text"
+                class="form-control"
+                id
+                aria-describedby="addtasks"
+                placeholder="Enter Task Description"
+                v-model="taskArray[index]"
+              >
+            </div>
+          </b-col>
+          <input type="hidden" v-model="taskArray[index]"/>
+          <input type="hidden" v-model="taskArray[index]"/>
+          <input type="hidden" v-model="taskArray[index]"/>
+          <input type="hidden" v-model="taskArray[index]">
+          <b-col cols="1">
+           <div class="form-group">
+              <div for="taskName">&nbsp;</div>
+              <a v-on:click="removeTask(index);" style="cursor: pointer">
+                <i class="fa fa-close"></i>
+              </a>
+           </div>
+          </b-col>
+        </b-row>
+
+        <!-- <label>Your Project Members:</label>
         <a class="btn btn-success float-right" @click="addFields()">
           Add Members
           <i class="fa fa-plus"></i>
-        </a>
+        </a>-->
 
-        <div class="form-group" v-for="(newInput,index) in newInputArray" :key="'Member' + index">
+        <!-- <div class="form-group" v-for="(newInput,index) in newInputArray" :key="'Member' + index">
           <span>
             <input
               type="text"
@@ -72,7 +102,7 @@
               <i class="fa fa-close"></i>
             </a>
           </span>
-        </div>
+        </div>-->
       </form>
     </b-modal>
   </div>
@@ -88,9 +118,13 @@ export default {
     return {
       newTaskArray: [""],
       taskArray: [],
-      newInputArray: [""],
-      memberArr: [],
       project_name: "",
+      member_email: "",
+      taskid: "",
+      task_name: "",
+      task_status: "",
+      start_date: "",
+      end_date: "",
       manager_name: this.getUsername,
       date_created: this.getTodayDate()
     };
@@ -104,11 +138,6 @@ export default {
       let yyyy = newDate.getFullYear();
       let date = mm + "/" + dd + "/" + yyyy;
       return date;
-    },
-    addFields: function() {
-      this.newInputArray.push("");
-      console.log("new array with email ids" + this.memberArr);
-      console.log("no of members" + this.newInputArray.length);
     },
 
     addTasks: function() {
@@ -126,6 +155,7 @@ export default {
         this.handleSubmit();
       }
     },
+
     clearFields() {
       (this.project_name = ""), (this.memberArr = []);
     },
@@ -135,28 +165,28 @@ export default {
       let count = 0;
       for (let i = 0; i < this.taskArray.length; i++) {
         this.taskArrayFormatted.push({
-          id: `Task${count}`,
-          task: this.taskArray[i],
-          task_status:'Not Started'
+          taskID: `Task${count}`,
+          taskName: this.taskArray[i],
+          task_status: "Not Started",
+          start_date: '',
+          end_date:'',
+          date_created: this.getTodayDate()
         });
-        count ++;
+        count++;
       }
       return this.taskArrayFormatted;
     },
 
     handleSubmit() {
-      this.no_of_members = this.memberArr.length;
+      this.project_name = this.project_name;
+      this.member_email = this.member_email;
       this.manager_name = this.getUsername;
-      this.member_names = this.memberArr;
-      this.task_names = this.getTaskArrayFormatted();
-      this.date_created = this.getTodayDate();
+      this.allTasks = this.getTaskArrayFormatted();
       DataPostApi.projectsaveApi(
-        this.date_created,
-        this.manager_name,
         this.project_name,
-        this.no_of_members,
-        this.member_names,
-        this.task_names
+        this.member_email,
+        this.manager_name,
+        this.allTasks
       )
         .then(response => {
           if (response.saved === true) {
@@ -167,9 +197,6 @@ export default {
         .catch(error => {
           console.log("Error in saving" + error);
         });
-    },
-    removeElement: function(index) {
-      this.newInputArray.splice(index, 1);
     },
 
     removeTask: function(index) {

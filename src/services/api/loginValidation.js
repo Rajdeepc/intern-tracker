@@ -34,9 +34,10 @@ export default {
     },
     /** Save status to db */
 
-    taskSaveApi(description, percentage_completion, completed_date, manager_name, date_created, project_name) {
+    taskSaveApi(topic_name,description, percentage_completion, manager_name, date_created, project_name) {
         this.statusId++;
         const body = {
+            topic_name:topic_name,
             description: description,
             percentage_completion: percentage_completion,
             completed_date: completed_date,
@@ -52,14 +53,12 @@ export default {
     },
     /** Add Project to db by admin */
 
-    projectsaveApi(date_created, manager_name, project_name, no_of_members, member_names,task_names) {
+    projectsaveApi(project_name, member_email, manager_name, allTasks) {
         const body = {
-            date_created: date_created,
             project_name: project_name,
+            member_email: member_email,
             manager_name: manager_name,
-            no_of_members: no_of_members,
-            member_names: member_names,
-            task_names:task_names
+            allTasks: allTasks
         };
         const url = "http://localhost:3000/postprojectdata";
         return axios.post(url, body)
@@ -141,16 +140,15 @@ export default {
 
 
 
-    updateTaskById(project_name,taskId,taskName,member_name,date_updated,task_status) {
+    updateStartTaskById(member_email,taskID,task_status,start_date,index) {
         const body = {
-            project_name:project_name,
-            taskId:taskId,
-            taskName:taskName,
-            member_name:member_name,
-            date_updated:date_updated,
-            task_status:task_status
+            member_email:member_email,
+            taskID:taskID,
+            task_status:task_status,
+            start_date:start_date,
+            index:index
         };
-        const url = `http://localhost:3000/${taskId}/taskStatus`;
+        const url = `http://localhost:3000/${taskID}/taskStatus`;
         return axios.put(url,body)
         .then(response => {
             return response.data;

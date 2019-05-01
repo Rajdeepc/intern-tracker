@@ -24,13 +24,7 @@
     <br>
     <br>
     <!-- pending tasks -->
-    <h4>Your Tasks</h4>
-    <b-row>
-      <b-col col md="3" v-for="(taskItem) in this.tasksArray" :key="taskItem.id">
-        <TaskItem :taskItemDetails="taskItem" :project="projectSelected.project_name" :nameOfUser = "manager_name" @passStartTaskValue="onClickChildTogetStartTask" @passEndTaskValue="onClickChildTogetEndTask"></TaskItem>
-      </b-col>
-      <!-- completed tasks -->
-    </b-row>
+    
     <br>
     <br>
     <div class="formToAdd">
@@ -42,8 +36,8 @@
               <b-input
               class="mb-2 mr-sm-2 mb-sm-0"
               type="text"
-              v-model="assigned_topic"
-              name="assigned_topic"
+              v-model="topic_name"
+              name="topic_name"
               required
               disabled
             />
@@ -201,7 +195,6 @@
 
 <script>
 import DataPostApi from "../services/api/loginValidation";
-import TaskItem from './TaskItemComponent.vue';
 export default {
   name: "AddStatus",
   props: ["projectSelected", "getUsername", "tasksArray"],
@@ -225,16 +218,13 @@ export default {
       editMode: false,
       editedStatus: null,
       showStatusGrid: false,
-      assigned_topic:'Click on Start to Assign'
+      topic_name:'Click on Start to Assign'
     };
   },
   mounted() {
     this.getAllStatusToday();
     this.setMaxDateToday();
     console.log("number of memebers" + this.projectSelected.no_of_members);
-  },
-  components:{
-    TaskItem:TaskItem
   },
   watch: {
     projectSelected: {
@@ -297,11 +287,11 @@ export default {
       if (!this.description || !this.percentage_completion) {
         return false;
       } else {
-        this.completed_date = this.getTodayDate(new Date(this.completed_date));
+        //this.completed_date = this.getTodayDate(new Date(this.completed_date));
         DataPostApi.taskSaveApi(
+          this.topic_name,
           this.description,
           this.percentage_completion,
-          this.completed_date,
           this.manager_name,
           this.date_created,
           this.projectSelected.project_name
