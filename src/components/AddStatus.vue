@@ -1,34 +1,7 @@
 <template>
   <div class="editableform">
-    <h4>Project Details:</h4>
-    <b-list-group horizontal>
-      <b-card>
-        <b-row>
-          <b-col>
-            <b>Project:</b>
-            {{projectSelected.project_name}}
-          </b-col>
-          <b-col>
-            <b>Supervisor:</b>
-            <!-- {{projectSelected.manager_name}} -->
-            Bala Narasimhalu
-            <a href="mailto:n.balanarasimhalu@accenture.com?Subject=Need%20Clarification">Email</a>
-          </b-col>
-          <b-col>
-            <b>Date:</b>
-            {{getTodayDate(new Date())}}
-          </b-col>
-        </b-row>
-      </b-card>
-    </b-list-group>
-    <br>
-    <br>
-    <!-- pending tasks -->
-    
-    <br>
-    <br>
     <div class="formToAdd">
-      <h4>Add Your Status For today:</h4>
+     
       <b-form @submit.prevent action="/insert" method="post">
         <div class="form-row">
             <div class="form-group col-xs-2 mb-2">
@@ -203,7 +176,7 @@ export default {
       shouldDisable: true,
       emailsenttext: false,
       countSubmitted: 0,
-      countTotal: this.projectSelected.no_of_members,
+     // countTotal: this.projectSelected.no_of_members,
       showAllStatus: [],
       showMessage: false,
       description: "",
@@ -222,9 +195,9 @@ export default {
     };
   },
   mounted() {
-    this.getAllStatusToday();
-    this.setMaxDateToday();
-    console.log("number of memebers" + this.projectSelected.no_of_members);
+    // this.getAllStatusToday();
+    // this.setMaxDateToday();
+   // console.log("number of memebers" + this.projectSelected.no_of_members);
   },
   watch: {
     projectSelected: {
@@ -294,7 +267,7 @@ export default {
           this.percentage_completion,
           this.manager_name,
           this.date_created,
-          this.projectSelected.project_name
+          //this.projectSelected.project_name
         )
           .then(response => {
             if (response.saved === true) {
@@ -309,19 +282,19 @@ export default {
     },
     /**to get all status */
     getAllStatusToday: function() {
-      DataPostApi.getStatusbyDate(this.projectSelected.project_name).then(
-        response => {
-          this.showAllStatus = response.data;
-          if (response.data.length) {
-            this.showStatusGrid = true;
-          }
+      // DataPostApi.getStatusbyDate(this.projectSelected.project_name).then(
+      //   response => {
+      //     this.showAllStatus = response.data;
+      //     if (response.data.length) {
+      //       this.showStatusGrid = true;
+      //     }
 
-          console.log(
-            "Show all status data" + JSON.stringify(this.showAllStatus)
-          );
-          this.findUniqueOwner();
-        }
-      );
+      //     console.log(
+      //       "Show all status data" + JSON.stringify(this.showAllStatus)
+      //     );
+      //     this.findUniqueOwner();
+      //   }
+      // );
     },
     setMaxDateToday: function() {
       let today = this.getDateYYYYMMDD(new Date());

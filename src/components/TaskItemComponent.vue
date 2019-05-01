@@ -5,7 +5,7 @@
         <b-col class="text-left">{{taskItemDetails.taskName}}</b-col>
         <b-col class="text-right" v-if="!isTaskCompleted">
           <b-button
-            v-if="(taskItemDetails.task_status !== 'Started') && hasStarted === false"
+            v-if="(taskItemDetails.task_status === 'Not Started')"
             variant="outline-primary"
             @click="startTask(taskItemDetails.taskID)"
           >Start</b-button>
@@ -16,10 +16,10 @@
           <b-button
             variant="outline-danger"
             @click="endTask(taskItemDetails.taskID)"
-            :disabled="!hasStarted ? true : false"
+            v-if="(taskItemDetails.task_status === 'Started')"
           >End</b-button>
         </b-col>
-        <b-col class="text-right completedWrapper" v-if="isTaskCompleted">
+        <b-col class="text-right completedWrapper" v-if="(taskItemDetails.task_status === 'Completed')">
           <i class="fa fa-check-circle fa-2x" aria-hidden="true"></i>
         </b-col>
       </b-row>
@@ -37,13 +37,15 @@ export default {
       hasStarted:false,
       isTaskCompleted: false,
       startDate: this.getTodayDate(new Date()),
+      endDate: this.getTodayDate(new Date()),
       taskStatus: "Not Started",
       date_updated: this.getTodayDate(new Date()),
-      itemList: this.taskItemDetails
+      itemList: this.taskItemDetails,
+      taskStatusResponseArray:[]
     };
   },
   mounted(){
-    console.log("props from parent" + JSON.stringify(this.taskItemDetails))
+  //  console.log(this.taskItemDetails)
   },
   methods: {
     getTodayDate: function(dateInput) {
@@ -54,7 +56,7 @@ export default {
       let date = mm + "/" + dd + "/" + yyyy;
       return date;
     },
-    startTask: function(taskId) {
+    startTask: function(event,taskId) {
       this.hasStarted = true;
       this.taskStatus = "Started";
       DataPostApi.updateStartTaskById(
@@ -65,24 +67,54 @@ export default {
         this.index
       )
         .then(response => {
-          if(response.updated === true){
-            this.hasStarted = true;
+          if(response.affected.allTasks){
+            this.taskStatusResponseArray = response.affected.allTasks;
+            let objToSendToParent = this.filterObjWithStatusStarted();
+            console.log("objToSendToParent" + objToSendToParent)
+            this.$emit('startedStatusObj', objToSendToParent);
           }
+         
         })
         .catch(err => {
           console.log("Error from statusUpdateAPi" + err);
         });
     },
 
+
+    filterObjWithStatusStarted(){
+      let newFilteredArray = [];
+      this.taskStatusResponseArray.filter(obj => {
+         if(obj.task_status === 'Started'){
+           newFilteredArray.push(obj);
+         }
+      });
+      console.log("new filtered array" + newFilteredArray);
+      return newFilteredArray;
+    },
+
     endTask: function(taskId, taskName) {
-      this.hasStarted = false;
       this.isTaskCompleted = true;
       this.taskStatus = "Completed";
-      this.$emit("passEndTaskValue", {
-        id: taskId,
-        task: taskName,
-        task_status: this.taskStatus
-      });
+      // this.$emit("passEndTaskValue", {
+      //   id: taskId,
+      //   task: taskName,
+      //   task_status: this.taskStatus
+      // });
+      DataPostApi.updateEndTaskById(
+        this.getUsername,
+        this.taskItemDetails.taskID,
+        this.taskStatus,
+        this.endDate,
+        this.index
+      )
+        .then(response => {
+          if(response.task_status === 'updated'){
+            this.$emit('getTaskItem', )
+          }
+        })
+        .catch(err => {
+          console.log("Error from statusUpdateAPi" + err);
+        });
     },
     getTodayDate: function(dateInput) {
       let newDate = dateInput;

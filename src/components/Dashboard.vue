@@ -29,7 +29,7 @@
         Welcome
         <b>{{getUsername}}</b>,
       </p>
-      <p></p>
+
       <div class="selectProject">
         Select Your Project:
         <select v-model="projectSelected" @change="showSkillsListToSelect()">
@@ -42,28 +42,59 @@
         </select>
       </div>
       <br>
+
       <!-- task array -->
-      <div  v-if="taskDetailsShow === true">
-      <h4>Your Tasks</h4>
-      <b-row>
-        <b-col col md="3" v-for="(taskItem,index) in this.tasksArray" :key="taskItem.id">
-          <TaskItem
-            :projectSelected="projectSelected"
-            :taskItemDetails="taskItem"
-            :index="index"
-            :getUsername="getUsername"
-          ></TaskItem>
-        </b-col>
-        <!-- completed tasks -->
-      </b-row>
+      <div v-if="taskDetailsShow === true">
+        <h4>Project Details:</h4>
+        <b-list-group horizontal>
+          <b-card>
+            <b-row>
+              <b-col>
+                <b>Project:</b>
+                <!-- {{project_name}} -->
+                {{projectSelected.project_name}}
+              </b-col>
+              <b-col>
+                <b>Supervisor:</b>
+                <!-- {{projectSelected.manager_name}} -->
+                Bala Narasimhalu
+                <a
+                  href="mailto:n.balanarasimhalu@accenture.com?Subject=Need%20Clarification"
+                >Email</a>
+              </b-col>
+            </b-row>
+          </b-card>
+        </b-list-group>
+        <br>
+        <br>
+        <h4>Your Tasks</h4>
+        <b-row>
+          <b-col col md="3" v-for="(taskItem,index) in this.tasksArray" :key="taskItem.id">
+            <TaskItem
+              :projectSelected="projectSelected"
+              :taskItemDetails="taskItem"
+              :index="index"
+              :getUsername="getUsername"
+              @startedStatusObj="onClickChildTaskItem"
+            ></TaskItem>
+          </b-col>
+          <!-- completed tasks -->
+        </b-row>
       </div>
       <br>
       <!-- add status for today component -->
-      <AddStatus
-        v-if="skillTemplateShow === true"
-        :projectSelected="projectSelected"
-        :getUsername="getUsername"
-      ></AddStatus>
+      <div v-if="(taskDetailsShow === true) && (addStatusTemplateShow === true)">
+       <h4>Add Your Status For today:</h4>
+      <b-row>
+        <b-col col md="12" v-for="(addItem,index) in this.showNoOfAddForm" :key="addItem.id">
+          <AddStatus
+            :addItemDetails="addItem"
+            
+            :index="index"
+          ></AddStatus>
+        </b-col>
+      </b-row>
+    </div>
     </div>
     <AdminPanel v-if="showAdminbtn" :getUsername="getUsername"></AdminPanel>
   </div>
@@ -76,7 +107,7 @@ import AdminPanel from "./AdminPanel.vue";
 import DataPostApi from "../services/api/loginValidation";
 import router from "../router.js";
 import constants from "../utils/constants";
-import TaskItem from './TaskItemComponent.vue';
+import TaskItem from "./TaskItemComponent.vue";
 
 export default {
   name: "Dashboard",
@@ -84,13 +115,15 @@ export default {
   data() {
     return {
       projectSelected: this.projectSelectedItem,
-      skillTemplateShow: false,
-      taskDetailsShow:false,
+      addStatusTemplateShow: false,
+      taskDetailsShow: false,
       projectList: [],
       occuranceList: [],
       getUsername: "",
       showAdminbtn: false,
-      tasksArray: []
+      tasksArray: [],
+      objFromParent: [],
+      showNoOfAddForm:[]
     };
   },
   mounted() {
@@ -100,7 +133,7 @@ export default {
   components: {
     AddStatus: AddStatus,
     AdminPanel: AdminPanel,
-    TaskItem:TaskItem
+    TaskItem: TaskItem
   },
   beforeCreate: function() {
     if (!this.$session.exists("username")) {
@@ -108,6 +141,13 @@ export default {
     }
   },
   methods: {
+    onClickChildTaskItem(valueObj) {
+      if (valueObj) {
+        this.addStatusTemplateShow = true;
+      }
+      this.objFromParent = valueObj;
+      console.log("from child" + JSON.stringify(this.objFromParent)); // someValue
+    },
     checkisAdmin(username) {
       let adminArray = constants.ADMIN_ARRAY;
       for (let i = 0; i < adminArray.length; i++) {
@@ -116,6 +156,17 @@ export default {
           break;
         }
       }
+    },
+    filterObjWithStatusStarted() {
+      let newFilteredArrayOnLoad = [];
+      this.tasksArray.filter(obj => {
+        if (obj.task_status === "Started") {
+          this.addStatusTemplateShow = true;
+          newFilteredArrayOnLoad.push(obj);
+        }
+      });
+      console.log("new filtered array" + newFilteredArrayOnLoad);
+      return newFilteredArrayOnLoad;
     },
 
     navitageToAllStatus(username) {
@@ -135,16 +186,13 @@ export default {
       this.getTaskDetailsFromAPI(this.getUsername);
     },
 
-    getTaskDetailsFromAPI(){
+    getTaskDetailsFromAPI() {
       DataPostApi.projectDetailsApi(this.getUsername)
         .then(response => {
-          console.log(
-            "reposne from project list api" + JSON.stringify(response.data[0])
-          );
+          console.log("Response from API", response);
           this.projectList = response.data;
           this.tasksArray = response.data[0].allTasks;
-          console.log("tasks array" + JSON.stringify(this.tasksArray));
-          console.log("Project List" + this.projectList);
+          this.showNoOfAddForm = this.filterObjWithStatusStarted();
         })
         .catch(error => {
           throw error;

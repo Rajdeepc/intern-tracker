@@ -72,7 +72,7 @@ export default {
         const url = `http://localhost:3000/getprojectdata/${username}`;
         return axios.get(url)
             .then(response => {
-                console.log(response);
+              //  console.log(response);
                 return response;
             })
     },
@@ -148,7 +148,22 @@ export default {
             start_date:start_date,
             index:index
         };
-        const url = `http://localhost:3000/${taskID}/taskStatus`;
+        const url = `http://localhost:3000/${taskID}/taskStartStatus`;
+        return axios.put(url,body)
+        .then(response => {
+            return response.data;
+        })
+    },
+
+    updateEndTaskById(member_email,taskID,task_status,end_date,index) {
+        const body = {
+            member_email:member_email,
+            taskID:taskID,
+            task_status:task_status,
+            end_date:end_date,
+            index:index
+        };
+        const url = `http://localhost:3000/${taskID}/taskEndStatus`;
         return axios.put(url,body)
         .then(response => {
             return response.data;
