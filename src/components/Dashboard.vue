@@ -80,23 +80,34 @@
           </b-col>
           <!-- completed tasks -->
         </b-row>
-      </div>
+      
       <br>
       <br>
-       <br>
+      <br>
       <!-- add status for today component -->
       <div v-if="(taskDetailsShow === true) && (addStatusTemplateShow === true)">
-       <h4>Add Your Status For today:</h4>
-      <b-row>
-        <b-col col md="12" v-for="(addItem,index) in this.showNoOfAddForm" :key="addItem.id">
-          <AddStatus
-            :addItemDetails="addItem"
-            :index="index"
-            :getUsername="getUsername"
-          ></AddStatus>
-        </b-col>
-      </b-row>
-    </div>
+        <h4>Add Your Status For today:</h4>
+        <b-row>
+          <b-col col md="12" v-for="(addItem,index) in this.showNoOfAddForm" :key="addItem.id">
+            <AddStatus :addItemDetails="addItem" :index="index" :getUsername="getUsername" @startedStatusObj="onClickChildTaskItem"></AddStatus>
+          </b-col>
+        </b-row>
+      </div>
+      <!-- show status grid -->
+     
+        <!-- <h5>
+          <p class="float-left">
+            <b>Status for Today:</b>
+          </p>
+        </h5> -->
+         <br>
+          <br>
+         <br>
+         <div>
+            <h4>Your Status For today:</h4>
+            <StatusGrid :projectSelected="projectSelected" :statusItemDetails="this.statusArray" />
+        </div>
+      </div>
     </div>
     <AdminPanel v-if="showAdminbtn" :getUsername="getUsername"></AdminPanel>
   </div>
@@ -110,6 +121,7 @@ import DataPostApi from "../services/api/loginValidation";
 import router from "../router.js";
 import constants from "../utils/constants";
 import TaskItem from "./TaskItemComponent.vue";
+import StatusGrid from "./StatusGrid.vue";
 
 export default {
   name: "Dashboard",
@@ -124,8 +136,9 @@ export default {
       getUsername: "",
       showAdminbtn: false,
       tasksArray: [],
+      statusArray:[],
       objFromParent: [],
-      showNoOfAddForm:[]
+      showNoOfAddForm: []
     };
   },
   mounted() {
@@ -135,7 +148,8 @@ export default {
   components: {
     AddStatus: AddStatus,
     AdminPanel: AdminPanel,
-    TaskItem: TaskItem
+    TaskItem: TaskItem,
+    StatusGrid: StatusGrid
   },
   beforeCreate: function() {
     if (!this.$session.exists("username")) {
@@ -194,14 +208,33 @@ export default {
         .then(response => {
           console.log("Response from API", response);
           this.projectList = response.data;
-          this.tasksArray = response.data[0].allTasks;
+          this.tasksArray = response.data[0] ? response.data[0].allTasks : [];
+          this.statusArray = this.getAllStatusinArray();
           this.showNoOfAddForm = this.filterObjWithStatusStarted();
+          //console.log("this.tasksArray", this.tasksArray);
         })
         .catch(error => {
           throw error;
         });
     },
 
+    getAllStatusinArray(){
+      let newTempArray = [];
+      // for(let i = 0; i < this.tasksArray.length ; i++){
+      //     for(let j = i; j < this.tasksArray[i].allStatus.length; j++){
+      //       newTempArray.push(this.tasksArray[i].allStatus[j]);
+      //       console.log("newTempArray" + newTempArray)
+      //     }
+      // }
+      this.tasksArray.map((item) => {
+        item.allStatus.map((newItem) => {
+          newTempArray.push(newItem);
+        });
+      })
+      console.log("newTempArray" + JSON.stringify(newTempArray))
+      return newTempArray;
+    },
+    
     clearSessionLogout: function() {
       this.$session.remove("username");
       this.$router.push("/");

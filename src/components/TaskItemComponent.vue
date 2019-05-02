@@ -95,11 +95,6 @@ export default {
     endTask: function(taskId, taskName) {
       this.isTaskCompleted = true;
       this.taskStatus = "Completed";
-      // this.$emit("passEndTaskValue", {
-      //   id: taskId,
-      //   task: taskName,
-      //   task_status: this.taskStatus
-      // });
       DataPostApi.updateEndTaskById(
         this.getUsername,
         this.taskItemDetails.taskID,
@@ -108,8 +103,11 @@ export default {
         this.index
       )
         .then(response => {
-          if(response.task_status === 'updated'){
-            this.$emit('getTaskItem', )
+          if(response.affected.allTasks){
+            this.taskStatusResponseArray = response.affected.allTasks;
+            let objToSendToParent = this.filterObjWithStatusStarted();
+            console.log("objToSendToParent" + objToSendToParent)
+            this.$emit('startedStatusObj', objToSendToParent);
           }
         })
         .catch(err => {

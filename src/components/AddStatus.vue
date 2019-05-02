@@ -2,7 +2,7 @@
   <div class="editableform">
     <div class="formToAdd">
      
-      <b-form @submit.prevent action="/insert" method="post">
+      <b-form @submit.prevent action="/insert" method="post" v-if="addItemDetails.task_status != 'Completed'">
         <div class="form-row">
             <div class="form-group col-xs-2 mb-2">
               <label for="validationCustom01">Your Task</label>
@@ -59,112 +59,15 @@
         </div>
       </b-form>
       <p v-if="showMessage === true">Data SuccessFully Saved</p>
-      <b-toast
-        v-if="showMessage === true"
-        id="sentDataSuccessToast"
-        variant="success"
-        solid
-      >This is the content of the toast. It is short and to the point.</b-toast>
     </div>
-    <br>
-    <br>
     <!-- show the messages added -->
-    <div v-if="showStatusGrid">
-      <h5>
-        <p class="float-left">
-          <b>Status for Today:</b>
-        </p>
-        <p class="float-right">
-          <b>Members Submitted:</b>
-          <span>{{ countSubmitted }}</span> /
-          <span>{{ countTotal }}</span>
-        </p>
-      </h5>
-      <div class="showstatus">
-        <table class="table table-striped">
-          <thead>
-            <tr class>
-              <td>SL</td>
-              <td>Status For Today</td>
-              <td>Percentage Completed(%)</td>
-              <td>ETA</td>
-              <td>Owner</td>
-              <td>&nbsp;</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(status,index) in showAllStatus"
-              :key="index"
-              :class="{editing: status == editedStatus}"
-              v-cloak
-            >
-              <td class="width3">{{index + 1}}</td>
-              <td class="width40">
-                <div class="view">{{status.description}}</div>
-                <div class="edit">
-                  <input type="text" class="form-control" v-model="status.description">
-                </div>
-              </td>
-              <td class="width10">
-                <div class="view">{{status.percentage_completion}}%</div>
-                <div class="edit">
-                  <input type="text" class="form-control" v-model="status.percentage_completion">
-                </div>
-              </td>
-              <td class="width10">
-                <div class="view">{{status.completed_date}}</div>
-                <div class="edit">
-                  <input type="date" class="form-control" v-model="status.completed_date">
-                </div>
-              </td>
-              <td class="width15">{{status.manager_name}}</td>
-              <td class="width25">
-                <div class="view float-left">
-                  <b-button
-                    variant="warning"
-                    :disabled="status.manager_name !== manager_name"
-                    @click="editFields(status)"
-                  >
-                    <i class="fa fa-edit"></i>
-                  </b-button>
-                </div>
-                <div class="edit float-left">
-                  <b-button
-                    variant="success"
-                    :disabled="status.manager_name !== manager_name"
-                    @click="saveFields(status)"
-                  >
-                    <i class="fa fa-save"></i>
-                  </b-button>
-                </div>
-                <b-button
-                  variant="danger"
-                  class="float-left"
-                  :disabled="status.manager_name !== manager_name"
-                  @click="deleteRecord(index,status._id)"
-                >
-                  <i class="fa fa-trash"></i>
-                </b-button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="text-right">
-          <button
-            class="btn btn-success"
-            disabled="countSubmitted !== countTotal"
-            @click="sendmail()"
-          >Send Email</button>
-        </div>
-      </div>
-      <p v-if="this.emailsenttext === true">Email successfully sent</p>
-    </div>
   </div>
 </template>
 
 <script>
 import DataPostApi from "../services/api/loginValidation";
+
+
 export default {
   name: "AddStatus",
   props: ["addItemDetails", "getUsername", "tasksArray"],
@@ -194,20 +97,17 @@ export default {
     };
   },
   mounted() {
-    // this.getAllStatusToday();
-    // this.setMaxDateToday();
-   // console.log("number of memebers" + this.projectSelected.no_of_members);
    console.log("this.addItemDetails" + JSON.stringify(this.addItemDetails));
   },
-  watch: {
-    projectSelected: {
-      handler: function(projectSelected) {
-        this.getAllStatusToday();
-        //this.setMaxDateToday();
-      },
-      immediate: true
-    }
-  },
+  // watch: {
+  //   projectSelected: {
+  //     handler: function(projectSelected) {
+  //       this.getAllStatusToday();
+  //       //this.setMaxDateToday();
+  //     },
+  //     immediate: true
+  //   }
+  // },
   methods: {
     onClickChildTogetStartTask:function(startValue){
         console.log("value from child" + JSON.stringify(startValue))
@@ -216,37 +116,7 @@ export default {
     onClickChildTogetEndTask: function(endValue){
         console.log("value from child" + JSON.stringify(endValue))
     },
-    deleteRecord: function(index, id) {
-      DataPostApi.deleteStatusById(id)
-        .then(response => {
-          if (response) {
-            this.getAllStatusToday();
-          }
-        })
-        .catch(err => {
-          console.log("Error in delete record" + err);
-        });
-    },
-    editFields: function(status) {
-      this.beforEditCache = status;
-      this.editedStatus = status;
-    },
-    saveFields: function(status) {
-      /** for update api call */
-      this.editedStatus = null;
-      DataPostApi.updateStatusById(
-        status._id,
-        status.description,
-        status.percentage_completion,
-        status.completed_date
-      )
-        .then(response => {
-          console.log("Update Successful");
-        })
-        .catch(err => {
-          console.log("Error in update" + err);
-        });
-    },
+   
     getTodayDate: function(dateInput) {
       let newDate = dateInput;
       let mm = newDate.getMonth() + 1;
@@ -269,32 +139,29 @@ export default {
           this.date_updated
         )
           .then(response => {
-            if (response.saved === true) {
-              this.count ++;
-              this.getAllStatusToday();
-              this.resetFields();
-            }
+            if(response.affected.allTasks){
+            this.taskStatusResponseArray = response.affected.allTasks;
+            let objToSendToParent = this.filterObjWithStatusStarted();
+            console.log("objToSendToParent" + objToSendToParent)
+            this.$emit('startedStatusObj', objToSendToParent);
+          }
           })
           .catch(error => {
             throw error;
           });
+          this.count ++;
+    },
+    filterObjWithStatusStarted(){
+      let newFilteredArray = [];
+      this.taskStatusResponseArray.filter(obj => {
+         if(obj.task_status === 'Started'){
+           newFilteredArray.push(obj);
+         }
+      });
+      console.log("new filtered array" + newFilteredArray);
+      return newFilteredArray;
     },
     /**to get all status */
-    getAllStatusToday: function() {
-      // DataPostApi.getStatusbyDate(this.projectSelected.project_name).then(
-      //   response => {
-      //     this.showAllStatus = response.data;
-      //     if (response.data.length) {
-      //       this.showStatusGrid = true;
-      //     }
-
-      //     console.log(
-      //       "Show all status data" + JSON.stringify(this.showAllStatus)
-      //     );
-      //     this.findUniqueOwner();
-      //   }
-      // );
-    },
     setMaxDateToday: function() {
       let today = this.getDateYYYYMMDD(new Date());
       document.getElementById("completed_date").setAttribute("min", today);
