@@ -34,19 +34,18 @@ export default {
     },
     /** Save status to db */
 
-    taskSaveApi(topic_name,description, percentage_completion, manager_name, date_created, project_name) {
-        this.statusId++;
+    statusSaveApi(member_email,taskiD,statusID,statusDesc,percentage_completion,date_updated) {
         const body = {
-            topic_name:topic_name,
-            description: description,
-            percentage_completion: percentage_completion,
-            completed_date: completed_date,
-            manager_name: manager_name,
-            date_created: date_created,
-            project_name: project_name
+            member_email:member_email,
+            taskiD: taskiD,
+            statusID:statusID,
+            statusDesc:statusDesc,
+            percentage_completion:percentage_completion,
+            date_updated:date_updated
+
         };
-        const url = "http://localhost:3000/addname";
-        return axios.post(url, body)
+        const url = "http://localhost:3000/addStatus";
+        return axios.put(url, body)
             .then(response => {
                 return response.data;
             })

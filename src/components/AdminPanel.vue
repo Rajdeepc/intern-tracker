@@ -118,6 +118,7 @@ export default {
     return {
       newTaskArray: [""],
       taskArray: [],
+      statusArray:[],
       project_name: "",
       member_email: "",
       taskid: "",
@@ -170,7 +171,8 @@ export default {
           task_status: "Not Started",
           start_date: '',
           end_date:'',
-          date_created: this.getTodayDate()
+          date_created: this.getTodayDate(),
+          allStatus: this.statusArray
         });
         count++;
       }

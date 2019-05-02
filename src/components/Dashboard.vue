@@ -92,6 +92,7 @@
           <AddStatus
             :addItemDetails="addItem"
             :index="index"
+            :getUsername="getUsername"
           ></AddStatus>
         </b-col>
       </b-row>

@@ -11,31 +11,28 @@
               type="text"
               v-model="addItemDetails.taskName"
               name="topic_name"
-              required
               disabled
             />
           </div>
           <div class="form-group col-md-3 mb-3">
-            <label for="validationCustom01">Status</label>
+            <label for="validationCustom01">Status Description</label>
             <b-textarea
               class="mb-2 mr-sm-2 mb-sm-0"
               type="text"
-              v-model="description"
+              v-model="statusDesc"
               name="description"
               rows="1"
               cols="10"
               style="resize: none;"
-              required
             />
           </div>
           <div class="form-group col-xs-2 mb-2">
             <label for="validationCustom01">Percentage Completed</label>
             <b-input
               class="mb-2 mr-sm-2 mb-sm-0"
-              type="text"
+              type="number"
               v-model="percentage_completion"
               name="percentage_completion"
-              required
             />
           </div>
           <!-- <div class="form-group col-xs-2 mb-2">
@@ -57,7 +54,7 @@
           <input type="hidden" value v-model="date_created" name="date_created">
           <div class="col-xs-3 mb-3">
             <label for="validationCustom01" class="empty-label">&nbsp;</label>
-            <button class="addRowBtn btn btn-success" @click="addRow()">Add New Status</button>
+            <button class="addRowBtn btn btn-success" @click="addStatus()">Add New Status</button>
           </div>
         </div>
       </b-form>
@@ -170,7 +167,7 @@
 import DataPostApi from "../services/api/loginValidation";
 export default {
   name: "AddStatus",
-  props: ["addItemDetails","projectSelected", "getUsername", "tasksArray"],
+  props: ["addItemDetails", "getUsername", "tasksArray"],
   data() {
     return {
       shouldDisable: true,
@@ -179,10 +176,10 @@ export default {
      // countTotal: this.projectSelected.no_of_members,
       showAllStatus: [],
       showMessage: false,
-      description: "",
+      statusDesc: "",
       percentage_completion: null,
       completed_date: this.getDateYYYYMMDD(new Date()),
-      manager_name: this.getUsername,
+      member_email: this.getUsername,
       date_created: this.getTodayDate(new Date()),
       nextBarId: 1,
       lastId: 0,
@@ -191,7 +188,9 @@ export default {
       editMode: false,
       editedStatus: null,
       showStatusGrid: false,
-      topic_name:'Click on Start to Assign'
+      date_updated: this.getTodayDate(new Date()),
+      count:0,
+      statusID:''
     };
   },
   mounted() {
@@ -256,21 +255,22 @@ export default {
       let date = mm + "/" + dd + "/" + yyyy;
       return date;
     },
-    addRow: function() {
-      if (!this.description || !this.percentage_completion) {
-        return false;
-      } else {
-        //this.completed_date = this.getTodayDate(new Date(this.completed_date));
-        DataPostApi.taskSaveApi(
-          this.topic_name,
-          this.description,
+
+    addStatus: function() {
+      console.log("submit clicked");
+        this.statusID = `Status${this.count}`;
+        this.taskiD = this.addItemDetails.taskID;
+        DataPostApi.statusSaveApi(
+          this.member_email,
+          this.taskiD,
+          this.statusID,
+          this.statusDesc,
           this.percentage_completion,
-          this.manager_name,
-          this.date_created,
-          //this.projectSelected.project_name
+          this.date_updated
         )
           .then(response => {
             if (response.saved === true) {
+              this.count ++;
               this.getAllStatusToday();
               this.resetFields();
             }
@@ -278,7 +278,6 @@ export default {
           .catch(error => {
             throw error;
           });
-      }
     },
     /**to get all status */
     getAllStatusToday: function() {
