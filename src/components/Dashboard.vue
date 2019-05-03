@@ -20,8 +20,8 @@
       </b-collapse>
     </b-navbar>
     <div class="bodywrapper">
-      <a class="float-right" v-on:click="navitageToAllStatus(getUsername)">
-        <span>GoTo All Status Page</span>
+      <a class="float-right" v-on:click="navitageToAllStatus(getUsername)" v-if="showAdminbtn">
+        Check All Status
         <i class="fa fa-arrow-right" aria-hidden="true"></i>
       </a>
 
@@ -30,7 +30,7 @@
         <b>{{getUsername}}</b>,
       </p>
 
-      <div class="selectProject">
+      <div class="selectProject" v-if="projectList.length">
         Select Your Project:
         <select v-model="projectSelected" @change="showSkillsListToSelect()">
           <option disabled value>Please select one project</option>
@@ -41,71 +41,72 @@
           >{{ status.project_name }}</option>
         </select>
       </div>
-      <br>
-
+      <div class="component">
+        <div
+          class="noProject text-center"
+          v-if="!projectList.length && !showAdminbtn"
+        >You have not been assigned any project yet.</div>
+      </div>
       <!-- task array -->
       <div v-if="taskDetailsShow === true">
-        <h4>Project Details:</h4>
-        <b-list-group horizontal>
-          <b-card>
+        <div class="component">
+          <h4>Project Details:</h4>
+          <b-list-group horizontal>
+            <b-card>
+              <b-row>
+                <b-col>
+                  <b>Project Selected:</b>
+                  <!-- {{project_name}} -->
+                  {{projectSelected.project_name}}
+                </b-col>
+                <b-col>
+                  <b>Supervisor:</b>
+                  <!-- {{projectSelected.manager_name}} -->
+                  Bala Narasimhalu
+                  <a
+                    href="mailto:n.balanarasimhalu@accenture.com?Subject=Need%20Clarification"
+                  >Email</a>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-list-group>
+        </div>
+        <div class="component">
+          <h4>Your Tasks</h4>
+          <b-row>
+            <b-col col md="3" v-for="(taskItem,index) in this.tasksArray" :key="taskItem.id">
+              <TaskItem
+                :projectSelected="projectSelected"
+                :taskItemDetails="taskItem"
+                :index="index"
+                :getUsername="getUsername"
+                @startedStatusObj="onClickChildTaskItem"
+                
+              ></TaskItem>
+            </b-col>
+            <!-- completed tasks -->
+          </b-row>
+        </div>
+        <!-- add status for today component -->
+        <div class="component">
+          <div v-if="(taskDetailsShow === true) && (addStatusTemplateShow === true)">
+            <h4>Add Your Status For today:</h4>
             <b-row>
-              <b-col>
-                <b>Project:</b>
-                <!-- {{project_name}} -->
-                {{projectSelected.project_name}}
-              </b-col>
-              <b-col>
-                <b>Supervisor:</b>
-                <!-- {{projectSelected.manager_name}} -->
-                Bala Narasimhalu
-                <a
-                  href="mailto:n.balanarasimhalu@accenture.com?Subject=Need%20Clarification"
-                >Email</a>
+              <b-col col md="12" v-for="(addItem,index) in this.showNoOfAddForm" :key="addItem.id">
+                <AddStatus
+                  :addItemDetails="addItem"
+                  :index="index"
+                  :getUsername="getUsername"
+                  @startedStatusObj="onClickChildTaskItem"
+                ></AddStatus>
               </b-col>
             </b-row>
-          </b-card>
-        </b-list-group>
-        <br>
-        <br>
-        <h4>Your Tasks</h4>
-        <b-row>
-          <b-col col md="3" v-for="(taskItem,index) in this.tasksArray" :key="taskItem.id">
-            <TaskItem
-              :projectSelected="projectSelected"
-              :taskItemDetails="taskItem"
-              :index="index"
-              :getUsername="getUsername"
-              @startedStatusObj="onClickChildTaskItem"
-            ></TaskItem>
-          </b-col>
-          <!-- completed tasks -->
-        </b-row>
-      
-      <br>
-      <br>
-      <br>
-      <!-- add status for today component -->
-      <div v-if="(taskDetailsShow === true) && (addStatusTemplateShow === true)">
-        <h4>Add Your Status For today:</h4>
-        <b-row>
-          <b-col col md="12" v-for="(addItem,index) in this.showNoOfAddForm" :key="addItem.id">
-            <AddStatus :addItemDetails="addItem" :index="index" :getUsername="getUsername" @startedStatusObj="onClickChildTaskItem"></AddStatus>
-          </b-col>
-        </b-row>
-      </div>
-      <!-- show status grid -->
-     
-        <!-- <h5>
-          <p class="float-left">
-            <b>Status for Today:</b>
-          </p>
-        </h5> -->
-         <br>
-          <br>
-         <br>
-         <div>
-            <h4>Your Status For today:</h4>
-            <StatusGrid :projectSelected="projectSelected" :statusItemDetails="this.statusArray" />
+          </div>
+        </div>
+
+        <div class="component" v-if="this.statusArray.length">
+          <h4>Your Status For today:</h4>
+          <StatusGrid :projectSelected="projectSelected" :statusItemDetails="this.statusArray"/>
         </div>
       </div>
     </div>
@@ -136,7 +137,7 @@ export default {
       getUsername: "",
       showAdminbtn: false,
       tasksArray: [],
-      statusArray:[],
+      statusArray: [],
       objFromParent: [],
       showNoOfAddForm: []
     };
@@ -218,23 +219,28 @@ export default {
         });
     },
 
-    getAllStatusinArray(){
+    getAllStatusinArray() {
       let newTempArray = [];
-      // for(let i = 0; i < this.tasksArray.length ; i++){
-      //     for(let j = i; j < this.tasksArray[i].allStatus.length; j++){
-      //       newTempArray.push(this.tasksArray[i].allStatus[j]);
-      //       console.log("newTempArray" + newTempArray)
-      //     }
-      // }
-      this.tasksArray.map((item) => {
-        item.allStatus.map((newItem) => {
+      this.tasksArray.map(item => {
+        item.allStatus.map(newItem => {
           newTempArray.push(newItem);
         });
-      })
-      console.log("newTempArray" + JSON.stringify(newTempArray))
+      });
+      console.log("newTempArray" + JSON.stringify(newTempArray));
       return newTempArray;
     },
-    
+
+      getPercentageCompleteToTasItem(){
+        let newTempArrayOfPercentage = [];
+        this.tasksArray.map(item => {
+          let lastItem = item.allStatus.slice(-1).pop();
+          newTempArray.push(lastItem);
+        });
+        console.log("newTempArray" + JSON.stringify(newTempArrayOfPercentage));
+        return newTempArrayOfPercentage;
+      },
+
+
     clearSessionLogout: function() {
       this.$session.remove("username");
       this.$router.push("/");
@@ -246,6 +252,10 @@ export default {
 <style scoped>
 .navbar-dark .navbar-text {
   color: #fff;
+}
+.component {
+  display: block;
+  margin-top: 30px;
 }
 </style>
 

@@ -5,8 +5,10 @@
           <thead>
             <tr class>
               <td>SL</td>
-              <td>Status For Today</td>
+              <td>Task</td>
+              <td>Status Description</td>
               <td>Percentage Completed(%)</td>
+              <td>Date Updated</td>
               <td>&nbsp;</td>
             </tr>
           </thead>
@@ -14,22 +16,23 @@
             <tr
               v-for="(status,index) in this.statusItemDetails"
               :key="index"
-              :class="{editing: status == editedStatus}"
-              v-cloak
             >
               <td class="width3">{{index + 1}}</td>
+              <td>{{status.task_name}}</td>
               <td class="width40">
                 <div class="view">{{status.statusDesc}}</div>
-                <div class="edit">
+                <!-- <div class="edit">
                   <input type="text" class="form-control" v-model="status.description">
-                </div>
+                </div> -->
               </td>
+              
               <td class="width10">
                 <div class="view">{{status.percentage_completion}}%</div>
-                <div class="edit">
+                <!-- <div class="edit">
                   <input type="text" class="form-control" v-model="status.percentage_completion">
-                </div>
+                </div> -->
               </td>
+              <td>{{status.date_updated}}</td>
               <!-- <td class="width10">
                 <div class="view">{{status.completed_date}}</div>
                 <div class="edit">

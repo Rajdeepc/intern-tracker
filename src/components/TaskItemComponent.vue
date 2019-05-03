@@ -1,5 +1,10 @@
 <template>
   <b-list-group horizontal>
+    <b-progress :max="max"
+    >
+     <b-progress-bar :label="`${Number(taskItemDetails.allStatus.slice(-1).pop().percentage_completion)} %`" show-progress animated :value="Number(taskItemDetails.allStatus.slice(-1).pop().percentage_completion)"></b-progress-bar>
+    </b-progress>
+
     <b-list-group-item class="taskitem">
       <b-row>
         <b-col class="text-left">{{taskItemDetails.taskName}}</b-col>
@@ -10,17 +15,18 @@
             @click="startTask(taskItemDetails.taskID)"
           >Start</b-button>
           <!-- <span
-                  v-if="(percentage_completion > 0 && percentage_completion < 100)"
-          >{{percentage_completion}}</span> -->
-
+          >{{taskItemDetails.allStatus.slice(-1).pop().percentage_completion}} % </span>-->
+          <!-- <div is="stat-circle" ></div> -->
           <b-button
             variant="outline-danger"
             @click="endTask(taskItemDetails.taskID)"
             v-if="(taskItemDetails.task_status === 'Started')"
           >End</b-button>
-        </b-col>
-        <b-col class="text-right completedWrapper" v-if="(taskItemDetails.task_status === 'Completed')">
-          <i class="fa fa-check-circle fa-2x" aria-hidden="true"></i>
+          <i
+            v-if="(taskItemDetails.task_status === 'Completed')"
+            class="fa fa-check-circle fa-2x"
+            aria-hidden="true"
+          ></i>
         </b-col>
       </b-row>
     </b-list-group-item>
@@ -28,24 +34,25 @@
 </template>
 <script>
 import DataPostApi from "../services/api/loginValidation";
-
 export default {
   name: "TaskItem",
-  props: ["taskItemDetails","index",'getUsername'],
+  props: ["taskItemDetails", "index", "getUsername", "lastUpdatedPercentage"],
   data() {
     return {
-      hasStarted:false,
+      hasStarted: false,
       isTaskCompleted: false,
       startDate: this.getTodayDate(new Date()),
       endDate: this.getTodayDate(new Date()),
       taskStatus: "Not Started",
       date_updated: this.getTodayDate(new Date()),
       itemList: this.taskItemDetails,
-      taskStatusResponseArray:[]
+      taskStatusResponseArray: [],
+      max: 100
     };
   },
-  mounted(){
-  //  console.log(this.taskItemDetails)
+  mounted() {
+    console.log("showNoOfAddForm" + JSON.stringify(this.taskItemDetails));
+    console.log("lastUpdatedPercentage" + this.lastUpdatedPercentage);
   },
   methods: {
     getTodayDate: function(dateInput) {
@@ -56,7 +63,7 @@ export default {
       let date = mm + "/" + dd + "/" + yyyy;
       return date;
     },
-    startTask: function(event,taskId) {
+    startTask: function(event, taskId) {
       this.hasStarted = true;
       this.taskStatus = "Started";
       DataPostApi.updateStartTaskById(
@@ -67,26 +74,24 @@ export default {
         this.index
       )
         .then(response => {
-          if(response.affected.allTasks){
+          if (response.affected.allTasks) {
             this.taskStatusResponseArray = response.affected.allTasks;
             let objToSendToParent = this.filterObjWithStatusStarted();
-            console.log("objToSendToParent" + objToSendToParent)
-            this.$emit('startedStatusObj', objToSendToParent);
+            console.log("objToSendToParent" + objToSendToParent);
+            this.$emit("startedStatusObj", objToSendToParent);
           }
-         
         })
         .catch(err => {
           console.log("Error from statusUpdateAPi" + err);
         });
     },
 
-
-    filterObjWithStatusStarted(){
+    filterObjWithStatusStarted() {
       let newFilteredArray = [];
       this.taskStatusResponseArray.filter(obj => {
-         if(obj.task_status === 'Started'){
-           newFilteredArray.push(obj);
-         }
+        if (obj.task_status === "Started") {
+          newFilteredArray.push(obj);
+        }
       });
       console.log("new filtered array" + newFilteredArray);
       return newFilteredArray;
@@ -103,11 +108,11 @@ export default {
         this.index
       )
         .then(response => {
-          if(response.affected.allTasks){
+          if (response.affected.allTasks) {
             this.taskStatusResponseArray = response.affected.allTasks;
             let objToSendToParent = this.filterObjWithStatusStarted();
-            console.log("objToSendToParent" + objToSendToParent)
-            this.$emit('startedStatusObj', objToSendToParent);
+            console.log("objToSendToParent" + objToSendToParent);
+            this.$emit("startedStatusObj", objToSendToParent);
           }
         })
         .catch(err => {
