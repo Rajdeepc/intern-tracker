@@ -99,16 +99,12 @@ export default {
   mounted() {
    console.log("this.addItemDetails" + JSON.stringify(this.addItemDetails));
   },
-  // watch: {
-  //   projectSelected: {
-  //     handler: function(projectSelected) {
-  //       this.getAllStatusToday();
-  //       //this.setMaxDateToday();
-  //     },
-  //     immediate: true
-  //   }
-  // },
   methods: {
+
+    checkPercentage(){
+      
+    },
+
     onClickChildTogetStartTask:function(startValue){
         console.log("value from child" + JSON.stringify(startValue))
         this.assigned_topic = startValue.taskName
@@ -127,7 +123,9 @@ export default {
     },
 
     addStatus: function() {
-      console.log("submit clicked");
+        //if(this.percentage_completion < (this.addItemDetails.allStatus.pop().percentage_completion) || this.statusDesc === ''){
+        //  return false;
+      //  } else {
         this.statusID = `Status${this.count}`;
         this.taskiD = this.addItemDetails.taskID;
         DataPostApi.statusSaveApi(
@@ -142,7 +140,6 @@ export default {
             if(response.affected.allTasks){
             this.taskStatusResponseArray = response.affected.allTasks;
             let objToSendToParent = this.filterObjWithStatusStarted();
-            console.log("objToSendToParent" + objToSendToParent)
             this.$emit('startedStatusObj', objToSendToParent);
           }
           })
@@ -150,6 +147,7 @@ export default {
             throw error;
           });
           this.count ++;
+        //}
     },
     filterObjWithStatusStarted(){
       let newFilteredArray = [];

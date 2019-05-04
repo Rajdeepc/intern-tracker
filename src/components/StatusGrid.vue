@@ -1,46 +1,40 @@
 <template>
-     <div v-if="this.statusItemDetails.length">
-      <div class="showstatus">
-        <table class="table table-striped">
-          <thead>
-            <tr class>
-              <td>SL</td>
-              <td>Task</td>
-              <td>Status Description</td>
-              <td>Percentage Completed(%)</td>
-              <td>Date Updated</td>
-              <td>&nbsp;</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(status,index) in this.statusItemDetails"
-              :key="index"
-            >
-              <td class="width3">{{index + 1}}</td>
-              <td>{{status.task_name}}</td>
-              <td class="width40">
-                <div class="view">{{status.statusDesc}}</div>
-                <!-- <div class="edit">
+  <div v-if="this.statusItemDetails.length">
+    <div class="showstatus">
+      <table class="table table-striped">
+        <thead>
+          <tr class>
+            <td>SL</td>
+            <td>Task</td>
+            <td>Status Description</td>
+            <!-- <td>Percentage Completed(%)</td> -->
+            <td>Date Updated</td>
+            <td>&nbsp;</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(status,index) in this.statusItemDetails" :key="index">
+            <td class="width3">{{index + 1}}</td>
+            <td>{{status.taskName}}</td>
+            <td class="width40">
+              <div class="view">{{status.statusDesc}}</div>
+              <!-- <div class="edit">
                   <input type="text" class="form-control" v-model="status.description">
-                </div> -->
-              </td>
-              
-              <td class="width10">
-                <div class="view">{{status.percentage_completion}}%</div>
-                <!-- <div class="edit">
-                  <input type="text" class="form-control" v-model="status.percentage_completion">
-                </div> -->
-              </td>
-              <td>{{status.date_updated}}</td>
-              <!-- <td class="width10">
+              </div>-->
+            </td>
+
+            <!-- <td class="width10">
+              <div class="view">{{status.percentage_completion}}%</div>
+            </td> -->
+            <td>{{status.date_updated}}</td>
+            <!-- <td class="width10">
                 <div class="view">{{status.completed_date}}</div>
                 <div class="edit">
                   <input type="date" class="form-control" v-model="status.completed_date">
                 </div>
-              </td> -->
-              <!-- <td class="width15">{{status.manager_name}}</td> -->
-              <!-- <td class="width25">
+            </td>-->
+            <!-- <td class="width15">{{status.manager_name}}</td> -->
+            <!-- <td class="width25">
                 <div class="view float-left">
                   <b-button
                     variant="warning"
@@ -67,35 +61,35 @@
                 >
                   <i class="fa fa-trash"></i>
                 </b-button>
-              </td> -->
-            </tr>
-          </tbody>
-        </table>
-        <!-- <div class="text-right">
+            </td>-->
+          </tr>
+        </tbody>
+      </table>
+      <!-- <div class="text-right">
           <button
             class="btn btn-success"
             disabled="countSubmitted !== countTotal"
             @click="sendmail()"
           >Send Email</button>
-        </div> -->
-      </div>
-      <!-- <p v-if="this.emailsenttext === true">Email successfully sent</p> -->
+      </div>-->
     </div>
+    <!-- <p v-if="this.emailsenttext === true">Email successfully sent</p> -->
+  </div>
 </template>
 <script>
+import TaskItemComponentVue from "./TaskItemComponent.vue";
 export default {
-     name: "StatusGrid",
-     props:["projectSelected","statusItemDetails"],
-    data(){
-        return {
+  name: "StatusGrid",
+  props: ["projectSelected", "statusItemDetails"],
+  data() {
+    return {};
+  },
+  mounted() {
+    console.log("statusItemDetails" + JSON.stringify(this.statusItemDetails));
+  },
 
-        }
-    },
-    mounted(){
-        console.log("statusItemDetails" + JSON.stringify(this.statusItemDetails))
-    },
-    methods: {
-         deleteRecord: function(index, id) {
+  methods: {
+    deleteRecord: function(index, id) {
       DataPostApi.deleteStatusById(id)
         .then(response => {
           if (response) {
@@ -125,10 +119,9 @@ export default {
         .catch(err => {
           console.log("Error in update" + err);
         });
-    },
     }
-}
+  }
+};
 </script>
 <style>
-
 </style>

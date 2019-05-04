@@ -1,10 +1,14 @@
 <template>
   <b-list-group horizontal>
-    <b-progress :max="max"
+    <div v-if="taskItemDetails.allStatus.length && taskItemDetails.task_status === 'Started'">
+    <b-progress
+    :max="max"
+    show-progress 
+    animated 
+    :value="taskItemDetails.allStatus ? Number(taskItemDetails.allStatus.slice(-1)[0].percentage_completion) : 0"
     >
-     <b-progress-bar :label="`${Number(taskItemDetails.allStatus.slice(-1).pop().percentage_completion)} %`" show-progress animated :value="Number(taskItemDetails.allStatus.slice(-1).pop().percentage_completion)"></b-progress-bar>
     </b-progress>
-
+    </div>
     <b-list-group-item class="taskitem">
       <b-row>
         <b-col class="text-left">{{taskItemDetails.taskName}}</b-col>
@@ -18,10 +22,11 @@
           >{{taskItemDetails.allStatus.slice(-1).pop().percentage_completion}} % </span>-->
           <!-- <div is="stat-circle" ></div> -->
           <b-button
-            variant="outline-danger"
+            :disabled="Number(taskItemDetails.allStatus.length && taskItemDetails.allStatus.slice(-1)[0].percentage_completion) === 100 ? false : true"
+            variant="danger"
             @click="endTask(taskItemDetails.taskID)"
             v-if="(taskItemDetails.task_status === 'Started')"
-          >End</b-button>
+            >End</b-button>
           <i
             v-if="(taskItemDetails.task_status === 'Completed')"
             class="fa fa-check-circle fa-2x"
@@ -55,6 +60,12 @@ export default {
     console.log("lastUpdatedPercentage" + this.lastUpdatedPercentage);
   },
   methods: {
+
+      totalTaskPercentage(){
+
+      },
+
+
     getTodayDate: function(dateInput) {
       let newDate = dateInput;
       let mm = newDate.getMonth() + 1;
@@ -76,7 +87,7 @@ export default {
         .then(response => {
           if (response.affected.allTasks) {
             this.taskStatusResponseArray = response.affected.allTasks;
-            let objToSendToParent = this.filterObjWithStatusStarted();
+            let objToSendToParent = this.filterObjWithStatus('Started');
             console.log("objToSendToParent" + objToSendToParent);
             this.$emit("startedStatusObj", objToSendToParent);
           }
@@ -86,10 +97,10 @@ export default {
         });
     },
 
-    filterObjWithStatusStarted() {
+    filterObjWithStatus(status) {
       let newFilteredArray = [];
       this.taskStatusResponseArray.filter(obj => {
-        if (obj.task_status === "Started") {
+        if (obj.task_status === status) {
           newFilteredArray.push(obj);
         }
       });
@@ -110,7 +121,7 @@ export default {
         .then(response => {
           if (response.affected.allTasks) {
             this.taskStatusResponseArray = response.affected.allTasks;
-            let objToSendToParent = this.filterObjWithStatusStarted();
+            let objToSendToParent = this.filterObjWithStatus('Completed');
             console.log("objToSendToParent" + objToSendToParent);
             this.$emit("startedStatusObj", objToSendToParent);
           }
@@ -131,8 +142,8 @@ export default {
 };
 </script>
 <style>
-#app .editableform .taskitem {
-  margin-bottom: 10px;
+.list-group-item.taskitem{
+  margin-bottom: 10px !important;
 }
 i.fa.fa-check-circle.fa-2x {
   color: green;

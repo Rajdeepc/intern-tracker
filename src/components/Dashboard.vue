@@ -89,7 +89,7 @@
         </div>
         <!-- add status for today component -->
         <div class="component">
-          <div v-if="(taskDetailsShow === true) && (addStatusTemplateShow === true)">
+          <div v-if="(taskDetailsShow === true) && (addStatusTemplateShow === true)" >
             <h4>Add Your Status For today:</h4>
             <b-row>
               <b-col col md="12" v-for="(addItem,index) in this.showNoOfAddForm" :key="addItem.id">
@@ -105,7 +105,7 @@
         </div>
 
         <div class="component" v-if="this.statusArray.length">
-          <h4>Your Status For today:</h4>
+          <h4>Your Status:</h4>
           <StatusGrid :projectSelected="projectSelected" :statusItemDetails="this.statusArray"/>
         </div>
       </div>
