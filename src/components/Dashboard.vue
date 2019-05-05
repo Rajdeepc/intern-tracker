@@ -257,5 +257,8 @@ export default {
   display: block;
   margin-top: 30px;
 }
+.component h4 {
+    margin-bottom: 16px;
+}
 </style>
 

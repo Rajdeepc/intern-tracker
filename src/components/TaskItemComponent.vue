@@ -1,5 +1,6 @@
 <template>
   <b-list-group horizontal>
+    <div class="progressbarwrapper">
     <div v-if="taskItemDetails.allStatus.length && taskItemDetails.task_status === 'Started'">
     <b-progress
     :max="max"
@@ -8,6 +9,7 @@
     :value="taskItemDetails.allStatus ? Number(taskItemDetails.allStatus.slice(-1)[0].percentage_completion) : 0"
     >
     </b-progress>
+    </div>
     </div>
     <b-list-group-item class="taskitem">
       <b-row>

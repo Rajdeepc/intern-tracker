@@ -31,6 +31,7 @@
   html {
     margin: 0;
     height: 100%;
+    font-weight: 100;
   }
   
   #app {
@@ -79,4 +80,5 @@
     .width25{
         width:25%
     }
+    
 </style>
