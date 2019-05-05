@@ -34,31 +34,30 @@ export default {
     },
     /** Save status to db */
 
-    taskSaveApi(description, percentage_completion, completed_date, manager_name, date_created, project_name) {
-        this.statusId++;
+    statusSaveApi(member_email,taskiD,statusID,statusDesc,percentage_completion,date_updated) {
         const body = {
-            description: description,
-            percentage_completion: percentage_completion,
-            completed_date: completed_date,
-            manager_name: manager_name,
-            date_created: date_created,
-            project_name: project_name
+            member_email:member_email,
+            taskiD: taskiD,
+            statusID:statusID,
+            statusDesc:statusDesc,
+            percentage_completion:percentage_completion,
+            date_updated:date_updated
+
         };
-        const url = "http://localhost:3000/addname";
-        return axios.post(url, body)
+        const url = "http://localhost:3000/addStatus";
+        return axios.put(url, body)
             .then(response => {
                 return response.data;
             })
     },
     /** Add Project to db by admin */
 
-    projectsaveApi(date_created, manager_name, project_name, no_of_members, member_names) {
+    projectsaveApi(project_name, member_email, manager_name, allTasks) {
         const body = {
-            date_created: date_created,
             project_name: project_name,
+            member_email: member_email,
             manager_name: manager_name,
-            no_of_members: no_of_members,
-            member_names: member_names
+            allTasks: allTasks
         };
         const url = "http://localhost:3000/postprojectdata";
         return axios.post(url, body)
@@ -72,7 +71,7 @@ export default {
         const url = `http://localhost:3000/getprojectdata/${username}`;
         return axios.get(url)
             .then(response => {
-                console.log(response);
+              //  console.log(response);
                 return response;
             })
     },
@@ -132,6 +131,39 @@ export default {
         };
         const url = "http://localhost:3000/getallStatusbyDate";
         return axios.post(url,body)
+        .then(response => {
+            return response.data;
+        })
+    },
+
+
+
+
+    updateStartTaskById(member_email,taskID,task_status,start_date,index) {
+        const body = {
+            member_email:member_email,
+            taskID:taskID,
+            task_status:task_status,
+            start_date:start_date,
+            index:index
+        };
+        const url = `http://localhost:3000/${taskID}/taskStartStatus`;
+        return axios.put(url,body)
+        .then(response => {
+            return response.data;
+        })
+    },
+
+    updateEndTaskById(member_email,taskID,task_status,end_date,index) {
+        const body = {
+            member_email:member_email,
+            taskID:taskID,
+            task_status:task_status,
+            end_date:end_date,
+            index:index
+        };
+        const url = `http://localhost:3000/${taskID}/taskEndStatus`;
+        return axios.put(url,body)
         .then(response => {
             return response.data;
         })
