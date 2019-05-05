@@ -106,7 +106,7 @@
 
         <div class="component" v-if="this.statusArray.length">
           <h4>Your Status:</h4>
-          <StatusGrid :projectSelected="projectSelected" :statusItemDetails="this.statusArray"/>
+          <StatusGrid :projectSelected="projectSelected" :statusItemDetails="this.tasksArray"/>
         </div>
       </div>
     </div>

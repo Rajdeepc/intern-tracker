@@ -1,79 +1,15 @@
 <template>
   <div v-if="this.statusItemDetails.length">
     <div class="showstatus">
-      <table class="table table-striped">
-        <thead>
-          <tr class>
-            <td>SL</td>
-            <td>Task</td>
-            <td>Status Description</td>
-            <!-- <td>Percentage Completed(%)</td> -->
-            <td>Date Updated</td>
-            <td>&nbsp;</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(status,index) in this.statusItemDetails" :key="index">
-            <td class="width3">{{index + 1}}</td>
-            <td>{{status.taskName}}</td>
-            <td class="width40">
-              <div class="view">{{status.statusDesc}}</div>
-              <!-- <div class="edit">
-                  <input type="text" class="form-control" v-model="status.description">
-              </div>-->
-            </td>
-
-            <!-- <td class="width10">
-              <div class="view">{{status.percentage_completion}}%</div>
-            </td> -->
-            <td>{{status.date_updated}}</td>
-            <!-- <td class="width10">
-                <div class="view">{{status.completed_date}}</div>
-                <div class="edit">
-                  <input type="date" class="form-control" v-model="status.completed_date">
-                </div>
-            </td>-->
-            <!-- <td class="width15">{{status.manager_name}}</td> -->
-            <!-- <td class="width25">
-                <div class="view float-left">
-                  <b-button
-                    variant="warning"
-                    :disabled="status.manager_name !== manager_name"
-                    @click="editFields(status)"
-                  >
-                    <i class="fa fa-edit"></i>
-                  </b-button>
-                </div>
-                <div class="edit float-left">
-                  <b-button
-                    variant="success"
-                    :disabled="status.manager_name !== manager_name"
-                    @click="saveFields(status)"
-                  >
-                    <i class="fa fa-save"></i>
-                  </b-button>
-                </div>
-                <b-button
-                  variant="danger"
-                  class="float-left"
-                  :disabled="status.manager_name !== manager_name"
-                  @click="deleteRecord(index,status._id)"
-                >
-                  <i class="fa fa-trash"></i>
-                </b-button>
-            </td>-->
-          </tr>
-        </tbody>
-      </table>
-      <!-- <div class="text-right">
-          <button
-            class="btn btn-success"
-            disabled="countSubmitted !== countTotal"
-            @click="sendmail()"
-          >Send Email</button>
-      </div>-->
+          <div v-for="(status,index) in this.statusItemDetails" :key="index">
+           
+            <p>{{status.taskName}}</p>
+              <div class="view" v-for="(statusItem,index) in status.allStatus" :key="index">
+                {{statusItem.statusDesc}}
+              </div>
     </div>
     <!-- <p v-if="this.emailsenttext === true">Email successfully sent</p> -->
+  </div>
   </div>
 </template>
 <script>
