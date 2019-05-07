@@ -1,10 +1,6 @@
 <template>
   <div class="container-fluid">
-    <b-alert
-      :show="dismissCountDown"
-      dismissible
-      variant="primary"
-    >Save Successful</b-alert>
+    <b-alert :show="dismissCountDown" dismissible variant="primary">Save Successful</b-alert>
     <b-row>
       <b-col cols="5">
         <b-card>
@@ -111,25 +107,25 @@
               >{{ memberItem.member_email }}</option>
             </select>
           </div>
-         <br>
+          <br>
 
           <b-table striped hover :items="taskArrayOfMember"></b-table>
         </b-card>
       </b-col>
     </b-row>
+   
   </div>
 </template>
 
 <script>
 import DataPostApi from "../services/api/loginValidation";
-
 export default {
   name: "AdminPanel",
   props: ["getUsername"],
   data() {
     return {
-      dismissCountDown:false,
-      memberSelected:null,
+      dismissCountDown: false,
+      memberSelected: null,
       allDataArray: [],
       selected: null,
       options: [],
@@ -146,17 +142,17 @@ export default {
       manager_name: this.getUsername,
       date_created: this.getTodayDate(),
       items: [],
-      taskArrayOfMember:[]
+      taskArrayOfMember: []
     };
   },
-  watch:{
-    options:function(val){
+  watch: {
+    options: function(val) {
       this.getAllTasksCall();
     }
   },
- created: function () {
-      this.getAllTasksCall();
-    },
+  created: function() {
+    this.getAllTasksCall();
+  },
   methods: {
     getTodayDate: function() {
       let newDate = new Date();
@@ -243,23 +239,22 @@ export default {
         });
     },
 
-
-    showDetailsOfMember(e){
-        if(this.memberSelected){
-          DataPostApi.getStatusbyEmail(this.memberSelected.member_email)
-        .then((response) => {
-          this.taskArrayOfMember = response.data[0].allTasks;
-          console.log("this.taskArrayOfMember" + JSON.stringify(this.taskArrayOfMember));
-        })
-        .catch((err) => {
-          console.log("Error" + err)
-        })
-        } else {
-          return false;
-        }
-        
+    showDetailsOfMember(e) {
+      if (this.memberSelected) {
+        DataPostApi.getStatusbyEmail(this.memberSelected.member_email)
+          .then(response => {
+            this.taskArrayOfMember = response.data[0].allTasks;
+            console.log(
+              "this.taskArrayOfMember" + JSON.stringify(this.taskArrayOfMember)
+            );
+          })
+          .catch(err => {
+            console.log("Error" + err);
+          });
+      } else {
+        return false;
+      }
     },
-
 
     removeTask: function(index) {
       this.newTaskArray.splice(index, 1);

@@ -2,34 +2,41 @@
   <div class="dashboard">
     <b-navbar toggleable="md" type="dark" variant="dark">
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-
       <b-nav-text>
         <h4>Accenture Status Tracker</h4>
       </b-nav-text>
-
       <b-collapse is-nav id="nav_collapse">
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-nav-item v-if="showAdminbtn">
-            <b-btn v-b-modal.modallg variant="primary">Add Project</b-btn>
-          </b-nav-item>
           <b-nav-item>
             <b-button @click="clearSessionLogout">Logout</b-button>
           </b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
+    <div class="ribbon float-right" v-if="showAdminbtn">
+      <div class="mt-3 innerRibbon text-right">
+        <b-button-group>
+          <b-button variant="warning" v-b-modal.modal-sm>
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            Add Project
+          </b-button>
+          <b-button variant="danger">
+            <i class="fa fa-stop-circle-o" aria-hidden="true"></i>
+            End Project
+          </b-button>
+        </b-button-group>
+      </div>
+    </div>
     <div class="bodywrapper">
-      <a class="float-right" v-on:click="navitageToAllStatus(getUsername)" v-if="showAdminbtn">
+      <!-- <a class="float-right" v-on:click="navitageToAllStatus(getUsername)" v-if="showAdminbtn">
         Check All Status
         <i class="fa fa-arrow-right" aria-hidden="true"></i>
-      </a>
-
+      </a> -->
       <p>
         Welcome
         <b>{{getUsername}}</b>,
       </p>
-
       <div class="selectProject" v-if="projectList.length">
         Select Your Project:
         <select v-model="projectSelected" @change="showSkillsListToSelect()">
@@ -81,7 +88,6 @@
                 :index="index"
                 :getUsername="getUsername"
                 @startedStatusObj="onClickChildTaskItem"
-                
               ></TaskItem>
             </b-col>
             <!-- completed tasks -->
@@ -89,7 +95,7 @@
         </div>
         <!-- add status for today component -->
         <div class="component">
-          <div v-if="(taskDetailsShow === true) && (addStatusTemplateShow === true)" >
+          <div v-if="(taskDetailsShow === true) && (addStatusTemplateShow === true)">
             <h4>Add Your Status For today:</h4>
             <b-row>
               <b-col col md="12" v-for="(addItem,index) in this.showNoOfAddForm" :key="addItem.id">
@@ -110,7 +116,11 @@
         </div>
       </div>
     </div>
-    <AdminPanel v-if="showAdminbtn" :getUsername="getUsername"></AdminPanel>
+    <AdminPanel v-if="showAdminbtn" :getUsername="getUsername">
+    </AdminPanel>
+    <b-modal id="modal-sm" size="sm" title="Add New Project">
+      <AddProjectModalTemplate></AddProjectModalTemplate>
+    </b-modal>
   </div>
 </template>
 
@@ -123,12 +133,14 @@ import router from "../router.js";
 import constants from "../utils/constants";
 import TaskItem from "./TaskItemComponent.vue";
 import StatusGrid from "./StatusGrid.vue";
+import AddProjectModalTemplate from './AddProjectModal.vue'
 
 export default {
   name: "Dashboard",
   props: [],
   data() {
     return {
+      modalShow: false,
       projectSelected: this.projectSelectedItem,
       addStatusTemplateShow: false,
       taskDetailsShow: false,
@@ -150,7 +162,8 @@ export default {
     AddStatus: AddStatus,
     AdminPanel: AdminPanel,
     TaskItem: TaskItem,
-    StatusGrid: StatusGrid
+    StatusGrid: StatusGrid,
+    AddProjectModalTemplate:AddProjectModalTemplate
   },
   beforeCreate: function() {
     if (!this.$session.exists("username")) {
@@ -158,6 +171,10 @@ export default {
     }
   },
   methods: {
+    showModal() {
+      console.log("modal should show")
+        this.modalShow = true;
+    },
     onClickChildTaskItem(valueObj) {
       if (valueObj) {
         this.addStatusTemplateShow = true;
@@ -230,16 +247,15 @@ export default {
       return newTempArray;
     },
 
-      getPercentageCompleteToTasItem(){
-        let newTempArrayOfPercentage = [];
-        this.tasksArray.map(item => {
-          let lastItem = item.allStatus.slice(-1).pop();
-          newTempArray.push(lastItem);
-        });
-        console.log("newTempArray" + JSON.stringify(newTempArrayOfPercentage));
-        return newTempArrayOfPercentage;
-      },
-
+    getPercentageCompleteToTasItem() {
+      let newTempArrayOfPercentage = [];
+      this.tasksArray.map(item => {
+        let lastItem = item.allStatus.slice(-1).pop();
+        newTempArray.push(lastItem);
+      });
+      console.log("newTempArray" + JSON.stringify(newTempArrayOfPercentage));
+      return newTempArrayOfPercentage;
+    },
 
     clearSessionLogout: function() {
       this.$session.remove("username");
@@ -258,7 +274,10 @@ export default {
   margin-top: 30px;
 }
 .component h4 {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
+}
+.innerRibbon .btn {
+    margin-right: 10px;
 }
 </style>
 
