@@ -39,8 +39,8 @@
   }
   
   .bodywrapper {
-    padding: 3em 2em;
-    background: #fafafa;
+    padding: 3em 1em 1em;
+  
   }
   
   nav {
@@ -80,5 +80,7 @@
     .width25{
         width:25%
     }
-    
+    .dashboard {
+    background: #fafafa;
+}
 </style>

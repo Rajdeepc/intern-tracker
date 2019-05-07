@@ -77,8 +77,16 @@ export default {
     },
 
     /** get status by date on load**/
-    getStatusbyDate(project_name) {
-        const url = `http://localhost:3000/getallData/${project_name}`;
+    getStatusbyEmail(member_email) {
+        const url = `http://localhost:3000/getallData/${member_email}`;
+        return axios.get(url)
+            .then(response => {
+                return response;
+            })
+    },
+
+    getAllTasks() {
+        const url = "http://localhost:3000/getallData/";
         return axios.get(url)
             .then(response => {
                 return response;
@@ -135,8 +143,6 @@ export default {
             return response.data;
         })
     },
-
-
 
 
     updateStartTaskById(member_email,taskID,task_status,start_date,index) {

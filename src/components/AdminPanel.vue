@@ -1,110 +1,122 @@
 <template>
-  <div>
-    <b-modal id="modallg" size="lg" title="Add Project Details" @ok="handleOk" ref="modal">
-      <form @submit.stop.prevent="handleSubmit" method="post">
-        <p>
-          <i>This panel is only visible to TL and Above</i>
-        </p>
-        <!-- <div class="form-group">
+  <div class="container-fluid">
+    <b-alert
+      :show="dismissCountDown"
+      dismissible
+      variant="primary"
+    >Save Successful</b-alert>
+    <b-row>
+      <b-col cols="5">
+        <b-card>
+          <form @submit.stop.prevent="handleSubmit" method="post">
+            <p>
+              <i>This panel is only visible to Admin</i>
+            </p>
+            <!-- <div class="form-group">
           <label for="exampleInputEmail1">Supervisor Name:</label>
           <input type="text" class="form-control" id="" v-model="getUsername" readonly="" name="manager_name" aria-describedby="emailHelp">
-        </div>-->
-        <b-row>
-          <b-col>
-            <div class="form-group">
-              <label for="exampleInputEmail1">Project Name:</label>
-              <input
-                type="text"
-                class="form-control"
-                id
-                v-model="project_name"
-                name="project_name"
-                aria-describedby="project_name"
-                required
-              >
-            </div>
-          </b-col>
-          <b-col>
-            <div class="form-group">
-              <label for="exampleInputEmail1">Member Email ID:</label>
-              <input
-                type="text"
-                class="form-control"
-                id
-                v-model="member_email"
-                name="member_email"
-                aria-describedby="member_email"
-                required
-              >
-            </div>
-          </b-col>
-        </b-row>
+            </div>-->
+            <b-row>
+              <b-col>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Project Name:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id
+                    v-model="project_name"
+                    name="project_name"
+                    aria-describedby="project_name"
+                    required
+                  >
+                </div>
+              </b-col>
+              <b-col>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Member Email ID:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id
+                    v-model="member_email"
+                    name="member_email"
+                    aria-describedby="member_email"
+                    required
+                  >
+                </div>
+              </b-col>
+            </b-row>
 
-        <!-- add tasks -->
-        <b-row>
-          <b-col>
-            <label>Add Tasks</label>
-            <a class="btn btn-success float-right" @click="addTasks()">
-              Add More Tasks
-              <i class="fa fa-plus"></i>
-            </a>
-          </b-col>
-        </b-row>
+            <!-- add tasks -->
 
-        <b-row v-for="(newTask,index) in newTaskArray" :key="'TaskRow' + index">
-          <b-col cols="11">
-            <div class="form-group">
-              <label for="taskName">Task Name:</label>
-              <input
-                type="text"
-                class="form-control"
-                id
-                aria-describedby="addtasks"
-                placeholder="Enter Task Description"
-                v-model="taskArray[index]"
-              >
-            </div>
-          </b-col>
-          <input type="hidden" v-model="taskArray[index]"/>
-          <input type="hidden" v-model="taskArray[index]"/>
-          <input type="hidden" v-model="taskArray[index]"/>
-          <input type="hidden" v-model="taskArray[index]">
-          <b-col cols="1">
-           <div class="form-group">
-              <div for="taskName">&nbsp;</div>
-              <a v-on:click="removeTask(index);" style="cursor: pointer">
-                <i class="fa fa-close"></i>
-              </a>
-           </div>
-          </b-col>
-        </b-row>
+            <b-row v-for="(newTask,index) in newTaskArray" :key="'TaskRow' + index">
+              <b-col cols="11">
+                <div class="form-group">
+                  <label for="taskName">Task Name:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id
+                    aria-describedby="addtasks"
+                    placeholder="Enter Task Description"
+                    v-model="taskArray[index]"
+                  >
+                </div>
+              </b-col>
+              <input type="hidden" v-model="taskArray[index]">
+              <input type="hidden" v-model="taskArray[index]">
+              <input type="hidden" v-model="taskArray[index]">
+              <input type="hidden" v-model="taskArray[index]">
+              <b-col cols="1">
+                <div class="form-group">
+                  <label for="taskName">&nbsp;</label>
+                  <a v-on:click="removeTask(index);" style="cursor: pointer">
+                    <i class="fa fa-trash fa-2x"></i>
+                  </a>
+                </div>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col>
+                <a href="#" class="float-right" @click="addTasks()">
+                  Add More
+                  <i class="fa fa-plus"></i>
+                </a>
+              </b-col>
+            </b-row>
+            <br>
+            <br>
+            <b-row>
+              <b-col>
+                <div class="text-right">
+                  <b-button variant="success" @click="handleSubmit()">Save</b-button>
+                  <b-button variant="danger" @click="clearFields()">Clear</b-button>
+                </div>
+              </b-col>
+            </b-row>
+          </form>
+        </b-card>
+      </b-col>
+      <b-col cols="7">
+        <b-card>
+          <h5>Find Status</h5>
+          <div class="selectProject">
+            Select Your Member:
+            <select v-model="memberSelected" @change="showDetailsOfMember()">
+              <option disabled value>Please select one Member</option>
+              <option
+                :value="memberItem"
+                v-for="(memberItem,index) in this.allDataArray"
+                :key="index"
+              >{{ memberItem.member_email }}</option>
+            </select>
+          </div>
+         <br>
 
-        <!-- <label>Your Project Members:</label>
-        <a class="btn btn-success float-right" @click="addFields()">
-          Add Members
-          <i class="fa fa-plus"></i>
-        </a>-->
-
-        <!-- <div class="form-group" v-for="(newInput,index) in newInputArray" :key="'Member' + index">
-          <span>
-            <input
-              type="text"
-              class="form-control"
-              id
-              aria-describedby="addmembers"
-              placeholder="Enter member email id"
-              v-model="memberArr[index]"
-            >
-          </span>
-          <span>
-            <a v-on:click="removeElement(index);" style="cursor: pointer">
-              Cancel
-              <i class="fa fa-close"></i>
-            </a>
-          </span>
-        </div>-->
-      </form>
-    </b-modal>
+          <b-table striped hover :items="taskArrayOfMember"></b-table>
+        </b-card>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -116,9 +128,14 @@ export default {
   props: ["getUsername"],
   data() {
     return {
+      dismissCountDown:false,
+      memberSelected:null,
+      allDataArray: [],
+      selected: null,
+      options: [],
       newTaskArray: [""],
       taskArray: [],
-      statusArray:[],
+      statusArray: [],
       project_name: "",
       member_email: "",
       taskid: "",
@@ -127,10 +144,19 @@ export default {
       start_date: "",
       end_date: "",
       manager_name: this.getUsername,
-      date_created: this.getTodayDate()
+      date_created: this.getTodayDate(),
+      items: [],
+      taskArrayOfMember:[]
     };
   },
-  mounted() {},
+  watch:{
+    options:function(val){
+      this.getAllTasksCall();
+    }
+  },
+ created: function () {
+      this.getAllTasksCall();
+    },
   methods: {
     getTodayDate: function() {
       let newDate = new Date();
@@ -158,7 +184,7 @@ export default {
     },
 
     clearFields() {
-      (this.project_name = ""), (this.memberArr = []);
+      (this.project_name = ""), (this.member_email = ""), (this.memberArr = []);
     },
 
     getTaskArrayFormatted() {
@@ -169,8 +195,8 @@ export default {
           taskID: `Task${count}`,
           taskName: this.taskArray[i],
           task_status: "Not Started",
-          start_date: '',
-          end_date:'',
+          start_date: "",
+          end_date: "",
           date_created: this.getTodayDate(),
           allStatus: this.statusArray
         });
@@ -193,13 +219,47 @@ export default {
         .then(response => {
           if (response.saved === true) {
             this.clearFields();
-            this.$refs.modal.hide();
+            // this.$refs.modal.hide();
+            this.dismissCountDown = true;
+            setTimeout(() => {
+              this.dismissCountDown = false;
+            }, 3000);
+            this.getAllTasksCall();
           }
         })
         .catch(error => {
           console.log("Error in saving" + error);
         });
     },
+
+    getAllTasksCall() {
+      DataPostApi.getAllTasks()
+        .then(response => {
+          console.log("Response from save" + response.data);
+          this.allDataArray = response.data;
+        })
+        .catch(err => {
+          console.log("Error" + err);
+        });
+    },
+
+
+    showDetailsOfMember(e){
+        if(this.memberSelected){
+          DataPostApi.getStatusbyEmail(this.memberSelected.member_email)
+        .then((response) => {
+          this.taskArrayOfMember = response.data[0].allTasks;
+          console.log("this.taskArrayOfMember" + JSON.stringify(this.taskArrayOfMember));
+        })
+        .catch((err) => {
+          console.log("Error" + err)
+        })
+        } else {
+          return false;
+        }
+        
+    },
+
 
     removeTask: function(index) {
       this.newTaskArray.splice(index, 1);
@@ -212,5 +272,8 @@ export default {
 a.btn.btn-success.float-right {
   margin-bottom: 10px;
   color: #fff;
+}
+.dashboard {
+  background: #fafafa;
 }
 </style>
