@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container">
     <b-alert :show="dismissCountDown" dismissible variant="primary">Save Successful</b-alert>
     <b-row>
       <b-col cols="5">

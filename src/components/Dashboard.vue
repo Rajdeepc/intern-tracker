@@ -14,8 +14,20 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <div class="ribbon float-right" v-if="showAdminbtn">
-      <div class="mt-3 innerRibbon text-right">
+    
+    <div class="bodywrapper container">
+     
+      <!-- <a class="float-right" v-on:click="navitageToAllStatus(getUsername)" v-if="showAdminbtn">
+        Check All Status
+        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+      </a> -->
+      <div class="clearfix">
+      <div class="float-left">
+        Welcome
+        <b>{{getUsername}}</b>,
+      </div>
+       <div class="ribbon float-right" v-if="showAdminbtn">
+        <div class="innerRibbon text-right">
         <b-button-group>
           <b-button variant="warning" v-b-modal.modal-sm>
             <i class="fa fa-plus" aria-hidden="true"></i>
@@ -28,15 +40,8 @@
         </b-button-group>
       </div>
     </div>
-    <div class="bodywrapper">
-      <!-- <a class="float-right" v-on:click="navitageToAllStatus(getUsername)" v-if="showAdminbtn">
-        Check All Status
-        <i class="fa fa-arrow-right" aria-hidden="true"></i>
-      </a> -->
-      <p>
-        Welcome
-        <b>{{getUsername}}</b>,
-      </p>
+      </div>
+      <br>
       <div class="selectProject" v-if="projectList.length">
         Select Your Project:
         <select v-model="projectSelected" @change="showSkillsListToSelect()">
@@ -48,10 +53,9 @@
           >{{ status.project_name }}</option>
         </select>
       </div>
-      <div class="component">
+      <div class="component" v-if="!projectList.length && !showAdminbtn">
         <div
           class="noProject text-center"
-          v-if="!projectList.length && !showAdminbtn"
         >You have not been assigned any project yet.</div>
       </div>
       <!-- task array -->
