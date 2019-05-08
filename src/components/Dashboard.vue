@@ -73,6 +73,7 @@
                   <a
                     href="mailto:n.balanarasimhalu@accenture.com?Subject=Need%20Clarification"
                   >Email</a>
+                  (For any queries)
                 </b-col>
               </b-row>
             </b-card>

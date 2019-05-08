@@ -110,8 +110,7 @@
             </select>
           </div>
           <br>
-
-          <b-table striped hover :items="taskArrayOfMember"></b-table>
+          <b-table v-if="taskArrayOfMember.length" striped hover :items="taskArrayOfMember" :fields="fields"></b-table>
         </b-card>
       </b-col>
     </b-row>
@@ -147,7 +146,8 @@ export default {
       projectListArray: [],
       userIdsArray: [],
       selectedProject: null,
-      selectedMember: null
+      selectedMember: null,
+      fields: ['taskName', 'task_status', 'start_date','end_date','date_created'],
     };
   },
   watch: {
