@@ -19,6 +19,41 @@ export default {
             })
     },
     /**
+     * axios call to post project data as list
+     */
+    addProjectToList(project_name, project_desc,project_status) {
+        const body = {
+            project_name: project_name,
+            project_desc: project_desc,
+            project_status: project_status
+        };
+        const url = "http://localhost:3000/addProject";
+        return axios.post(url, body)
+            .then(response => {
+                return response.data;
+            })
+    },
+    /**
+     * axios call to get project data as list
+     */
+    getAllProjectListData() {
+        const url = "http://localhost:3000/getAllProjectLists";
+        return axios.get(url)
+            .then(response => {
+                return response;
+            })
+    },
+    /**
+     * axios call to get email id of signedup users
+     */
+    getAllUsersList() {
+        const url = "http://localhost:3000/getallUsers";
+        return axios.get(url)
+            .then(response => {
+                return response;
+            })
+    },
+    /**
      * axios call to validate sign in creds
      */
     validateSignIn(email, password) {

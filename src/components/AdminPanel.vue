@@ -15,30 +15,32 @@
             <b-row>
               <b-col>
                 <div class="form-group">
-                  <label for="exampleInputEmail1">Project Name:</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id
-                    v-model="project_name"
-                    name="project_name"
-                    aria-describedby="project_name"
-                    required
-                  >
+                    <div class="projectDropdown">
+                      Select A Project:
+                      <select v-model="selectedProject" @change="selectProjectItem()">
+                        <option disabled value>Please select one project</option>
+                        <option
+                          :value="projectItem"
+                            v-for="(projectItem,index) in this.projectListArray"
+                          :key="index"
+                        >{{ projectItem.project_name }}</option>
+                      </select>
+                    </div>
                 </div>
               </b-col>
               <b-col>
                 <div class="form-group">
-                  <label for="exampleInputEmail1">Member Email ID:</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id
-                    v-model="member_email"
-                    name="member_email"
-                    aria-describedby="member_email"
-                    required
-                  >
+                  <div class="projectDropdown">
+                      Select A Member:
+                      <select v-model="selectedMember" @change="selectMember()">
+                        <option disabled value>Please select one member</option>
+                        <option
+                          :value="memberItem"
+                            v-for="(memberItem,index) in this.userIdsArray"
+                          :key="index"
+                        >{{ memberItem.email }}</option>
+                      </select>
+                    </div>
                 </div>
               </b-col>
             </b-row>
@@ -67,7 +69,7 @@
                 <div class="form-group">
                   <label for="taskName">&nbsp;</label>
                   <a v-on:click="removeTask(index);" style="cursor: pointer">
-                    <i class="fa fa-trash fa-2x"></i>
+                    <i class="fa fa-trash fa-lg"></i>
                   </a>
                 </div>
               </b-col>
@@ -85,7 +87,7 @@
             <b-row>
               <b-col>
                 <div class="text-right">
-                  <b-button variant="success" @click="handleSubmit()">Save</b-button>
+                  <b-button variant="success" @click="handleSubmit()">Save</b-button>&nbsp;
                   <b-button variant="danger" @click="clearFields()">Clear</b-button>
                 </div>
               </b-col>
@@ -113,7 +115,6 @@
         </b-card>
       </b-col>
     </b-row>
-   
   </div>
 </template>
 
@@ -142,7 +143,11 @@ export default {
       manager_name: this.getUsername,
       date_created: this.getTodayDate(),
       items: [],
-      taskArrayOfMember: []
+      taskArrayOfMember: [],
+      projectListArray: [],
+      userIdsArray: [],
+      selectedProject: null,
+      selectedMember: null
     };
   },
   watch: {
@@ -152,8 +157,30 @@ export default {
   },
   created: function() {
     this.getAllTasksCall();
+    this.getAllProjectList();
+    this.getAllMemberEmail();
   },
   methods: {
+    getAllProjectList() {
+      DataPostApi.getAllProjectListData()
+        .then(response => {
+          console.log("All project Data" + JSON.stringify(response.data));
+          this.projectListArray = response.data;
+        })
+        .catch(err => {
+          console.log("Error" + err);
+        });
+    },
+    getAllMemberEmail() {
+      DataPostApi.getAllUsersList()
+        .then(response => {
+          console.log("All users email" + JSON.stringify(response.data));
+          this.userIdsArray = response.data;
+        })
+        .catch(err => {
+          console.log("Error" + err);
+        });
+    },
     getTodayDate: function() {
       let newDate = new Date();
       let mm = newDate.getMonth() + 1;
@@ -202,11 +229,14 @@ export default {
     },
 
     handleSubmit() {
-      this.project_name = this.project_name;
-      this.member_email = this.member_email;
+      this.project_name = this.selectedProject.project_name;
+      this.member_email = this.selectedMember.email;
       this.manager_name = this.getUsername;
       this.allTasks = this.getTaskArrayFormatted();
-      DataPostApi.projectsaveApi(
+      if(this.project_name === '' || this.member_email === '' || this.manager_name === '' || this.allTasks === []){
+        return false;
+      } else {
+        DataPostApi.projectsaveApi(
         this.project_name,
         this.member_email,
         this.manager_name,
@@ -226,6 +256,8 @@ export default {
         .catch(error => {
           console.log("Error in saving" + error);
         });
+      }
+      
     },
 
     getAllTasksCall() {
@@ -270,5 +302,10 @@ a.btn.btn-success.float-right {
 }
 .dashboard {
   background: #fafafa;
+}
+select {
+    height: 36px;
+    background: transparent;
+    border-radius: 0px;
 }
 </style>

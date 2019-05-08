@@ -118,7 +118,7 @@
     </div>
     <AdminPanel v-if="showAdminbtn" :getUsername="getUsername">
     </AdminPanel>
-    <b-modal id="modal-sm" size="sm" title="Add New Project">
+    <b-modal id="modal-sm" size="sm" title="Add New Project" hide-footer no-close-on-backdrop>
       <AddProjectModalTemplate></AddProjectModalTemplate>
     </b-modal>
   </div>

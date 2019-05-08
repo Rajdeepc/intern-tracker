@@ -1,5 +1,5 @@
 <template>
-    <b-form @submit="onSubmit">
+    <b-form @submit="onSubmit" @reset="onReset">
       <b-form-group id="input-group-1" label="Project name:" label-for="input-1">
         <b-form-input
           id="input-1"
@@ -21,7 +21,7 @@
         <b-form-select id="input-3" v-model="proj_status_selected" :options="proj_status_all" required></b-form-select>
         <p>Selected {{proj_status_selected}} </p>
       </b-form-group>
-      <b-button type="submit" variant="primary">Save</b-button>
+      <b-button type="submit" variant="primary">Save</b-button>&nbsp;
       <b-button type="reset" variant="danger">Reset</b-button>
     </b-form>
 </template>
@@ -48,14 +48,20 @@ export default {
   methods:{
     onSubmit(evt) {
         evt.preventDefault();
-        DataPostApi.saveProject(this.project_name,this.project_description,this.proj_status_selected)
+        this.projectId ++ ;
+        DataPostApi.addProjectToList(this.project_name,this.project_description,this.proj_status_selected)
         .then((response) => {
-            console.log("response from save api of project" + response)
+            console.log("response from save api of project" + response);
         })
         .catch(err => {
             console.log("error from save api" + err);
         })
       },
+    onReset(evt){
+        this.project_name = '';
+          this.project_description = '';
+          this.proj_status_selected = null;
+    },
   }
 };
 </script>
