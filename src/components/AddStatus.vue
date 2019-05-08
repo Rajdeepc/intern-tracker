@@ -126,6 +126,10 @@ export default {
         //if(this.percentage_completion < (this.addItemDetails.allStatus.pop().percentage_completion) || this.statusDesc === ''){
         //  return false;
       //  } else {
+        if(this.statusDesc === '' || this.percentage_completion === null) {
+          alert("Please fill all the inputs");
+          return false;
+        } else {
         this.statusID = `Status${this.count}`;
         this.taskiD = this.addItemDetails.taskID;
         DataPostApi.statusSaveApi(
@@ -138,16 +142,17 @@ export default {
         )
           .then(response => {
             if(response.affected.allTasks){
+            this.resetFields();
             this.taskStatusResponseArray = response.affected.allTasks;
             let objToSendToParent = this.filterObjWithStatusStarted();
-            this.$emit('startedStatusObj', objToSendToParent);
+            this.$emit('filteredObjFromChild', objToSendToParent);
           }
           })
           .catch(error => {
             throw error;
           });
           this.count ++;
-        //}
+    }
     },
     filterObjWithStatusStarted(){
       let newFilteredArray = [];
@@ -180,9 +185,8 @@ export default {
       return today;
     },
     resetFields() {
-      this.description = "";
-      this.percentage_completion = 0;
-      this.completed_date = this.getDateYYYYMMDD(new Date());
+      this.statusDesc = "";
+      this.percentage_completion = null;
     },
     mapOverAllStatusTosendEmail: function() {
       let trStr = "";

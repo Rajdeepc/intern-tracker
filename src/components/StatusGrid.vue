@@ -1,34 +1,15 @@
 <template>
   <div v-if="this.statusItemDetails.length">
-    <!-- <div class="showstatus">
-        <div v-for="(status,index) in this.statusItemDetails" :key="index">
-           <h5><b>Task Name:</b> {{status.taskName}}</h5>
-        <table class="table table-striped" v-for="(statusItem,index) in status.allStatus" :key="index">
-          <thead>
-            <tr>
-              <th>Status Description</th>
-              <th>Date Updated</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{statusItem.statusDesc}}</td>
-              <td>{{statusItem.date_updated}}</td>
-            </tr>
-          </tbody>
-        </table>
-    </div>
-    </div> -->
     <div role="tablist" class="accordian_status">
     <b-card no-body class="mb-1" v-for="(status,indexItem) in this.statusItemDetails" :key="indexItem">
-      <b-card-header header-tag="header" class="p-1" role="tab">
+      <b-card-header header-tag="header" class="p-1" role="tab" v-if="status.allStatus.length">
         <b-button block href="#" v-b-toggle="'accordion-' + indexItem" variant="outline-primary">{{index}}{{status.taskName}}</b-button>
       </b-card-header>
-      <b-collapse :id="'accordion' + '-' + (indexItem)" visible accordion="my-accordion" role="tabpanel" v-for="(statusItem,index) in status.allStatus" :key="index">
+      <b-collapse :id="'accordion' + '-' + (indexItem)" visible accordion="my-accordion" role="tabpanel" >
         <b-card-body>
-          <b-row>
-            <b-col cols="10">{{statusItem.statusDesc}}</b-col>
-            <b-col cols="2">{{ statusItem.date_updated }}</b-col>
+          <b-row v-for="(statusItem,index) in status.allStatus" :key="index">
+            <b-col cols="10">Description: {{statusItem.statusDesc}}</b-col>
+            <b-col cols="2">Date Updated: {{ statusItem.date_updated }}</b-col>
           </b-row>
         </b-card-body>
       </b-collapse>

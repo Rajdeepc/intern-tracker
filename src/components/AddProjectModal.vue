@@ -34,6 +34,7 @@ export default {
     props:["showModal"],
     data() {
     return {
+      hideModal: false,
       project_name: "",
       project_description: "",
       proj_status_selected: null,
@@ -51,7 +52,9 @@ export default {
         this.projectId ++ ;
         DataPostApi.addProjectToList(this.project_name,this.project_description,this.proj_status_selected)
         .then((response) => {
-            console.log("response from save api of project" + response);
+            console.log("response from save api of project" + JSON.stringify(response));
+            let responseFromAddProject = response.saved;
+            this.$emit('hideModalFromChild', responseFromAddProject);
         })
         .catch(err => {
             console.log("error from save api" + err);

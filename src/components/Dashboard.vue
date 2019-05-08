@@ -29,7 +29,7 @@
        <div class="ribbon float-right" v-if="showAdminbtn">
         <div class="innerRibbon text-right">
         <b-button-group>
-          <b-button variant="warning" v-b-modal.modal-sm>
+          <b-button variant="warning" @click="showModal">
             <i class="fa fa-plus" aria-hidden="true"></i>
             Add Project
           </b-button>
@@ -92,7 +92,8 @@
                 :taskItemDetails="taskItem"
                 :index="index"
                 :getUsername="getUsername"
-                @startedStatusObj="onClickChildTaskItem"
+                @startedStatusObj="onClickChildStartedItem"
+                @completedStatusObj="onClickChildCompletedItem"
               ></TaskItem>
             </b-col>
             <!-- completed tasks -->
@@ -101,14 +102,14 @@
         <!-- add status for today component -->
         <div class="component">
           <div v-if="(taskDetailsShow === true) && (addStatusTemplateShow === true)">
-            <h4>Add Your Status For today:</h4>
+            <h4 v-if="this.showNoOfAddForm.length">Add Your Status For today:</h4>
             <b-row>
               <b-col col md="12" v-for="(addItem,index) in this.showNoOfAddForm" :key="addItem.id">
                 <AddStatus
                   :addItemDetails="addItem"
                   :index="index"
                   :getUsername="getUsername"
-                  @startedStatusObj="onClickChildTaskItem"
+                  @filteredObjFromChild="onClickChildTaskItem"
                 ></AddStatus>
               </b-col>
             </b-row>
@@ -123,8 +124,8 @@
     </div>
     <AdminPanel v-if="showAdminbtn" :getUsername="getUsername">
     </AdminPanel>
-    <b-modal id="modal-sm" size="sm" title="Add New Project" hide-footer no-close-on-backdrop>
-      <AddProjectModalTemplate></AddProjectModalTemplate>
+    <b-modal ref="my-modal" size="sm" title="Add New Project" hide-footer no-close-on-backdrop >
+      <AddProjectModalTemplate @hideModalFromChild="hideModal"></AddProjectModalTemplate>
     </b-modal>
   </div>
 </template>
@@ -178,7 +179,12 @@ export default {
   methods: {
     showModal() {
       console.log("modal should show")
-        this.modalShow = true;
+         this.$refs['my-modal'].show();
+    },
+    hideModal(value){
+      if(value === true){
+         this.$refs['my-modal'].hide();
+      }
     },
     onClickChildTaskItem(valueObj) {
       if (valueObj) {
@@ -187,6 +193,12 @@ export default {
       this.objFromParent = valueObj;
       console.log("from child" + JSON.stringify(this.objFromParent)); // someValue
       this.getTaskDetailsFromAPI();
+    },
+    onClickChildStartedItem(valueItem){
+      this.getTaskDetailsFromAPI();
+    },
+    onClickChildCompletedItem(valueChildItem){
+        this.getTaskDetailsFromAPI();
     },
     checkisAdmin(username) {
       let adminArray = constants.ADMIN_ARRAY;
