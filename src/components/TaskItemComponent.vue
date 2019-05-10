@@ -20,9 +20,6 @@
             variant="outline-primary"
             @click="startTask(taskItemDetails.taskID)"
           >Start</b-button>
-          <!-- <span
-          >{{taskItemDetails.allStatus.slice(-1).pop().percentage_completion}} % </span>-->
-          <!-- <div is="stat-circle" ></div> -->
           <b-button
             :disabled="Number(taskItemDetails.allStatus.length && taskItemDetails.allStatus.slice(-1)[0].percentage_completion) === 100 ? false : true"
             variant="danger"

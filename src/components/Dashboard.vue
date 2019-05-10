@@ -16,11 +16,6 @@
     </b-navbar>
     
     <div class="bodywrapper container">
-     
-      <!-- <a class="float-right" v-on:click="navitageToAllStatus(getUsername)" v-if="showAdminbtn">
-        Check All Status
-        <i class="fa fa-arrow-right" aria-hidden="true"></i>
-      </a> -->
       <div class="clearfix">
       <div class="float-left">
         Welcome
