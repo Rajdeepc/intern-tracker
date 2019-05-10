@@ -266,6 +266,7 @@ export default {
       this.project_name = this.selectedProject.project_name;
       this.member_email = this.selectedMember.email;
       this.manager_name = this.getUsername;
+      this.allTasks = [];
       this.allTasks.push({
         taskID: Math.random()
           .toString(36)
