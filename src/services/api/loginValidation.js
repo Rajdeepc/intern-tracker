@@ -236,6 +236,18 @@ export default {
             .then(response => {
                 return response;
             })
+    },
+
+    updateTaskNameAndSave(taskID,taskName,member_email) {
+        const body = {
+            taskName : taskName,
+            member_email:member_email
+        };
+        const url = `http://localhost:3000/updateTaskNameByEmail/${taskID}`;
+        return axios.put(url,body)
+        .then(response => {
+            return response.data;
+        })
     }
 
 }

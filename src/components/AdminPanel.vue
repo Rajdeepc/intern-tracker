@@ -94,12 +94,11 @@
                               class="form-control-sm"
                               :value="data.item.taskName"
                               :disabled="!editable"
-                              />
-                            
+                              v-on:input="handleQuantityChange($event)"/>
                 </template>
                  <template slot="Actions" slot-scope="data" v-if="data.item.task_status === 'Not Started'">
-                   <i class="fa fa-pencil fa-lg" v-if="editable === false" aria-hidden="true" @click="editField(data.item.taskID)"></i> 
-                   <i class="fa fa-floppy-o fa-lg" v-if="editable" aria-hidden="true" @click="saveField(data.item.taskID,data.item.taskName)"></i>
+                   <i class="fa fa-pencil fa-lg" v-if="editable === false" aria-hidden="true" @click="editField(data.item.taskID,data.index)"></i> 
+                   <i class="fa fa-floppy-o fa-lg" v-if="editable" aria-hidden="true" @click="saveField(data.item.taskID)"></i>
                    <i class="fa fa-trash fa-lg" aria-hidden="true" @click="deleteFields(data.item.taskID)"></i>
                 </template>
 
@@ -181,11 +180,27 @@ export default {
     this.getAllMemberEmail();
   },
   methods: {
-    editField(taskid){
-        this.editable = true;
+    handleQuantityChange(e){
+        console.log(e.target.value);
+        this.newTaskName = e.target.value;
     },
-    saveField(taskid, updatedTaskName){
+    editField(taskid){
+      const index = this.allTasks.indexOf(taskid);
+      this.editable = true;
+    },
+    saveField(taskid){
       /** call api to update taskname */
+      this.member_email = this.selectedMember.email;
+      DataPostApi.updateTaskNameAndSave(taskid,this.newTaskName,this.member_email)
+      .then(response => {
+        if(response.save === true){
+           this.editable = false;
+           this.showIfTasksByNameAndProject(this.member_email);
+        }
+      })
+      .catch(err => {
+        console.log("Err" + err);
+      })
     },
     deleteFields(taskid){
       /** call api to delete taskname */
