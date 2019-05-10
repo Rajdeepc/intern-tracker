@@ -84,11 +84,26 @@
           <b-col cols="12">
             <h5>
               Showing All Tasks Assigned to
-              <i>{{selectedMember ? selectedMember.email : ''}}</i>
+              <b>{{selectedMember ? selectedMember.email : ''}}</b>
             </h5>
             <b-card>
               <br>
-              <b-table striped hover :items="allTasks" :fields="fields"></b-table>
+              <b-table striped hover :items="allTasks" :fields="fields">
+                <template slot="taskName" slot-scope="data" >
+                        <input type="text" 
+                              class="form-control-sm"
+                              :value="data.item.taskName"
+                              :disabled="!editable"
+                              />
+                            
+                </template>
+                 <template slot="Actions" slot-scope="data" v-if="data.item.task_status === 'Not Started'">
+                   <i class="fa fa-pencil fa-lg" v-if="editable === false" aria-hidden="true" @click="editField(data.item.taskID)"></i> 
+                   <i class="fa fa-floppy-o fa-lg" v-if="editable" aria-hidden="true" @click="saveField(data.item.taskID,data.item.taskName)"></i>
+                   <i class="fa fa-trash fa-lg" aria-hidden="true" @click="deleteFields(data.item.taskID)"></i>
+                </template>
+
+              </b-table>
             </b-card>
           </b-col>
         </b-row>
@@ -144,12 +159,14 @@ export default {
       allTasks: [],
       alreadyAssigned: null,
       projectNameAssignedTo:'',
+      editable:false,
       fields: [
         "taskName",
         "task_status",
         "start_date",
         "end_date",
-        "date_created"
+        "date_created",
+        "Actions"
       ]
     };
   },
@@ -164,6 +181,15 @@ export default {
     this.getAllMemberEmail();
   },
   methods: {
+    editField(taskid){
+        this.editable = true;
+    },
+    saveField(taskid, updatedTaskName){
+      /** call api to update taskname */
+    },
+    deleteFields(taskid){
+      /** call api to delete taskname */
+    },
     showIfTasksByNameAndProject() {
       this.member_email = this.selectedMember.email;
       DataPostApi.getTasksByNameAndProject(this.member_email)
@@ -348,5 +374,23 @@ select {
 }
 button.updateadd {
   margin-top: 7px;
+}
+.fa-pencil{
+  color:#4286f4;
+  cursor: pointer;
+}
+.fa-trash{
+  color: #e5306c;
+   margin-left: 10px;
+    cursor: pointer;
+}
+.fa-floppy-o {
+  color:#14ce49;
+   cursor: pointer;
+  
+}
+input.form-control-sm:disabled {
+    background: transparent;
+    border: 0;
 }
 </style>
