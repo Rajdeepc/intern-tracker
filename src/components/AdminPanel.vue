@@ -1,53 +1,51 @@
 <template>
   <div class="container">
-    <b-alert :show="dismissCountDown" dismissible variant="primary">Save Successful</b-alert>
+    <b-alert :show="dismissCountDown" dismissible variant="primary">{{saveOrUpdate}} Successful</b-alert>
     <b-row>
-      <b-col cols="5">
+      <b-col cols="12">
+        <h5>Select Project &amp; Member:</h5>
         <b-card>
-          <form @submit.stop.prevent="handleSubmit" method="post">
-            <p>
-              <i>This panel is only visible to Admin</i>
-            </p>
-            <!-- <div class="form-group">
-          <label for="exampleInputEmail1">Supervisor Name:</label>
-          <input type="text" class="form-control" id="" v-model="getUsername" readonly="" name="manager_name" aria-describedby="emailHelp">
-            </div>-->
-            <b-row>
-              <b-col>
-                <div class="form-group">
-                    <div class="projectDropdown">
-                      Select A Project:
-                      <select v-model="selectedProject" @change="selectProjectItem()">
-                        <option disabled value>Please select one project</option>
-                        <option
-                          :value="projectItem"
-                            v-for="(projectItem,index) in this.projectListArray"
-                          :key="index"
-                        >{{ projectItem.project_name }}</option>
-                      </select>
-                    </div>
+          <b-row>
+            <b-col cols="5">
+              <div class="form-group">
+                <div class="projectDropdown">
+                  Select A Project:
+                  <select v-model="selectedProject">
+                    <option disabled value>Please select one project</option>
+                    <option
+                      :value="projectItem"
+                      v-for="(projectItem,index) in this.projectListArray"
+                      :key="index"
+                    >{{ projectItem.project_name }}</option>
+                  </select>
                 </div>
-              </b-col>
-              <b-col>
-                <div class="form-group">
-                  <div class="projectDropdown">
-                      Select A Member:
-                      <select v-model="selectedMember" @change="selectMember()">
-                        <option disabled value>Please select one member</option>
-                        <option
-                          :value="memberItem"
-                            v-for="(memberItem,index) in this.userIdsArray"
-                          :key="index"
-                        >{{ memberItem.email }}</option>
-                      </select>
-                    </div>
+              </div>
+            </b-col>
+            <b-col cols="5">
+              <div class="form-group">
+                <div class="projectDropdown">
+                  Select A Member:
+                  <select
+                    v-model="selectedMember"
+                    @change="showIfTasksByNameAndProject()"
+                  >
+                    <option disabled value>Please select one member</option>
+                    <option
+                      :value="memberItem"
+                      v-for="(memberItem,index) in this.userIdsArray"
+                      :key="index"
+                    >{{ memberItem.email }}</option>
+                  </select>
                 </div>
-              </b-col>
-            </b-row>
+              </div>
+            </b-col>
+          </b-row>
+        </b-card>
+      </b-col>
+    </b-row>
+    <!-- add tasks -->
 
-            <!-- add tasks -->
-
-            <b-row v-for="(newTask,index) in newTaskArray" :key="'TaskRow' + index">
+    <!-- <b-row v-for="(newTask,index) in newTaskArray" :key="'TaskRow' + index">
               <b-col cols="11">
                 <div class="form-group">
                   <label for="taskName">Task Name:</label>
@@ -61,9 +59,6 @@
                   >
                 </div>
               </b-col>
-              <input type="hidden" v-model="taskArray[index]">
-              <input type="hidden" v-model="taskArray[index]">
-              <input type="hidden" v-model="taskArray[index]">
               <input type="hidden" v-model="taskArray[index]">
               <b-col cols="1">
                 <div class="form-group">
@@ -82,8 +77,6 @@
                 </a>
               </b-col>
             </b-row>
-            <br>
-            <br>
             <b-row>
               <b-col>
                 <div class="text-right">
@@ -91,29 +84,58 @@
                   <b-button variant="danger" @click="clearFields()">Clear</b-button>
                 </div>
               </b-col>
-            </b-row>
-          </form>
-        </b-card>
-      </b-col>
-      <b-col cols="7">
+    </b-row>-->
+    <br>
+    <div class="add_show_tasks" v-if="selectedMember && selectedProject">
+      <h5>Add/Update Tasks: </h5>
+    <b-row>
+      <b-col>
         <b-card>
-          <h5>Find Status</h5>
-          <div class="selectProject">
-            Select Your Member:
-            <select v-model="memberSelected" @change="showDetailsOfMember()">
-              <option disabled value>Please select one Member</option>
-              <option
-                :value="memberItem"
-                v-for="(memberItem,index) in this.allDataArray"
-                :key="index"
-              >{{ memberItem.member_email }}</option>
-            </select>
-          </div>
-          <br>
-          <b-table v-if="taskArrayOfMember.length" striped hover :items="taskArrayOfMember" :fields="fields"></b-table>
+          <b-form @submit.prevent action="/insert" method="post">
+            <div class="form-row">
+              <div class="form-group col-md-9 mb-9">
+                <label for="validationCustom01">Task Description</label>
+                <b-input class="col-xs-9 mb-9" type="text" v-model="taskName" name="task_name"/>
+              </div>
+              <input type="hidden" value v-model="date_created" name="date_created">
+              <div class="col-md-3 mb-3">
+                <div for="validationCustom01">&nbsp;</div>
+                <button
+                  v-if="noData"
+                  class="updateadd btn btn-success"
+                  @click="addTasks()"
+                >Add New</button>
+                <button
+                  v-if="!noData"
+                  class="updateadd btn btn-warning"
+                  @click="updatedTasks()"
+                >Update More</button>
+              </div>
+            </div>
+          </b-form>
         </b-card>
       </b-col>
     </b-row>
+    <br>
+
+    <b-row v-if="!noData">
+      <b-col cols="12">
+        <h5>Showing All Tasks Assigned to <i>{{selectedMember ? selectedMember.email : ''}}</i></h5>
+        <b-card>
+          <br>
+          <b-table striped hover :items="allTasks" :fields="fields"></b-table>
+        </b-card>
+      </b-col>
+    </b-row>
+
+    <b-row v-if="noData">
+      <b-col cols="12 text-center">
+        <b-card>
+          <h5>No Tasks Assigned!</h5>
+        </b-card>
+      </b-col>
+    </b-row>
+    </div>
   </div>
 </template>
 
@@ -124,6 +146,7 @@ export default {
   props: ["getUsername"],
   data() {
     return {
+      saveOrUpdate:'',
       dismissCountDown: false,
       memberSelected: null,
       allDataArray: [],
@@ -135,7 +158,7 @@ export default {
       project_name: "",
       member_email: "",
       taskid: "",
-      task_name: "",
+      taskName: "",
       task_status: "",
       start_date: "",
       end_date: "",
@@ -147,20 +170,48 @@ export default {
       userIdsArray: [],
       selectedProject: null,
       selectedMember: null,
-      fields: ['taskName', 'task_status', 'start_date','end_date','date_created'],
+      noData: true,
+      selectedMember:false,
+      allTasks: [],
+      fields: [
+        "taskName",
+        "task_status",
+        "start_date",
+        "end_date",
+        "date_created"
+      ]
     };
   },
-  watch: {
-    options: function(val) {
-      this.getAllTasksCall();
-    }
-  },
+  // watch: {
+  //   allTasks: function(val) {
+  //     this.showIfTasksByNameAndProject();
+  //   }
+  // },
   created: function() {
-    this.getAllTasksCall();
+    // this.getAllTasksCall();
     this.getAllProjectList();
     this.getAllMemberEmail();
   },
   methods: {
+    showIfTasksByNameAndProject() {
+      this.member_email = this.selectedMember.email;
+      DataPostApi.getTasksByNameAndProject(this.member_email)
+        .then(response => {
+          if (response.data.length) {
+            this.noData = false;
+            console.log(
+              "status by name" + JSON.stringify(response.data[0].allTasks)
+            );
+            this.allTasks = response.data[0].allTasks;
+          } else {
+            this.noData = true;
+          }
+        })
+        .catch(err => {
+          console.log("Error from api by name" + err);
+        });
+    },
+
     getAllProjectList() {
       DataPostApi.getAllProjectListData()
         .then(response => {
@@ -171,6 +222,7 @@ export default {
           console.log("Error" + err);
         });
     },
+
     getAllMemberEmail() {
       DataPostApi.getAllUsersList()
         .then(response => {
@@ -181,6 +233,7 @@ export default {
           console.log("Error" + err);
         });
     },
+
     getTodayDate: function() {
       let newDate = new Date();
       let mm = newDate.getMonth() + 1;
@@ -190,85 +243,95 @@ export default {
       return date;
     },
 
-    addTasks: function() {
-      this.newTaskArray.push("");
-      console.log("new array with tasks" + this.taskArray);
-      console.log("no of tasks" + this.newTaskArray.length);
-    },
-
-    handleOk(evt) {
-      // Prevent modal from closing
-      evt.preventDefault();
-      if (!this.project_name) {
-        alert("Please enter your name and project members");
-      } else {
-        this.handleSubmit();
-      }
-    },
-
     clearFields() {
-      (this.project_name = ""), (this.member_email = ""), (this.memberArr = []);
+      this.selectedProject = null;
+      this.selectedMember = null;
+      this.allTasks = [];
     },
 
-    getTaskArrayFormatted() {
-      this.taskArrayFormatted = [];
-      let count = 0;
-      for (let i = 0; i < this.taskArray.length; i++) {
-        this.taskArrayFormatted.push({
-          taskID: `Task${count}`,
-          taskName: this.taskArray[i],
-          task_status: "Not Started",
-          start_date: "",
-          end_date: "",
-          date_created: this.getTodayDate(),
-          allStatus: this.statusArray
-        });
-        count++;
+    /** update tasks */
+    updatedTasks() {
+      this.taskID =  Math.random().toString(36).substring(7);
+      this.member_email = this.selectedMember.email;
+      this.taskName,
+      this.task_status =  "Not Started" ;
+      this.start_date =  "";
+      this.end_date = "" ;
+      this.date_created =  this.getTodayDate();   
+      if (this.taskName === '') {
+        return false;
+      } else {
+        DataPostApi.projectUpdateApi(
+          this.taskID,
+          this.member_email,
+          this.taskName,
+          this.task_status,
+          this.start_date,
+          this.end_date,
+          this.date_created,
+          this.statusArray
+        )
+          .then(response => {
+            if (response.saved === true) {
+              this.showIfTasksByNameAndProject(this.member_email);
+              this.taskName = "";
+              this.saveOrUpdate = 'Update';
+              this.dismissCountDown = true;
+              setTimeout(() => {
+                this.dismissCountDown = false;
+              }, 3000);
+              
+            }
+          })
+          .catch(error => {
+            console.log("Error in saving" + error);
+          });
       }
-      return this.taskArrayFormatted;
     },
 
-    handleSubmit() {
+    addTasks() {
       this.project_name = this.selectedProject.project_name;
       this.member_email = this.selectedMember.email;
       this.manager_name = this.getUsername;
-      this.allTasks = this.getTaskArrayFormatted();
-      if(this.project_name === '' || this.member_email === '' || this.manager_name === '' || this.allTasks === []){
+      this.allTasks.push({
+        taskID: Math.random().toString(36).substring(7),
+        taskName: this.taskName,
+        task_status: "Not Started",
+        start_date: "",
+        end_date: "",
+        date_created: this.getTodayDate(),
+        allStatus: this.statusArray
+      });
+      if (
+        this.project_name === "" ||
+        this.member_email === "" ||
+        this.manager_name === "" ||
+        this.allTasks === []
+      ) {
         return false;
       } else {
         DataPostApi.projectsaveApi(
-        this.project_name,
-        this.member_email,
-        this.manager_name,
-        this.allTasks
-      )
-        .then(response => {
-          if (response.saved === true) {
-            this.clearFields();
-            // this.$refs.modal.hide();
-            this.dismissCountDown = true;
-            setTimeout(() => {
-              this.dismissCountDown = false;
-            }, 3000);
-            this.getAllTasksCall();
-          }
-        })
-        .catch(error => {
-          console.log("Error in saving" + error);
-        });
+          this.project_name,
+          this.member_email,
+          this.manager_name,
+          this.allTasks
+        )
+          .then(response => {
+            if (response.saved === true) {
+               this.showIfTasksByNameAndProject(this.member_email);
+              this.taskName = "";
+              this.saveOrUpdate = 'Save';
+              this.dismissCountDown = true;
+              setTimeout(() => {
+                this.dismissCountDown = false;
+              }, 3000);
+             
+            }
+          })
+          .catch(error => {
+            console.log("Error in saving" + error);
+          });
       }
-      
-    },
-
-    getAllTasksCall() {
-      DataPostApi.getAllTasks()
-        .then(response => {
-          console.log("Response from save" + response.data);
-          this.allDataArray = response.data;
-        })
-        .catch(err => {
-          console.log("Error" + err);
-        });
     },
 
     showDetailsOfMember(e) {
@@ -304,8 +367,11 @@ a.btn.btn-success.float-right {
   background: #fafafa;
 }
 select {
-    height: 36px;
-    background: transparent;
-    border-radius: 0px;
+  height: 36px;
+  background: transparent;
+  border-radius: 0px;
+}
+button.updateadd{
+    margin-top: 7px;
 }
 </style>

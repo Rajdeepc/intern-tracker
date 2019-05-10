@@ -20,11 +20,12 @@
   @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
   @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
   body {
-    background-color: #EEEEEE;
+    background-color: #fafafa !important;
     display: grid;
     grid-template-rows: auto;
     justify-items: center;
     font-family: 'Roboto', sans-serif !important;
+    font-weight: 300 !important;
   }
   
   body,
