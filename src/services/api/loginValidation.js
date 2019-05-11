@@ -162,18 +162,9 @@ export default {
             })
     },
 
-    /**
-     * delete status
-     */
+    
 
-    deleteStatusById(_id) {
-        console.log("StatusId" + _id);
-        const url = `http://localhost:3000/${_id}/deleterecord`;
-        return axios.delete(url)
-            .then(response => {
-                return response;
-            })
-    },
+
     sendStatusMail(to, htmlbody) {
         const body = {
             to: to,
@@ -248,7 +239,18 @@ export default {
         .then(response => {
             return response.data;
         })
-    }
+    },
 
+    /**
+     * delete tasks
+     */
+
+    deleteTasksById(id,member_email) {
+        const url = `http://localhost:3000/deleteTask/${id}/${member_email}`;
+        return axios.delete(url)
+            .then(response => {
+                return response;
+            })
+    },
 }
 

@@ -97,9 +97,9 @@
                               v-on:input="handleQuantityChange($event)"/>
                 </template>
                  <template slot="Actions" slot-scope="data" v-if="data.item.task_status === 'Not Started'">
-                   <i class="fa fa-pencil fa-lg" v-if="editable === false" aria-hidden="true" @click="editField(data.item.taskID,data.index)"></i> 
-                   <i class="fa fa-floppy-o fa-lg" v-if="editable" aria-hidden="true" @click="saveField(data.item.taskID)"></i>
-                   <i class="fa fa-trash fa-lg" aria-hidden="true" @click="deleteFields(data.item.taskID)"></i>
+                   <i class="fa fa-pencil fa-lg" v-if="editable === false" aria-hidden="true" @click="editField(data.item)"></i> 
+                   <i class="fa fa-floppy-o fa-lg" v-if="editable" aria-hidden="true" @click="saveField(data.item)"></i>
+                   <i class="fa fa-trash fa-lg" aria-hidden="true" @click="deleteFields(data.item)"></i>
                 </template>
 
               </b-table>
@@ -169,11 +169,6 @@ export default {
       ]
     };
   },
-  // watch: {
-  //   allTasks: function(val) {
-  //     this.showIfTasksByNameAndProject();
-  //   }
-  // },
   created: function() {
     // this.getAllTasksCall();
     this.getAllProjectList();
@@ -184,8 +179,7 @@ export default {
         console.log(e.target.value);
         this.newTaskName = e.target.value;
     },
-    editField(taskid){
-      const index = this.allTasks.indexOf(taskid);
+    editField(item,index){
       this.editable = true;
     },
     saveField(taskid){
@@ -202,8 +196,19 @@ export default {
         console.log("Err" + err);
       })
     },
-    deleteFields(taskid){
+    deleteFields(taskItem){
       /** call api to delete taskname */
+      let taskId = taskItem.taskID;
+      this.member_email = this.selectedMember.email;
+      DataPostApi.deleteTasksById(taskId,this.member_email)
+      .then(response => {
+        console.log("Response from delete api" + JSON.stringify(response));
+        this.showIfTasksByNameAndProject(this.member_email);
+      })
+      .catch(err => {
+        console.log("Error from error api" + err)
+      })
+
     },
     showIfTasksByNameAndProject() {
       this.member_email = this.selectedMember.email;
