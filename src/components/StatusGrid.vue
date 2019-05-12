@@ -1,20 +1,40 @@
 <template>
   <div v-if="this.statusItemDetails.length">
-    <div role="tablist" class="accordian_status">
-    <b-card no-body class="mb-1" v-for="(status,indexItem) in this.statusItemDetails" :key="indexItem">
-      <b-card-header header-tag="header" class="p-1" role="tab" v-if="status.allStatus.length">
-        <b-button block href="#" v-b-toggle="'accordion-' + indexItem" variant="outline-primary">{{index}}{{status.taskName}}</b-button>
-      </b-card-header>
-      <b-collapse :id="'accordion' + '-' + (indexItem)" visible accordion="my-accordion" role="tabpanel" >
-        <b-card-body>
-          <b-row v-for="(statusItem,index) in status.allStatus" :key="index">
-            <b-col cols="10">Description: {{statusItem.statusDesc}}</b-col>
-            <b-col cols="2">Date Updated: {{ statusItem.date_updated }}</b-col>
-          </b-row>
-        </b-card-body>
-      </b-collapse>
-    </b-card>
-  </div>
+    <b-row>
+      <b-col cols="6" v-for="(status,indexItem) in this.statusItemDetails"
+        :key="indexItem">
+        <div role="tablist" class="accordian_status">
+      <b-card
+        no-body
+        class="mb-1"
+        
+      >
+        <b-card-header header-tag="header" class="p-1" role="tab" v-if="status.allStatus.length">
+          <b-button block href="#" v-b-toggle="'accordion-' + indexItem" variant="primary">
+          {{status.taskName}}
+            <i class="fa fa-chevron-down" aria-hidden="true"></i>
+          </b-button>
+        </b-card-header>
+        <b-collapse
+          :id="'accordion' + '-' + (indexItem)"
+          visible
+          accordion="my-accordion"
+          role="tabpanel"
+        >
+          <b-card-body>
+            <b-row v-for="(statusItem,index) in status.allStatus" :key="index">
+              <b-col
+                cols="12"
+              ><b>Date Updated:</b> {{ statusItem.date_updated === getTodayDate(new Date()) ? 'Today' :statusItem.date_updated }}</b-col>
+              <b-col cols="12"><p><b>Description:</b> {{statusItem.statusDesc}}</p></b-col>
+            </b-row>
+          </b-card-body>
+        </b-collapse>
+      </b-card>
+    </div>
+        </b-col>
+    </b-row>
+    
   </div>
 </template>
 <script>
@@ -41,6 +61,14 @@ export default {
           console.log("Error in delete record" + err);
         });
     },
+    getTodayDate: function(dateInput) {
+      let newDate = dateInput;
+      let mm = newDate.getMonth() + 1;
+      let dd = newDate.getDate();
+      let yyyy = newDate.getFullYear();
+      let date = mm + "/" + dd + "/" + yyyy;
+      return date;
+    },
     editFields: function(status) {
       this.beforEditCache = status;
       this.editedStatus = status;
@@ -66,10 +94,10 @@ export default {
 </script>
 <style>
 .showstatus table {
-    width: 100%;
+  width: 100%;
 }
-.accordian_status .card-header .btn-block{
-      text-align: left;
-    text-transform: uppercase;
+.accordian_status .card-header .btn-block {
+  text-align: left;
+  text-transform: uppercase;
 }
 </style>

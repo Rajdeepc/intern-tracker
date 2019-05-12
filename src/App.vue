@@ -34,11 +34,15 @@
     height: 100%;
     font-weight: 100;
   }
-  
+  #app  .nav-link{
+    padding: 0px
+  }
   #app {
     width: 100%;
   }
-  
+   #app .btn{
+    border-radius: 0px;
+  }
   .bodywrapper {
     padding: 3em 1em 1em;
   

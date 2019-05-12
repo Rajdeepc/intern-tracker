@@ -24,14 +24,14 @@
        <div class="ribbon float-right" v-if="showAdminbtn">
         <div class="innerRibbon text-right">
         <b-button-group>
-          <b-button variant="warning" @click="showModal">
+          <b-button variant="primary" @click="showModal">
             <i class="fa fa-plus" aria-hidden="true"></i>
             Add Project
           </b-button>
-          <b-button variant="danger">
+          <!-- <b-button variant="danger">
             <i class="fa fa-stop-circle-o" aria-hidden="true"></i>
             End Project
-          </b-button>
+          </b-button> -->
         </b-button-group>
       </div>
     </div>
@@ -173,7 +173,7 @@ export default {
   },
   methods: {
     showModal() {
-      console.log("modal should show")
+     // console.log("modal should show")
          this.$refs['my-modal'].show();
     },
     hideModal(value){
@@ -186,7 +186,7 @@ export default {
         this.addStatusTemplateShow = true;
       }
       this.objFromParent = valueObj;
-      console.log("from child" + JSON.stringify(this.objFromParent)); // someValue
+     // console.log("from child" + JSON.stringify(this.objFromParent)); // someValue
       this.getTaskDetailsFromAPI();
     },
     onClickChildStartedItem(valueItem){
@@ -212,12 +212,12 @@ export default {
           newFilteredArrayOnLoad.push(obj);
         }
       });
-      console.log("new filtered array" + newFilteredArrayOnLoad);
+     // console.log("new filtered array" + newFilteredArrayOnLoad);
       return newFilteredArrayOnLoad;
     },
 
     navitageToAllStatus(username) {
-      console.log("username ----------> ", username);
+     // console.log("username ----------> ", username);
       this.$router.push({
         name: "findall",
         params: {
@@ -236,7 +236,7 @@ export default {
     getTaskDetailsFromAPI() {
       DataPostApi.projectDetailsApi(this.getUsername)
         .then(response => {
-          console.log("Response from API", response);
+         // console.log("Response from API", response);
           this.projectList = response.data;
           this.tasksArray = response.data[0] ? response.data[0].allTasks : [];
           this.statusArray = this.getAllStatusinArray();
@@ -255,7 +255,7 @@ export default {
           newTempArray.push(newItem);
         });
       });
-      console.log("newTempArray" + JSON.stringify(newTempArray));
+     // console.log("newTempArray" + JSON.stringify(newTempArray));
       return newTempArray;
     },
 
@@ -265,7 +265,7 @@ export default {
         let lastItem = item.allStatus.slice(-1).pop();
         newTempArray.push(lastItem);
       });
-      console.log("newTempArray" + JSON.stringify(newTempArrayOfPercentage));
+     // console.log("newTempArray" + JSON.stringify(newTempArrayOfPercentage));
       return newTempArrayOfPercentage;
     },
 

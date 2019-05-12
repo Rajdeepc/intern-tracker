@@ -10,7 +10,7 @@ import VueSessionStorage from 'vue-sessionstorage'
 
 Vue.use(VueSessionStorage)
 Vue.use(BootstrapVue);
-Vue.use(VeeValidate);
+Vue.use(VeeValidate, { fieldsBagName: 'veeFields' });
 
 axios.defaults.baseURL = 'http://demo6727947.mockable.io/loginValidation';
 Vue.config.productionTip = false

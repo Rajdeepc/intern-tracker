@@ -30,7 +30,7 @@
         </b-card>
       </b-tab>
       <b-tab title="Sign Up" active>
-        <b-card bg-variant="light" text-variant="black" style="max-width: 30rem;margin:0 auto;">
+        <b-card text-variant="black" style="max-width: 30rem;margin:0 auto;">
           <form class="form-horizontal" @submit="validateSignup" @reset="resetForm('signUp')">
             <p v-if="errors.length">
               <b>Please fix the following errors</b>
@@ -209,8 +209,7 @@
         }, 3000);
       },
   
-      resetForm: function(e, isSigninForm) {
-        e.preventDefault();
+      resetForm: function(isSigninForm) {
         this.isSigninForm = isSigninForm;
         if (isSigninForm == "signIn") {
           this.signin.email = "";
@@ -249,13 +248,16 @@
   #app .nav-tabs .nav-link.active,
   .nav-tabs .nav-item.show .nav-link {
     color: #fff;
-    background-color:#ffa000;
-    border-color: #FFA000;
+    background-color:#007bff;
+    border-color: #007bff;
   }
   
-  #app .nav-link {
+   #app .tabs .nav-tabs {
+    border-bottom: 0;
+}
+  #app .tabs .nav-link {
     display: block;
-    padding: .5rem .5rem;
+    padding: .95rem .5rem;
     background: transparent;
   }
   

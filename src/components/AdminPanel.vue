@@ -39,7 +39,7 @@
                 </div>
               </div>
               <div class="form-group" v-if="selectedMember && (alreadyAssigned === true) && (noData === false)">
-                <b>Project:</b> {{projectNameAssignedTo}}
+                <b>Project Assigned:</b> {{projectNameAssignedTo}}
               </div>
             </b-col>
            
@@ -88,7 +88,7 @@
             </h5>
             <b-card>
               <br>
-              <b-table striped hover :items="allTasks" :fields="fields">
+              <b-table :items="allTasks" :fields="fields">
                 <template slot="taskName" slot-scope="data" >
                         <input type="text" 
                               class="form-control-sm"
