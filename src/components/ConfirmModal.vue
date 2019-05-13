@@ -49,8 +49,7 @@ export default {
     deleteProjectAgainstMember(byEmail){
       DataPostApi.deleteProjectDocument(byEmail)
       .then(response => {
-        console.log("Response from Delete Object" + response);
-        this.$emit('close');
+        this.$emit('deleteClose');
       })
       .catch(err => {
         console.log("Error from delete object" + err)

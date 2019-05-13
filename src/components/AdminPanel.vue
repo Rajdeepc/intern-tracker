@@ -115,7 +115,7 @@
             </b-card>
           </b-col>
         </b-row>
-        <confirmModal v-if="modalshow === true" :emailObjToDelete="selectedMember.email" @close="closeModal" />
+        <confirmModal v-if="modalshow === true" :emailObjToDelete="selectedMember.email" @close="closeModal" @deleteClose="deleteAndClose"/>
     </div>
   </div>
 </template>
@@ -183,6 +183,9 @@ export default {
       this.modalshow = true;
     },
     closeModal() {
+      this.modalshow = false;
+    },
+    deleteAndClose(){
       this.modalshow = false;
       window.location.reload();
     },
