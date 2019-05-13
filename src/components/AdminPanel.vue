@@ -25,7 +25,7 @@
               </div>
             </b-col>
             <b-col cols="5">
-              <div class="form-group" v-if="selectedMember && (haveProjectNameAndTAsks === false)">
+              <div class="form-group" v-if="(selectedMember && (haveProjectNameAndTAsks === false))">
                 <div class="projectDropdown">
                   Select A Project:
                   <select v-model="selectedProject">
@@ -38,8 +38,9 @@
                   </select>
                 </div>
               </div>
-              <div class="form-group" v-if="selectedMember && (haveProjectNameAndTAsks === true)">
+              <div class="form-group" v-if="(selectedMember && (haveProjectNameAndTAsks === true))">
                 <b>Project Assigned:</b> {{projectNameAssignedTo}}
+                <b-button variant="danger" @click="openConfirmModal(selectedMember.email)">Delete</b-button>
               </div>
             </b-col>
            
@@ -114,21 +115,21 @@
             </b-card>
           </b-col>
         </b-row>
+        <confirmModal v-if="modalshow === true" :emailObjToDelete="selectedMember.email" @close="closeModal" />
     </div>
-    <!-- <div v-if="alreadyAssigned">
-      Already Assigned to {{projectNameAssignedTo}}
-      Please select the project to update or delete tasks.
-    </div> -->
   </div>
 </template>
 
 <script>
 import DataPostApi from "../services/api/loginValidation";
+import confirmModal from './ConfirmModal.vue';
+
 export default {
   name: "AdminPanel",
   props: ["getUsername"],
   data() {
     return {
+      noProjectWithEmail:false,
       haveProjectNameAndTAsks:false,
       saveOrUpdate: "",
       dismissCountDown: false,
@@ -167,8 +168,12 @@ export default {
         "end_date",
         "date_created",
         "Actions"
-      ]
+      ],
+      modalshow:false
     };
+  },
+  components:{
+    confirmModal
   },
   created: function() {
     // this.getAllTasksCall();
@@ -176,6 +181,14 @@ export default {
     this.getAllMemberEmail();
   },
   methods: {
+    openConfirmModal(email){
+      this.modalshow = true;
+    },
+    closeModal() {
+      this.modalshow = false;
+      window.location.reload();
+    },
+
     handleQuantityChange(e){
         console.log(e.target.value);
         this.newTaskName = e.target.value;
@@ -204,7 +217,10 @@ export default {
       DataPostApi.deleteTasksById(taskId,this.member_email)
       .then(response => {
         console.log("Response from delete api" + JSON.stringify(response));
-        this.showIfTasksByNameAndProject(this.member_email);
+        this.$nextTick(function () {
+           this.showIfTasksByNameAndProject(this.member_email);
+        })
+       
       })
       .catch(err => {
         console.log("Error from error api" + err)
@@ -221,6 +237,9 @@ export default {
             if (response.data[0].project_name !== undefined && response.data[0].allTasks.length > 0) { // have a project name and tasks to a member
               this.haveProjectNameAndTAsks = true;
             }
+          } else {
+            this.noProjectWithEmail = true;
+            this.selectedProject = null;
           }
         })
         .catch(err => {

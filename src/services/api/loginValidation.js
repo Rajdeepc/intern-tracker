@@ -252,5 +252,13 @@ export default {
                 return response;
             })
     },
+
+    deleteProjectDocument(member_email) {
+        const url = `http://localhost:3000/deleteProject/${member_email}`;
+        return axios.delete(url)
+            .then(response => {
+                return response;
+            })
+    },
 }
 
