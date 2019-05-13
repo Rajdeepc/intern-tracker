@@ -64,12 +64,12 @@
                   <div class="col-md-3 mb-3">
                     <div for="validationCustom01">&nbsp;</div>
                     <button
-                      v-if="allTasks.length === 0"
+                      v-if="!allTasks.length"
                       class="updateadd btn btn-success"
                       @click="addTasks()"
                     >Add New</button>
                     <button
-                      v-if="!noData && (allTasks.length > 0)"
+                      v-if="allTasks.length"
                       class="updateadd btn btn-warning"
                       @click="updatedTasks()"
                     >Update More</button>
@@ -229,14 +229,14 @@ export default {
       this.member_email = this.selectedMember.email;
       DataPostApi.getTasksByNameAndProject(this.member_email)
         .then(response => {
-          if (response.data.length) {
-            this.allTasks = response.data[0].allTasks;
+            this.allTasks = response.data[0] ? response.data[0].allTasks : [];
+            if (response.data.length) {
             this.projectNameAssignedTo = response.data[0].project_name;
-            if (response.data[0].project_name !== undefined && response.data[0].allTasks.length > 0) { // have a project name and tasks to a member
+            if (response.data[0].project_name !== undefined && response.data[0].allTasks.length >= 0) { // have a project name and tasks to a member
               this.haveProjectNameAndTAsks = true;
             }
           } else {
-            this.selectedProject = null;
+            this.haveProjectNameAndTAsks = false;
           }
         })
         .catch(err => {
