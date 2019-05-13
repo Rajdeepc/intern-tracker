@@ -1,13 +1,11 @@
 <template>
   <div v-if="this.statusItemDetails.length">
-    <b-row>
-      <b-col cols="6" v-for="(status,indexItem) in this.statusItemDetails"
-        :key="indexItem">
         <div role="tablist" class="accordian_status">
       <b-card
         no-body
         class="mb-1"
-        
+        v-for="(status,indexItem) in this.statusItemDetails"
+        :key="indexItem"
       >
         <b-card-header header-tag="header" class="p-1" role="tab" v-if="status.allStatus.length">
           <b-button block href="#" v-b-toggle="'accordion-' + indexItem" variant="primary">
@@ -32,8 +30,6 @@
         </b-collapse>
       </b-card>
     </div>
-        </b-col>
-    </b-row>
     
   </div>
 </template>

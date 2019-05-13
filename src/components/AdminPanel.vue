@@ -25,7 +25,7 @@
               </div>
             </b-col>
             <b-col cols="5">
-              <div class="form-group" v-if="(selectedMember && (alreadyAssigned === false) && (noData === true))">
+              <div class="form-group" v-if="selectedMember && (haveProjectNameAndTAsks === false)">
                 <div class="projectDropdown">
                   Select A Project:
                   <select v-model="selectedProject">
@@ -38,7 +38,7 @@
                   </select>
                 </div>
               </div>
-              <div class="form-group" v-if="selectedMember && (alreadyAssigned === true) && (noData === false)">
+              <div class="form-group" v-if="selectedMember && (haveProjectNameAndTAsks === true)">
                 <b>Project Assigned:</b> {{projectNameAssignedTo}}
               </div>
             </b-col>
@@ -48,7 +48,7 @@
       </b-col>
     </b-row>
     <br>
-      <div class="add_show_tasks" v-if="(selectedMember && selectedProject) || (selectedMember && (alreadyAssigned === true))">
+      <div class="add_show_tasks" v-if="(selectedMember && selectedProject) || (selectedMember && (haveProjectNameAndTAsks === true))">
         <h5>Add/Update Tasks:</h5>
         <b-row>
           <b-col>
@@ -63,12 +63,12 @@
                   <div class="col-md-3 mb-3">
                     <div for="validationCustom01">&nbsp;</div>
                     <button
-                      v-if="noData"
+                      v-if="allTasks.length === 0"
                       class="updateadd btn btn-success"
                       @click="addTasks()"
                     >Add New</button>
                     <button
-                      v-if="!noData"
+                      v-if="!noData && (allTasks.length > 0)"
                       class="updateadd btn btn-warning"
                       @click="updatedTasks()"
                     >Update More</button>
@@ -80,7 +80,7 @@
         </b-row>
         <br>
 
-        <b-row v-if="!noData">
+        <b-row v-if="haveProjectNameAndTAsks === true">
           <b-col cols="12">
             <h5>
               Showing All Tasks Assigned to
@@ -99,7 +99,7 @@
                  <template slot="Actions" slot-scope="data" v-if="data.item.task_status === 'Not Started'">
                    <i class="fa fa-pencil fa-lg" v-if="editable === false" aria-hidden="true" @click="editField(data.item)"></i> 
                    <i class="fa fa-floppy-o fa-lg" v-if="editable" aria-hidden="true" @click="saveField(data.item)"></i>
-                   <i class="fa fa-trash fa-lg" aria-hidden="true" @click="deleteFields(data.item)"></i>
+                   <i class="fa fa-trash fa-lg" v-if="data.index >= 1" aria-hidden="true" @click="deleteFields(data.item)"></i>
                 </template>
 
               </b-table>
@@ -129,6 +129,7 @@ export default {
   props: ["getUsername"],
   data() {
     return {
+      haveProjectNameAndTAsks:false,
       saveOrUpdate: "",
       dismissCountDown: false,
       memberSelected: null,
@@ -185,7 +186,7 @@ export default {
     saveField(taskid){
       /** call api to update taskname */
       this.member_email = this.selectedMember.email;
-      DataPostApi.updateTaskNameAndSave(taskid,this.newTaskName,this.member_email)
+      DataPostApi.updateTaskNameAndSave(taskid.taskID,this.newTaskName,this.member_email)
       .then(response => {
         if(response.save === true){
            this.editable = false;
@@ -215,15 +216,11 @@ export default {
       DataPostApi.getTasksByNameAndProject(this.member_email)
         .then(response => {
           if (response.data.length) {
-            this.noData = false;
             this.allTasks = response.data[0].allTasks;
             this.projectNameAssignedTo = response.data[0].project_name;
-            if (response.data[0].project_name !== undefined) {
-              this.alreadyAssigned = true;
+            if (response.data[0].project_name !== undefined && response.data[0].allTasks.length > 0) { // have a project name and tasks to a member
+              this.haveProjectNameAndTAsks = true;
             }
-          } else {
-            this.noData = true;
-            this.alreadyAssigned = false;
           }
         })
         .catch(err => {
@@ -309,7 +306,7 @@ export default {
     },
 
     addTasks() {
-      this.project_name = this.selectedProject.project_name;
+      this.project_name = this.selectedProject ? this.selectedProject.project_name : this.projectNameAssignedTo;
       this.member_email = this.selectedMember.email;
       this.manager_name = this.getUsername;
       this.allTasks = [];
