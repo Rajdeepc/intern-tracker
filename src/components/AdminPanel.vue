@@ -129,7 +129,6 @@ export default {
   props: ["getUsername"],
   data() {
     return {
-      noProjectWithEmail:false,
       haveProjectNameAndTAsks:false,
       saveOrUpdate: "",
       dismissCountDown: false,
@@ -156,7 +155,6 @@ export default {
       selectedProject: null,
       selectedMember: null,
       noData: null,
-      selectedMember: false,
       allTasks: [],
       alreadyAssigned: null,
       projectNameAssignedTo:'',
@@ -238,7 +236,6 @@ export default {
               this.haveProjectNameAndTAsks = true;
             }
           } else {
-            this.noProjectWithEmail = true;
             this.selectedProject = null;
           }
         })
