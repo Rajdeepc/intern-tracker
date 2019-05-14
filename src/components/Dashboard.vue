@@ -3,7 +3,7 @@
     <b-navbar toggleable="md" type="dark" variant="dark">
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
       <b-nav-text>
-        <h4>Accenture Status Tracker</h4>
+        <h4>Accenture Training Tracker</h4>
       </b-nav-text>
       <b-collapse is-nav id="nav_collapse">
         <!-- Right aligned nav items -->
