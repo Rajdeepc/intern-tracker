@@ -20,26 +20,32 @@
   @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
   @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
   body {
-    background-color: #EEEEEE;
+    background-color: #fafafa !important;
     display: grid;
     grid-template-rows: auto;
     justify-items: center;
     font-family: 'Roboto', sans-serif !important;
+    font-weight: 300 !important;
   }
   
   body,
   html {
     margin: 0;
     height: 100%;
+    font-weight: 100;
   }
-  
+  #app  .nav-link{
+    padding: 0px
+  }
   #app {
     width: 100%;
   }
-  
+   #app .btn{
+    border-radius: 0px;
+  }
   .bodywrapper {
-    padding: 3em 2em;
-    background: #fafafa;
+    padding: 3em 1em 1em;
+  
   }
   
   nav {
@@ -79,4 +85,7 @@
     .width25{
         width:25%
     }
+    .dashboard {
+    background: #fafafa;
+}
 </style>

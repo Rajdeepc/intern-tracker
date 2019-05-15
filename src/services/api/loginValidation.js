@@ -19,6 +19,41 @@ export default {
             })
     },
     /**
+     * axios call to post project data as list
+     */
+    addProjectToList(project_name, project_desc,project_status) {
+        const body = {
+            project_name: project_name,
+            project_desc: project_desc,
+            project_status: project_status
+        };
+        const url = "http://localhost:3000/addProject";
+        return axios.post(url, body)
+            .then(response => {
+                return response.data;
+            })
+    },
+    /**
+     * axios call to get project data as list
+     */
+    getAllProjectListData() {
+        const url = "http://localhost:3000/getAllProjectLists";
+        return axios.get(url)
+            .then(response => {
+                return response;
+            })
+    },
+    /**
+     * axios call to get email id of signedup users
+     */
+    getAllUsersList() {
+        const url = "http://localhost:3000/getallUsers";
+        return axios.get(url)
+            .then(response => {
+                return response;
+            })
+    },
+    /**
      * axios call to validate sign in creds
      */
     validateSignIn(email, password) {
@@ -59,13 +94,31 @@ export default {
             manager_name: manager_name,
             allTasks: allTasks
         };
-        const url = "http://localhost:3000/postprojectdata";
+        const url = "http://localhost:3000/saveTaskDocument";
         return axios.post(url, body)
             .then(response => {
                 return response.data;
             })
     },
 
+    projectUpdateApi(taskID,member_email,taskName,task_status,start_date,end_date,date_created,statusArray) {
+        const body = {
+            taskID:taskID,
+            member_email: member_email,
+            taskName: taskName,
+            task_status:task_status,
+            start_date:start_date,
+            end_date:end_date,
+            date_created:date_created,
+            statusArray:statusArray
+        };
+        const url = "http://localhost:3000/updateprojectdata";
+        return axios.put(url, body)
+            .then(response => {
+                return response.data;
+            })
+    }
+,
     projectDetailsApi(username) {
         console.log(username);
         const url = `http://localhost:3000/getprojectdata/${username}`;
@@ -77,8 +130,16 @@ export default {
     },
 
     /** get status by date on load**/
-    getStatusbyDate(project_name) {
-        const url = `http://localhost:3000/getallData/${project_name}`;
+    getStatusbyEmail(member_email) {
+        const url = `http://localhost:3000/getallData/${member_email}`;
+        return axios.get(url)
+            .then(response => {
+                return response;
+            })
+    },
+
+    getTasksbyEmail(member_email) {
+        const url = `http://localhost:3000/getTasksbyEmail/${member_email}`;
         return axios.get(url)
             .then(response => {
                 return response;
@@ -101,18 +162,9 @@ export default {
             })
     },
 
-    /**
-     * delete status
-     */
+    
 
-    deleteStatusById(_id) {
-        console.log("StatusId" + _id);
-        const url = `http://localhost:3000/${_id}/deleterecord`;
-        return axios.delete(url)
-            .then(response => {
-                return response;
-            })
-    },
+
     sendStatusMail(to, htmlbody) {
         const body = {
             to: to,
@@ -135,8 +187,6 @@ export default {
             return response.data;
         })
     },
-
-
 
 
     updateStartTaskById(member_email,taskID,task_status,start_date,index) {
@@ -167,6 +217,48 @@ export default {
         .then(response => {
             return response.data;
         })
-    }
+    },
+
+    /** get tasks by email and project name */
+
+    getTasksByNameAndProject(member_email) {
+        const url = `http://localhost:3000/getTasksByEmail/${member_email}`;
+        return axios.get(url)
+            .then(response => {
+                return response;
+            })
+    },
+
+    updateTaskNameAndSave(taskID,taskName,member_email) {
+        const body = {
+            taskName : taskName,
+            member_email:member_email
+        };
+        const url = `http://localhost:3000/updateTaskNameByEmail/${taskID}`;
+        return axios.put(url,body)
+        .then(response => {
+            return response.data;
+        })
+    },
+
+    /**
+     * delete tasks
+     */
+
+    deleteTasksById(id,member_email) {
+        const url = `http://localhost:3000/deleteTask/${id}/${member_email}`;
+        return axios.delete(url)
+            .then(response => {
+                return response;
+            })
+    },
+
+    deleteProjectDocument(member_email) {
+        const url = `http://localhost:3000/deleteProject/${member_email}`;
+        return axios.delete(url)
+            .then(response => {
+                return response;
+            })
+    },
 }
 

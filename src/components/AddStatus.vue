@@ -35,22 +35,6 @@
               name="percentage_completion"
             />
           </div>
-          <!-- <div class="form-group col-xs-2 mb-2">
-            <label for="validationCustom01">Date To Be Completed</label>
-
-            <b-input
-              class="mb-2 mr-sm-2 mb-sm-0"
-              type="date"
-              v-model="completed_date"
-              name="completed_date"
-              id="completed_date"
-            />
-          </div> -->
-          <!-- <div class="form-group col-xs-2 mb-2">
-            <label for="validationCustom01">Owner </label>
-            <b-input class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="manager_name" value="" readonly="" name="manager_name" />
-  
-          </div>-->
           <input type="hidden" value v-model="date_created" name="date_created">
           <div class="col-xs-3 mb-3">
             <label for="validationCustom01" class="empty-label">&nbsp;</label>
@@ -126,6 +110,10 @@ export default {
         //if(this.percentage_completion < (this.addItemDetails.allStatus.pop().percentage_completion) || this.statusDesc === ''){
         //  return false;
       //  } else {
+        if(this.statusDesc === '' || this.percentage_completion === null) {
+          alert("Please fill all the inputs");
+          return false;
+        } else {
         this.statusID = `Status${this.count}`;
         this.taskiD = this.addItemDetails.taskID;
         DataPostApi.statusSaveApi(
@@ -138,16 +126,17 @@ export default {
         )
           .then(response => {
             if(response.affected.allTasks){
+            this.resetFields();
             this.taskStatusResponseArray = response.affected.allTasks;
             let objToSendToParent = this.filterObjWithStatusStarted();
-            this.$emit('startedStatusObj', objToSendToParent);
+            this.$emit('filteredObjFromChild', objToSendToParent);
           }
           })
           .catch(error => {
             throw error;
           });
           this.count ++;
-        //}
+    }
     },
     filterObjWithStatusStarted(){
       let newFilteredArray = [];
@@ -180,9 +169,8 @@ export default {
       return today;
     },
     resetFields() {
-      this.description = "";
-      this.percentage_completion = 0;
-      this.completed_date = this.getDateYYYYMMDD(new Date());
+      this.statusDesc = "";
+      this.percentage_completion = null;
     },
     mapOverAllStatusTosendEmail: function() {
       let trStr = "";

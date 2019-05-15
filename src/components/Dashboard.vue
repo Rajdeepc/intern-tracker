@@ -2,34 +2,41 @@
   <div class="dashboard">
     <b-navbar toggleable="md" type="dark" variant="dark">
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-
       <b-nav-text>
-        <h4>Accenture Status Tracker</h4>
+        <h4>Accenture Training Tracker</h4>
       </b-nav-text>
-
       <b-collapse is-nav id="nav_collapse">
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-nav-item v-if="showAdminbtn">
-            <b-btn v-b-modal.modallg variant="primary">Add Project</b-btn>
-          </b-nav-item>
           <b-nav-item>
             <b-button @click="clearSessionLogout">Logout</b-button>
           </b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <div class="bodywrapper">
-      <a class="float-right" v-on:click="navitageToAllStatus(getUsername)" v-if="showAdminbtn">
-        Check All Status
-        <i class="fa fa-arrow-right" aria-hidden="true"></i>
-      </a>
-
-      <p>
+    
+    <div class="bodywrapper container">
+      <div class="clearfix">
+      <div class="float-left">
         Welcome
         <b>{{getUsername}}</b>,
-      </p>
-
+      </div>
+       <div class="ribbon float-right" v-if="showAdminbtn">
+        <div class="innerRibbon text-right">
+        <b-button-group>
+          <b-button variant="primary" @click="showModal">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            Add Project
+          </b-button>
+          <!-- <b-button variant="danger">
+            <i class="fa fa-stop-circle-o" aria-hidden="true"></i>
+            End Project
+          </b-button> -->
+        </b-button-group>
+      </div>
+    </div>
+      </div>
+      <br>
       <div class="selectProject" v-if="projectList.length">
         Select Your Project:
         <select v-model="projectSelected" @change="showSkillsListToSelect()">
@@ -41,10 +48,9 @@
           >{{ status.project_name }}</option>
         </select>
       </div>
-      <div class="component">
+      <div class="component" v-if="!projectList.length && !showAdminbtn">
         <div
           class="noProject text-center"
-          v-if="!projectList.length && !showAdminbtn"
         >You have not been assigned any project yet.</div>
       </div>
       <!-- task array -->
@@ -66,6 +72,7 @@
                   <a
                     href="mailto:n.balanarasimhalu@accenture.com?Subject=Need%20Clarification"
                   >Email</a>
+                  (For any queries)
                 </b-col>
               </b-row>
             </b-card>
@@ -80,8 +87,8 @@
                 :taskItemDetails="taskItem"
                 :index="index"
                 :getUsername="getUsername"
-                @startedStatusObj="onClickChildTaskItem"
-                
+                @startedStatusObj="onClickChildStartedItem"
+                @completedStatusObj="onClickChildCompletedItem"
               ></TaskItem>
             </b-col>
             <!-- completed tasks -->
@@ -89,15 +96,15 @@
         </div>
         <!-- add status for today component -->
         <div class="component">
-          <div v-if="(taskDetailsShow === true) && (addStatusTemplateShow === true)" >
-            <h4>Add Your Status For today:</h4>
+          <div v-if="(taskDetailsShow === true) && (addStatusTemplateShow === true)">
+            <h4 v-if="this.showNoOfAddForm.length">Add Your Status For today:</h4>
             <b-row>
               <b-col col md="12" v-for="(addItem,index) in this.showNoOfAddForm" :key="addItem.id">
                 <AddStatus
                   :addItemDetails="addItem"
                   :index="index"
                   :getUsername="getUsername"
-                  @startedStatusObj="onClickChildTaskItem"
+                  @filteredObjFromChild="onClickChildTaskItem"
                 ></AddStatus>
               </b-col>
             </b-row>
@@ -106,11 +113,15 @@
 
         <div class="component" v-if="this.statusArray.length">
           <h4>Your Status:</h4>
-          <StatusGrid :projectSelected="projectSelected" :statusItemDetails="this.statusArray"/>
+          <StatusGrid :projectSelected="projectSelected" :statusItemDetails="this.tasksArray"/>
         </div>
       </div>
     </div>
-    <AdminPanel v-if="showAdminbtn" :getUsername="getUsername"></AdminPanel>
+    <AdminPanel v-if="showAdminbtn" :getUsername="getUsername">
+    </AdminPanel>
+    <b-modal ref="my-modal" size="sm" title="Add New Project" hide-footer no-close-on-backdrop >
+      <AddProjectModalTemplate @hideModalFromChild="hideModal"></AddProjectModalTemplate>
+    </b-modal>
   </div>
 </template>
 
@@ -123,12 +134,14 @@ import router from "../router.js";
 import constants from "../utils/constants";
 import TaskItem from "./TaskItemComponent.vue";
 import StatusGrid from "./StatusGrid.vue";
+import AddProjectModalTemplate from './AddProjectModal.vue'
 
 export default {
   name: "Dashboard",
   props: [],
   data() {
     return {
+      modalShow: false,
       projectSelected: this.projectSelectedItem,
       addStatusTemplateShow: false,
       taskDetailsShow: false,
@@ -150,7 +163,8 @@ export default {
     AddStatus: AddStatus,
     AdminPanel: AdminPanel,
     TaskItem: TaskItem,
-    StatusGrid: StatusGrid
+    StatusGrid: StatusGrid,
+    AddProjectModalTemplate:AddProjectModalTemplate
   },
   beforeCreate: function() {
     if (!this.$session.exists("username")) {
@@ -158,13 +172,28 @@ export default {
     }
   },
   methods: {
+    showModal() {
+     // console.log("modal should show")
+         this.$refs['my-modal'].show();
+    },
+    hideModal(value){
+      if(value === true){
+         this.$refs['my-modal'].hide();
+      }
+    },
     onClickChildTaskItem(valueObj) {
       if (valueObj) {
         this.addStatusTemplateShow = true;
       }
       this.objFromParent = valueObj;
-      console.log("from child" + JSON.stringify(this.objFromParent)); // someValue
+     // console.log("from child" + JSON.stringify(this.objFromParent)); // someValue
       this.getTaskDetailsFromAPI();
+    },
+    onClickChildStartedItem(valueItem){
+      this.getTaskDetailsFromAPI();
+    },
+    onClickChildCompletedItem(valueChildItem){
+        this.getTaskDetailsFromAPI();
     },
     checkisAdmin(username) {
       let adminArray = constants.ADMIN_ARRAY;
@@ -183,12 +212,12 @@ export default {
           newFilteredArrayOnLoad.push(obj);
         }
       });
-      console.log("new filtered array" + newFilteredArrayOnLoad);
+     // console.log("new filtered array" + newFilteredArrayOnLoad);
       return newFilteredArrayOnLoad;
     },
 
     navitageToAllStatus(username) {
-      console.log("username ----------> ", username);
+     // console.log("username ----------> ", username);
       this.$router.push({
         name: "findall",
         params: {
@@ -207,7 +236,7 @@ export default {
     getTaskDetailsFromAPI() {
       DataPostApi.projectDetailsApi(this.getUsername)
         .then(response => {
-          console.log("Response from API", response);
+         // console.log("Response from API", response);
           this.projectList = response.data;
           this.tasksArray = response.data[0] ? response.data[0].allTasks : [];
           this.statusArray = this.getAllStatusinArray();
@@ -226,20 +255,19 @@ export default {
           newTempArray.push(newItem);
         });
       });
-      console.log("newTempArray" + JSON.stringify(newTempArray));
+     // console.log("newTempArray" + JSON.stringify(newTempArray));
       return newTempArray;
     },
 
-      getPercentageCompleteToTasItem(){
-        let newTempArrayOfPercentage = [];
-        this.tasksArray.map(item => {
-          let lastItem = item.allStatus.slice(-1).pop();
-          newTempArray.push(lastItem);
-        });
-        console.log("newTempArray" + JSON.stringify(newTempArrayOfPercentage));
-        return newTempArrayOfPercentage;
-      },
-
+    getPercentageCompleteToTasItem() {
+      let newTempArrayOfPercentage = [];
+      this.tasksArray.map(item => {
+        let lastItem = item.allStatus.slice(-1).pop();
+        newTempArray.push(lastItem);
+      });
+     // console.log("newTempArray" + JSON.stringify(newTempArrayOfPercentage));
+      return newTempArrayOfPercentage;
+    },
 
     clearSessionLogout: function() {
       this.$session.remove("username");
@@ -256,6 +284,12 @@ export default {
 .component {
   display: block;
   margin-top: 30px;
+}
+.component h4 {
+  margin-bottom: 16px;
+}
+.innerRibbon .btn {
+    margin-right: 10px;
 }
 </style>
 

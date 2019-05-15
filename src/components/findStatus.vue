@@ -34,11 +34,11 @@
             <div v-if="getAllStatus">
                 <div class="showstatus" v-if="this.showAllStatus.length > 0">
                     <h4 class="float-left">Showing Status for : <b>{{date}}</b></h4>
-                    <table class="table table-striped ">
+                    <!-- <table class="table table-striped ">
                         <thead>
                             <tr>
                                 <td><b>SL</b></td>
-                                <td><b>Work Status</b></td>
+                                <td><b>Status Description</b></td>
                                 <td><b>Completed %</b></td>
                                 <td><b>Date Created</b></td>
                                 <td><b>ETA</b></td>
@@ -73,7 +73,7 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
+                    </table> -->
                 </div>
                 <!-- show only if no data returned from api -->
                 <div v-if="this.showAllStatus.length === 0">
