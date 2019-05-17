@@ -1,7 +1,6 @@
 <template>
   <div class="loginWrapper">
     <div class="heroimg text-center">
-      <h3>Accenture Digital - Mobile Application Studio</h3>
       <h5>Traning Tracking Application</h5>
     </div>
     <b-tabs>
