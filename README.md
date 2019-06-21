@@ -20,7 +20,7 @@ This project could help organization to track new joinees or project members to 
 To get you started you can simply clone the repository:
 
 ```
-git clone https://github.com/Rajdeepc/candidate-traning-tracker.git
+git clone https://github.com/Rajdeepc/candidate-training-tracker.git
 ```
 and install the dependencies
 ```
@@ -71,7 +71,7 @@ To Run Locally Steps to follow:
 
 ### Create a branch
 
-1. `git checkout master` from any folder in your local `https://github.com/Rajdeepc/candidate-traning-tracker` repository
+1. `git checkout master` from any folder in your local `https://github.com/Rajdeepc/candidate-training-tracker` repository
 1. `git pull origin master` to ensure you have the latest main code
 1. `git checkout -b the-name-of-my-branch` (replacing `the-name-of-my-branch` with a suitable name) to create a branch
 
@@ -88,7 +88,7 @@ To Run Locally Steps to follow:
 
 1. `git add -A && git commit -m "My message"` (replacing `My message` with a commit message, such as `Fixed header logo`) to stage and commit your changes
 1. `git push my-fork-name the-name-of-my-branch`
-1. Go to the [vue-node-traning-tracker repo](https://github.com/Rajdeepc/candidate-traning-tracker) and you should see recently pushed branches.
+1. Go to the [vue-node-traning-tracker repo](https://github.com/Rajdeepc/candidate-training-tracker) and you should see recently pushed branches.
 1. Follow GitHub's instructions.
 1. If possible, include screenshots of visual changes. A Netlify build will also be automatically created once you make your PR so other people can see your change.
 
