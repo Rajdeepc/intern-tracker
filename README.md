@@ -1,6 +1,7 @@
-## Traning Tracking Application made with Vue JS,Node JS,MongoDB
+## Candidate Training Tracking Application
 
 This project could help organization to track new joinees or project members to submit their task status of their assigned tasks so that their supervisor can track each task.
+
 ### The project has two portals:
  * Admin Portal:
     - Through this portal admin can assign tasks to individuals.
