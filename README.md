@@ -17,12 +17,6 @@
 ---
 
 
-
-## Overview
-
-![image](image.png)
-
-
 ### The project has two portals:
  * Admin Portal:
     - Through this portal admin can assign tasks to individuals.
