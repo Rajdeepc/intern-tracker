@@ -542,14 +542,11 @@ app.post("/sendemail", (req, res) => {
         service: "Gmail",
         auth: {
           xoauth2: xoauth2.createXOAuth2Generator({
-            user: "hpedevelopers@gmail.com", // Your gmail address.
-            clientId:
-              "962313790379-nrolctif9dpprl4t94l4mpa9guiss9aa.apps.googleusercontent.com",
-            clientSecret: "4n-E5Lh1SiwgXqlWFUTUIpGq",
-            refreshToken:
-              "1/KMeEjt5C5NVhVW4nNywnSwbyXbt1HM6cVEbK-rlbDX0F318BqbD9ZxUu79ZoBweR",
-            access_token:
-              "ya29.GlwdBpIQnFFjAiEsxPq3VxVa88itxCCMWlQpsqxOgTCAGwIYRcfEkHEx7IhjQj6ypwF1jjTq5TNtLvWG0vPZoWRLJx18fHXsWkEzQgdvNF9-RywCSpV6zh8SesIxhQ"
+            user: process.env.USER, // Your gmail address.
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+            refreshToken: process.env.REFRESH_TOKEN,
+            access_token: process.env.ACCESS_TOKEN
           })
         }
       })
