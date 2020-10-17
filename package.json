@@ -1,38 +1,29 @@
 {
-  "name": "hello-world",
-  "version": "0.1.0",
-  "configurations": [
-    {
-      "type": "chrome",
-      "request": "launch",
-      "name": "vuejs: chrome",
-      "url": "http://localhost:8080",
-      "webRoot": "${workspaceFolder}/src",
-      "breakOnLoad": true,
-      "sourceMapPathOverrides": {
-        "webpack:///src/*": "${webRoot}/*"
-      }
-    }
-  ],
-  "private": true,
+  "name": "nodebackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "start": "nodemon server.js"
   },
+  "keywords": [
+    "node",
+    "mongodb",
+    "mongoose",
+    "demo"
+  ],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "axios": "^0.18.0",
-    "bootstrap-vue": "^2.0.0-rc.11",
+    "bcrypt": "^3.0.2",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
     "express-session": "^1.15.6",
-    "vee-validate": "^2.1.0-beta.9",
-    "vue": "^2.5.17",
-    "vue-router": "^3.0.1",
-    "vue-sessionstorage": "^1.0.0",
-    "vuejs-datepicker": "^1.5.3"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.3",
-    "@vue/cli-service": "^3.0.3",
-    "vue-template-compiler": "^2.5.17"
+    "mongoose": "^5.2.15",
+    "nodemailer": "^4.6.8",
+    "nodemailer-smtp-transport": "^2.7.4",
+    "xoauth2": "^1.2.0"
   }
 }

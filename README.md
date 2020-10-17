@@ -1,6 +1,22 @@
-## Training Tracking Application 
+<div align="center">
+  <a href="#"><img src="https://github.com/Rajdeepc/teleport/blob/master/github/teleport.png?raw=true" alt="intern logo"></a>
+  <br>
+  <br>
+  <p>
+     <i>This project could help organization to track new joinees or project members to submit their task status of their assigned tasks so that their supervisor can track each task. </i>
+  </p>
+  <p>
+  </p>
+  <p>
+    <sub>Built with ❤︎ by
+      <a href="https://github.com/Rajdeepc">Rajdeep Chandra</a> 
+    </sub>
+  </p>
+</div>
 
-This project could help organization to track new joinees or project members to submit their task status of their assigned tasks so that their supervisor can track each task.
+---
+
+
 
 ## Overview
 
