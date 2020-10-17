@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="#"><img src="https://github.com/Rajdeepc/intern-tracker/blob/master/github/internship.png?raw=true" alt="intern logo"></a>
+  <a href="#"><img src="https://github.com/Rajdeepc/intern-tracker/blob/master/github/intern.png?raw=true" alt="intern logo"></a>
   <br>
   <br>
   <p>
