@@ -31,8 +31,8 @@
     "vuejs-datepicker": "^1.5.3"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.3",
-    "@vue/cli-service": "^3.0.3",
+    "@vue/cli-plugin-babel": "^3.12.1",
+    "@vue/cli-service": "^5.0.8",
     "vue-template-compiler": "^2.5.17"
   }
 }
